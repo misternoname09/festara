@@ -1,0 +1,51 @@
+FESTARA — Modele financier Annee 1 (FCFA),,,
+Juin 2026 — Document confidentiel,,,
+,,,
+HYPOTHESES,Bas,Moyen,Haut
+Mariages payants (an),60,200,500
+Mix plan Essentiel (15 000 FCFA),40%,40%,40%
+Mix plan Premium (25 000 FCFA),60%,60%,60%
+Ticket moyen billetterie (FCFA),21000,21000,21000
+Planners Pro actifs,1,5,15
+Mois moyens d'abonnement Pro,6,8,9
+Prix Pro (FCFA / mois),60000,60000,60000
+,,,
+CAGNOTTE (Phase 2 - second semestre),Bas,Moyen,Haut
+Part des mariages avec cagnotte active,25%,25%,25%
+Invites moyens par mariage,400,400,400
+Taux de participation des invites,20%,30%,35%
+Contribution moyenne (FCFA),5000,5000,5000
+Take rate Festara,1.5%,1.5%,1.5%
+,,,
+REVENUS ANNEE 1 (FCFA),Bas,Moyen,Haut
+Billetterie (mariages x ticket),1260000,4200000,10500000
+Abonnements Pro (MRR cumule),360000,2400000,8100000
+Commission cagnotte (take rate),90000,450000,1312500
+REVENU TOTAL ANNEE 1,1710000,7050000,19912500
+,,,
+DETAIL CAGNOTTE,Bas,Moyen,Haut
+Mariages avec cagnotte,15,50,125
+Flux par mariage (invites x part x montant),400000,600000,700000
+Commission par mariage,6000,9000,10500
+Flux total transite par la plateforme,6000000,30000000,87500000
+,,,
+COUTS ESTIMES ANNEE 1 (FCFA),Bas,Moyen,Haut
+Infra (Supabase Pro + Vercel),0,300000,360000
+Domaines (festara.app + defensifs),25000,25000,25000
+Frais passerelle billetterie (~2.5%),31500,105000,262500
+SMS OTP (~50 FCFA / inscription),15000,50000,125000
+Marketing / terrain (lean solo),100000,300000,600000
+COUTS TOTAUX,171500,780000,1372500
+,,,
+RESULTAT (hors salaire fondateur),Bas,Moyen,Haut
+Marge brute avant salaire,1538500,6270000,18540000
+,,,
+POINT MORT (seuil),Valeur,,
+Mariages pour couvrir ~600k FCFA d'outils+frais,~30-35 mariages,,
+Note,"Solo dev sans salaire tire : le seuil reel est l'outillage + frais passerelle. Le salaire fondateur est un cout d'opportunite a ajouter selon objectif perso.",,
+,,,
+LECTURE RAPIDE,,,
+"Levier 1 - Billetterie : lineaire au nombre de mariages.",,,
+"Levier 2 - Pro (MRR) : recurrent, faible volume mais marge elevee.",,,
+"Levier 3 - Cagnotte : croit avec le nombre d'INVITES, pas de mariages. A 35% de participation il rivalise avec la billetterie tout en transitant des flux 5x a 10x superieurs au revenu net.",,,
+"Sensibilite : doubler le taux de participation cagnotte (20%->40%) double quasi le revenu cagnotte sans cout d'acquisition supplementaire.",,,

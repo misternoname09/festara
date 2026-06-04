@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --festara-navy: #1A2A4A;
+  --festara-gold: #B68A35;
+  --festara-teal: #0E6B6B;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Boutons tactiles : minimum 48px de haut, lisibles 2G/3G */
+.btn {
+  @apply inline-flex items-center justify-center min-h-[48px] px-5 rounded-xl font-semibold text-base transition;
+}
+.btn-primary {
+  @apply btn bg-festara-navy text-white hover:opacity-90;
+}
+.btn-gold {
+  @apply btn bg-festara-gold text-white hover:opacity-90;
+}
+.btn-outline {
+  @apply btn border border-festara-navy/30 text-festara-navy hover:bg-festara-navy/5;
+}
