@@ -19,11 +19,13 @@ export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
 
-  const input =
-    'w-full rounded-lg px-3 min-h-[48px] text-base border ' +
+  const inputClass =
+    'w-full rounded-2xl px-4 min-h-[56px] text-base border focus:ring-2 focus:outline-none transition-all ' +
     (dark
-      ? 'bg-white/10 border-white/20 text-white placeholder-white/50'
-      : 'bg-white border-black/15 text-festara-ink');
+      ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:ring-white/50 focus:bg-white/20'
+      : 'bg-white/60 border-black/10 text-festara-navy placeholder-festara-ink/40 focus:ring-[#C59A45]/50 focus:bg-white');
+
+  const labelClass = 'block text-xs font-semibold uppercase tracking-wider ml-1 mb-1.5 ' + (dark ? 'text-white/80' : 'text-festara-navy');
 
   function toggle(id: string) {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
@@ -64,17 +66,18 @@ export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
       `Voici mon Pass Festara pour l'événement. Code : ${result.pass_code}\n${passUrl}`
     );
     return (
-      <div className="rounded-xl p-5 bg-green-600/10 border border-green-600/30 text-left">
-        <p className="font-semibold text-green-700">Présence confirmée ✅</p>
-        <p className="mt-1 text-sm opacity-80">
-          Ton Pass est prêt. Code : <strong>{result.pass_code}</strong>
+      <div className={`rounded-3xl p-6 text-center animate-fade-in-up border ${dark ? 'bg-white/10 border-white/20 text-white' : 'bg-[#0A1226] border-[#C59A45]/30 text-white'}`}>
+        <p className="text-4xl mb-3">✅</p>
+        <p className="font-serif text-xl font-bold mb-1">Présence confirmée</p>
+        <p className="text-sm opacity-80 mb-6">
+          Ton Pass est prêt. Code : <strong className="font-mono tracking-widest bg-white/20 px-2 py-1 rounded ml-1">{result.pass_code}</strong>
         </p>
-        <a href={passUrl} className="btn-primary w-full mt-4">
-          Voir mon Pass
+        <a href={passUrl} className="btn w-full bg-[#C59A45] text-white hover:bg-[#DFB769] hover:-translate-y-0.5 shadow-lg mb-3">
+          Voir mon Pass VIP
         </a>
         <a
           href={`https://wa.me/?text=${waText}`}
-          className="btn-gold w-full mt-2"
+          className="btn w-full border border-white/20 hover:bg-white/10"
           target="_blank"
           rel="noreferrer"
         >
@@ -85,13 +88,13 @@ export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
   }
 
   return (
-    <form onSubmit={submit} className="text-left space-y-4">
-      <p className="font-semibold text-center">Confirmer ma présence</p>
+    <form onSubmit={submit} className="text-left space-y-6">
+      <p className={`font-serif text-2xl text-center mb-6 ${dark ? 'text-[#DFB769]' : 'text-[#0A1226]'}`}>Confirmer ma présence</p>
 
       <div>
-        <label className="text-sm font-medium">Ton prénom</label>
+        <label className={labelClass}>Ton prénom</label>
         <input
-          className={input + ' mt-1'}
+          className={inputClass}
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           placeholder="Ex : Fatou"
@@ -99,12 +102,12 @@ export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
       </div>
 
       <div>
-        <label className="text-sm font-medium">Nombre de personnes (toi inclus)</label>
+        <label className={labelClass}>Nombre de personnes (toi inclus)</label>
         <input
           type="number"
           min={1}
           max={20}
-          className={input + ' mt-1'}
+          className={inputClass}
           value={partySize}
           onChange={(e) => setPartySize(Math.max(1, Number(e.target.value)))}
         />
@@ -112,27 +115,39 @@ export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
 
       {ceremonies.length > 1 && (
         <div>
-          <label className="text-sm font-medium">Cérémonies où tu viens</label>
-          <div className="mt-2 space-y-2">
+          <label className={labelClass}>Cérémonies où tu viens</label>
+          <div className="mt-3 space-y-3">
             {ceremonies.map((c) => (
-              <label key={c.id} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  className="w-5 h-5"
-                  checked={selected.includes(c.id)}
-                  onChange={() => toggle(c.id)}
-                />
-                {c.name}
+              <label key={c.id} className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-colors border ${dark ? 'border-white/10 hover:bg-white/5' : 'border-black/5 hover:bg-white/50'}`}>
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    className="peer sr-only"
+                    checked={selected.includes(c.id)}
+                    onChange={() => toggle(c.id)}
+                  />
+                  <div className={`w-6 h-6 rounded border-2 transition-colors flex items-center justify-center ${dark ? 'border-white/50 peer-checked:bg-[#C59A45] peer-checked:border-[#C59A45]' : 'border-festara-navy/30 peer-checked:bg-festara-navy peer-checked:border-festara-navy'}`}>
+                    <svg className={`w-3 h-3 text-white transition-opacity ${selected.includes(c.id) ? 'opacity-100' : 'opacity-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                <span className={`font-medium ${dark ? 'text-white' : 'text-festara-navy'}`}>{c.name}</span>
               </label>
             ))}
           </div>
         </div>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 bg-red-50 p-3 rounded-xl border border-red-100 text-center">{error}</p>}
 
-      <button type="submit" disabled={loading} className="btn-primary w-full">
-        {loading ? 'Envoi…' : 'Je confirme ma présence'}
+      <button type="submit" disabled={loading} className={`relative w-full mt-6 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all hover:-translate-y-1 overflow-hidden shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 ${dark ? 'bg-gradient-to-r from-[#C59A45] to-[#DFB769] text-white' : 'bg-gradient-to-r from-festara-navy to-[#1A2A4A] text-white'}`}>
+        <span className="absolute inset-0 w-full h-full bg-white/10 opacity-0 hover:opacity-100 transition-opacity"></span>
+        {loading ? 'Envoi en cours...' : (
+          <>
+            Je confirme ma présence <span className="text-xl leading-none">✨</span>
+          </>
+        )}
       </button>
     </form>
   );

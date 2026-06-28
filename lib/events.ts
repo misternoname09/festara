@@ -8,7 +8,12 @@ export const DEMO_EVENT: EventRow = {
   slug: 'demo',
   title: 'Mariage Aïda & Modou',
   template: 'wax',
-  couple_photo_url: null,
+  welcome_message: "C'est avec une immense joie et beaucoup d'émotion que nous vous convions à célébrer l'union de nos deux familles. Votre présence à nos côtés en ce jour sacré sera notre plus beau cadeau. Venez partager avec nous ce moment d'amour, de prière et de tradition.",
+  couple_photo_url: JSON.stringify([
+    "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2070&auto=format&fit=crop"
+  ]),
   ceremonies: [
     {
       id: 'takk',

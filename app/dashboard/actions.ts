@@ -49,7 +49,13 @@ export async function updateEvent(eventId: string, formData: FormData) {
 
   const title = String(formData.get('title') || '').trim();
   const template = String(formData.get('template') || 'modern');
-  const is_published = formData.get('is_published') === 'on';
+  let is_published = formData.get('is_published') === 'on';
+
+  // Sécurité Paywall : Interdire la publication si le plan est "free"
+  const { data: ev } = await supabase.from('events').select('plan').eq('id', eventId).single();
+  if (ev && ev.plan === 'free') {
+    is_published = false;
+  }
 
   // Ceremonies : champs indexes name_i / date_i / time_i / location_i
   const ceremonies: Ceremony[] = [];
@@ -66,9 +72,11 @@ export async function updateEvent(eventId: string, formData: FormData) {
     });
   }
 
+  const welcome_message = String(formData.get('welcome_message') || '').trim() || null;
+
   const { error } = await supabase
     .from('events')
-    .update({ title, template, ceremonies, is_published })
+    .update({ title, template, ceremonies, is_published, welcome_message })
     .eq('id', eventId)
     .eq('user_id', user.id);
 

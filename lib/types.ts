@@ -25,6 +25,7 @@ export interface EventRow {
   slug: string;
   title: string;
   template: TemplateKind;
+  welcome_message: string | null;
   couple_photo_url: string | null;
   ceremonies: Ceremony[];
   theme_colors: ThemeColors;
@@ -38,6 +39,8 @@ export interface GuestRow {
   id: string;
   event_id: string;
   first_name: string;
+  phone?: string | null;
+  whatsapp_sent: boolean;
   party_size: number;
   ceremonies_attending: string[];
   pass_code: string;
@@ -65,6 +68,7 @@ export interface ContributionRow {
   id: string;
   event_id: string;
   guest_id: string | null;
+  author_name: string;
   amount: number;
   fee: number;
   provider: PaymentProvider;
@@ -80,4 +84,12 @@ export interface EventStats {
   guests_confirmed: number;
   people_confirmed: number;
   guests_scanned: number;
+}
+
+export interface GuestbookMessageRow {
+  id: string;
+  event_id: string;
+  author_name: string;
+  message: string;
+  created_at: string;
 }

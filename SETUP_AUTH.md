@@ -1,86 +1,65 @@
-# Festara — Configuration Auth réelle (Twilio SMS + Gmail SMTP)
+# Festara — Configuration Auth (Email/Mot de passe, OTP Email, Google OAuth)
 
-Aucun code à modifier : tout se configure dans Twilio, Google et Supabase.
-
----
-
-## PARTIE A — SMS réel avec Twilio
-
-### 1. Créer le compte Twilio
-1. Va sur https://www.twilio.com → Sign up.
-2. Vérifie ton propre numéro (+221...).
-3. **Important** : en mode *trial*, Twilio n'envoie qu'aux numéros que tu as
-   vérifiés. Pour envoyer à n'importe quel invité/marié, **ajoute du crédit**
-   (Upgrade). Compter ~0,05–0,08 $ par SMS vers le Sénégal.
-
-### 2. Obtenir un expéditeur
-Deux options (choisis-en une) :
-- **Sender ID alphanumérique** (recommandé pour le Sénégal) : nom court d'expéditeur,
-  ex. `FESTARA`. Console → Messaging → Sender IDs. Le Sénégal supporte
-  l'alphanumérique (pas de réception de réponse, mais parfait pour l'OTP).
-- **Numéro Twilio** : achète un numéro compatible SMS (peut ne pas porter vers
-  certains réseaux SN — l'alphanumérique est plus sûr).
-
-Le plus robuste : créer un **Messaging Service** (Console → Messaging → Services),
-y attacher ton Sender ID / numéro, et récupérer son **Messaging Service SID**
-(commence par `MG...`).
-
-### 3. Récupérer les identifiants (Console Twilio, page d'accueil)
-- **Account SID** (`AC...`)
-- **Auth Token**
-- **Messaging Service SID** (`MG...`) ou le numéro expéditeur
-
-### 4. Brancher dans Supabase
-Authentication → **Providers** → **Phone** → Enable, puis :
-- SMS provider : **Twilio**
-- **Twilio Account SID** : `AC...`
-- **Twilio Auth Token** : ton token
-- **Twilio Message Service SID** : `MG...` (ou ton numéro Twilio)
-- Enregistre.
-
-> Astuce : il existe aussi « Twilio Verify » dans la liste — c'est le service OTP
-> clé-en-main de Twilio. Le « Twilio » standard ci-dessus suffit et est plus simple.
-
-### 5. Tester
-`/login` → onglet **Téléphone** → `+221...` → tu reçois le code par SMS → connecté.
+Ce document explique comment configurer Supabase pour utiliser le nouveau flux d'authentification.
 
 ---
 
-## PARTIE B — Emails via Gmail (SMTP)
+## PARTIE A — Authentification Classique (Email + Mot de passe + OTP)
 
-Supabase enverra les liens/codes de connexion et confirmations via ton Gmail.
+### 1. Activer le fournisseur Email
+1. Connecte-toi à ton tableau de bord Supabase.
+2. Va dans **Authentication** → **Providers** → **Email**.
+3. Assure-toi que "Enable Email provider" est activé.
+4. Assure-toi que "Confirm email" est **activé**.
 
-### 1. Créer un mot de passe d'application Google
-Gmail bloque le SMTP avec ton mot de passe normal. Il faut un **App Password** :
-1. Compte Google → **Sécurité** → active la **validation en 2 étapes** (obligatoire).
-2. Puis → **Mots de passe des applications** → crée-en un (nom : « Festara Supabase »).
-3. Google affiche un mot de passe de **16 caractères** — copie-le (sans espaces).
+### 2. Configurer les modèles d'Email (OTP)
+Par défaut, Supabase envoie un lien magique de confirmation. Nous voulons envoyer un code à 6 chiffres (OTP).
+1. Va dans **Authentication** → **Email Templates**.
+2. Dans l'onglet **Confirm signup**, remplace le modèle par défaut par quelque chose comme ceci :
 
-### 2. Configurer le SMTP dans Supabase
-Authentication → **Emails** (ou Project Settings → Auth → SMTP) → **Enable Custom SMTP** :
-- **Sender email** : ton-adresse@gmail.com
-- **Sender name** : Festara
-- **Host** : `smtp.gmail.com`
-- **Port** : `465` (SSL) — ou `587` (TLS) si 465 échoue
-- **Username** : ton-adresse@gmail.com (l'adresse complète)
-- **Password** : le mot de passe d'application 16 caractères
-- Enregistre.
+```html
+<h2>Bienvenue sur Festara !</h2>
+<p>Utilisez ce code à 6 chiffres pour valider votre compte :</p>
+<h1 style="letter-spacing: 5px;">{{ .Token }}</h1>
+```
+L'élément clé est `{{ .Token }}` au lieu de `{{ .ConfirmationURL }}`. Supabase générera et insérera un OTP à 6 chiffres.
 
-### 3. Personnaliser les messages (optionnel mais conseillé)
-Authentication → **Email Templates** → édite « Magic Link » / « Confirm signup »
-en français aux couleurs Festara. Variables utiles : `{{ .ConfirmationURL }}`
-(lien) et `{{ .Token }}` (code à 6 chiffres si tu préfères un code à saisir).
-
-### 4. Limites Gmail
-- Gmail gratuit : ~**500 emails/jour** ; Google Workspace : ~2 000/jour.
-- Suffisant pour démarrer. Pour le scale, passe à un service transactionnel
-  (Resend, SendGrid, Postmark) — même écran SMTP, autres identifiants.
+### 3. SMTP personnalisé (Optionnel mais recommandé)
+Si les emails n'arrivent pas, configure ton propre SMTP (ex: Gmail) :
+1. Va dans **Authentication** → **SMTP**.
+2. Active **Enable Custom SMTP**.
+3. **Host** : `smtp.gmail.com`
+4. **Port** : `465` (SSL)
+5. **Username** : ton-adresse@gmail.com
+6. **Password** : Mot de passe d'application Google (16 caractères générés dans ton compte Google, sécurité).
+7. **Sender email** : ton-adresse@gmail.com
 
 ---
 
-## Rappels production
-- En prod (Vercel) : pense à autoriser ton domaine dans Authentication → URL
-  Configuration (Site URL + Redirect URLs `.../auth/callback`).
-- Régénère les clés sensibles partagées avant l'ouverture au public.
-- Les coûts SMS sont réels : protège l'envoi OTP par le **rate limiting** Supabase
-  (Authentication → Rate Limits) pour éviter l'abus.
+## PARTIE B — Authentification Google (OAuth)
+
+Pour que le bouton "Continuer avec Google" fonctionne, tu dois lier ton projet Supabase à Google Cloud.
+
+### 1. Créer un projet sur Google Cloud
+1. Va sur [Google Cloud Console](https://console.cloud.google.com/).
+2. Crée un nouveau projet.
+3. Va dans **APIs & Services** → **OAuth consent screen** et configure-le (External).
+4. Va dans **Credentials** → **Create Credentials** → **OAuth client ID**.
+5. Type d'application : **Web application**.
+
+### 2. Configurer les URL de redirection (Google)
+Dans Google Cloud Console, sous **Authorized redirect URIs**, ajoute l'URL de callback de ton projet Supabase :
+`https://<project-ref>.supabase.co/auth/v1/callback`
+(Tu trouveras cette URL exacte dans Supabase → Authentication → Providers → Google).
+
+### 3. Brancher dans Supabase
+1. Copie le **Client ID** et le **Client Secret** depuis Google.
+2. Dans Supabase, va dans **Authentication** → **Providers** → **Google**.
+3. Active-le et colle le **Client ID** et le **Client Secret**.
+4. Enregistre.
+
+---
+
+## Rappels Production
+- N'oublie pas d'ajouter l'URL de ton site en production (ex: `https://festara.app`) dans **Authentication** → **URL Configuration** → **Site URL**.
+- Ajoute également l'URL de callback de production (ex: `https://festara.app/auth/callback`) dans **Redirect URLs**.

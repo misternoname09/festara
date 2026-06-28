@@ -30,10 +30,10 @@ export default function Scanner({
   const busy = useRef(false);
   const lastValue = useRef<string>('');
 
-  // Verifie une valeur (uuid ou code) aupres du serveur
   async function verify(value: string) {
     if (busy.current) return;
     busy.current = true;
+    let finalStatus: Status = 'error';
     try {
       const res = await fetch('/api/scan', {
         method: 'POST',
@@ -42,6 +42,7 @@ export default function Scanner({
       });
       const data: ScanResult = await res.json();
       setResult(data);
+      finalStatus = data.status;
       if (data.status === 'valid') {
         setScanned((n) => n + 1);
         if (navigator.vibrate) navigator.vibrate(120);
@@ -54,11 +55,13 @@ export default function Scanner({
       setTimeout(() => {
         busy.current = false;
         lastValue.current = '';
+        if (finalStatus === 'valid') {
+            setTimeout(() => setResult({status: 'idle'}), 2000);
+        }
       }, 1500);
     }
   }
 
-  // Boucle de lecture QR
   useEffect(() => {
     if (!camOn) return;
     let stream: MediaStream | null = null;
@@ -104,90 +107,103 @@ export default function Scanner({
       cancelAnimationFrame(raf);
       stream?.getTracks().forEach((t) => t.stop());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [camOn]);
 
-  const banner = {
-    idle: '',
-    valid: 'bg-green-600',
-    already: 'bg-amber-500',
-    unknown: 'bg-red-600',
-    error: 'bg-red-700',
+  const bannerColors = {
+    idle: 'border-festara-navy/10',
+    valid: 'bg-green-500/10 border-green-500 text-green-700',
+    already: 'bg-amber-500/10 border-amber-500 text-amber-700',
+    unknown: 'bg-red-500/10 border-red-500 text-red-700',
+    error: 'bg-red-700/10 border-red-700 text-red-800',
   }[result.status];
 
   const label = {
     idle: '',
-    valid: 'Bienvenue',
-    already: 'Déjà enregistré',
-    unknown: 'Invité non trouvé',
-    error: 'Caméra ou réseau indisponible',
+    valid: 'Bienvenue ! ✅',
+    already: 'Déjà enregistré ⚠️',
+    unknown: 'Pass introuvable ❌',
+    error: 'Erreur réseau',
   }[result.status];
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold text-festara-navy">{eventTitle}</h1>
-        <span className="text-sm text-festara-ink/60">
-          {scanned} / {total} scannés
-        </span>
+    <div className="flex flex-col items-center">
+      <div className="w-full mb-6 text-center">
+        <h1 className="text-2xl font-bold text-festara-navy font-serif mb-1">{eventTitle}</h1>
+        <div className="inline-flex items-center gap-2 bg-white/60 px-4 py-1.5 rounded-full border border-black/5 text-sm font-semibold text-festara-ink/70">
+          <span className="w-2 h-2 rounded-full bg-festara-teal animate-pulse"></span>
+          {scanned} / {total} invités scannés
+        </div>
       </div>
 
-      {/* Resultat plein cadre */}
+      {/* Resultat pleine largeur */}
       {result.status !== 'idle' && (
-        <div className={`mt-4 rounded-2xl p-6 text-white text-center ${banner}`}>
-          <p className="text-2xl font-bold">{label}</p>
+        <div className={`w-full mb-6 rounded-2xl p-5 text-center border-2 animate-fade-in-up shadow-sm ${bannerColors}`}>
+          <p className="text-xl font-bold font-serif">{label}</p>
           {result.guest && (
-            <p className="mt-1 text-lg">
-              {result.guest.first_name} · {result.guest.party_size} pers.
+            <p className="mt-2 text-md font-medium opacity-90">
+              {result.guest.first_name} <span className="mx-2 opacity-50">•</span> {result.guest.party_size} pers.
             </p>
           )}
           {result.status === 'already' && result.scanned_at && (
-            <p className="mt-1 text-sm opacity-90">
-              à {new Date(result.scanned_at).toLocaleTimeString('fr-FR')}
+            <p className="mt-2 text-sm opacity-80 font-mono bg-white/50 inline-block px-3 py-1 rounded-md">
+              Scanné à {new Date(result.scanned_at).toLocaleTimeString('fr-FR')}
             </p>
           )}
         </div>
       )}
 
-      {/* Camera */}
-      <div className="mt-4 rounded-2xl overflow-hidden bg-black aspect-square relative">
-        <video ref={videoRef} className="w-full h-full object-cover" muted playsInline />
+      {/* Camera Container */}
+      <div className={`w-full rounded-[2rem] overflow-hidden bg-[#0A1226] aspect-[4/5] relative shadow-inner border-4 transition-colors duration-300 ${result.status === 'valid' ? 'border-green-500' : result.status === 'idle' ? 'border-[#0A1226]' : 'border-red-500'}`}>
+        <video ref={videoRef} className="w-full h-full object-cover opacity-90" muted playsInline />
         <canvas ref={canvasRef} className="hidden" />
+        
+        {/* Cadre de visée decoratif */}
+        {camOn && (
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+             <div className="w-48 h-48 border-2 border-white/30 rounded-3xl relative">
+                <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-festara-gold rounded-tl-2xl"></div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-festara-gold rounded-tr-2xl"></div>
+                <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-festara-gold rounded-bl-2xl"></div>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-festara-gold rounded-br-2xl"></div>
+             </div>
+          </div>
+        )}
+
         {!camOn && (
-          <button
-            onClick={() => {
-              setResult({ status: 'idle' });
-              setCamOn(true);
-            }}
-            className="absolute inset-0 m-auto h-12 w-48 btn-gold"
-          >
-            Activer la caméra
-          </button>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0A1226]/80 backdrop-blur-sm p-6 text-center">
+            <span className="text-4xl mb-4">📷</span>
+            <button
+              onClick={() => {
+                setResult({ status: 'idle' });
+                setCamOn(true);
+              }}
+              className="btn bg-[#C59A45] hover:bg-[#DFB769] text-white shadow-lg w-full max-w-[200px]"
+            >
+              Activer la caméra
+            </button>
+            <p className="text-white/40 text-xs mt-4">Autorisez l'accès à la caméra pour scanner les Pass Festara.</p>
+          </div>
         )}
       </div>
 
-      {/* Saisie manuelle (fallback obligatoire) */}
+      {/* Saisie manuelle (fallback) */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           if (manual.trim()) verify(manual.trim());
           setManual('');
         }}
-        className="mt-4 flex gap-2"
+        className="mt-6 w-full flex gap-2"
       >
         <input
           value={manual}
           onChange={(e) => setManual(e.target.value.toUpperCase())}
-          placeholder="Code à 6 caractères"
-          className="flex-1 rounded-lg px-3 min-h-[48px] border border-black/15 bg-white text-base tracking-widest text-center"
+          placeholder="Entrer le code (ex: AB1234)"
+          className="flex-1 rounded-xl px-4 min-h-[50px] border border-black/10 bg-white/60 focus:bg-white text-base font-mono tracking-widest text-center uppercase outline-none focus:ring-2 focus:ring-festara-gold/50 transition-all placeholder:text-festara-ink/30 placeholder:tracking-normal placeholder:font-sans"
           maxLength={6}
         />
-        <button className="btn-primary">Vérifier</button>
+        <button className="btn-primary rounded-xl px-6">Vérifier</button>
       </form>
-
-      <p className="mt-3 text-xs text-festara-ink/40 text-center">
-        Autorise l&apos;accès caméra. En cas de QR illisible, saisis le code manuellement.
-      </p>
     </div>
   );
 }

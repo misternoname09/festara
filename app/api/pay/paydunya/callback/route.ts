@@ -25,7 +25,7 @@ async function handle(token: string | null) {
   if (newStatus === 'confirmed' && customData?.event_id && PLANS[customData.plan]) {
     await admin
       .from('events')
-      .update({ plan: customData.plan })
+      .update({ plan: customData.plan, is_published: true })
       .eq('id', customData.event_id);
   }
 

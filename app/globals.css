@@ -3,27 +3,49 @@
 @tailwind utilities;
 
 :root {
-  --festara-navy: #1A2A4A;
-  --festara-gold: #B68A35;
-  --festara-teal: #0E6B6B;
+  --festara-navy: #0A1226;
+  --festara-gold: #C59A45;
+  --festara-teal: #0B5959;
 }
 
 html, body {
   padding: 0;
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism utility */
+.glass {
+  @apply bg-glass-gradient backdrop-blur-md border border-white/40 shadow-sm;
 }
 
 /* Boutons tactiles : minimum 48px de haut, lisibles 2G/3G */
 .btn {
-  @apply inline-flex items-center justify-center min-h-[48px] px-5 rounded-xl font-semibold text-base transition;
+  @apply inline-flex items-center justify-center min-h-[48px] px-6 rounded-2xl font-semibold text-base transition-all duration-300;
 }
+
 .btn-primary {
-  @apply btn bg-festara-navy text-white hover:opacity-90;
+  @apply btn bg-festara-navy text-white shadow-md hover:shadow-xl hover:-translate-y-0.5 relative overflow-hidden;
 }
+
+.btn-primary::after {
+  content: '';
+  @apply absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-300;
+}
+
+.btn-primary:hover::after {
+  @apply opacity-100;
+}
+
 .btn-gold {
-  @apply btn bg-festara-gold text-white hover:opacity-90;
+  @apply btn bg-festara-gold text-white shadow-md hover:shadow-xl hover:bg-festara-gold-light hover:-translate-y-0.5;
 }
+
 .btn-outline {
-  @apply btn border border-festara-navy/30 text-festara-navy hover:bg-festara-navy/5;
+  @apply btn border border-festara-navy/20 text-festara-navy hover:bg-festara-navy/5 hover:border-festara-navy/40;
+}
+
+.btn-glass {
+  @apply btn glass text-festara-navy hover:-translate-y-0.5 hover:shadow-md;
 }

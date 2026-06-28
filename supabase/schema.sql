@@ -1,6 +1,6 @@
 -- =====================================================================
--- FESTARA — Schema Supabase (PostgreSQL)
--- Version 2.1 — Juin 2026
+-- FESTARA / YËGËL — Schema Supabase (PostgreSQL)
+-- Version 2.0 — Mai 2026
 -- A coller dans : Supabase > SQL Editor > New query > Run
 -- Idempotent : peut etre rejoue sans casser l'existant.
 -- =====================================================================
@@ -209,5 +209,5 @@ left join public.guests g on g.event_id = e.id
 group by e.id;
 
 -- =====================================================================
--- FIN — Festara schema v2.1
+-- FIN — Festara / Yëgël schema v2.0
 -- =====================================================================
