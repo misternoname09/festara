@@ -3,7 +3,27 @@
 import { useState, useEffect } from 'react';
 import type { EventRow, GuestbookMessageRow } from '@/lib/types';
 import { TEMPLATES } from '@/components/templates';
-import { mapsEmbedUrl, formatDateFr } from '@/lib/events';
+import type { Ceremony } from '@/lib/types';
+
+// Construit l'URL d'embed Google Maps sans cle API (iframe leger).
+function mapsEmbedUrl(c: Ceremony): string {
+  const q = encodeURIComponent(c.maps_url || c.location);
+  return `https://www.google.com/maps?q=${q}&output=embed`;
+}
+
+// Formatage date FR court (ex: "vendredi 19 décembre 2026")
+function formatDateFr(iso: string): string {
+  try {
+    return new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
 import RsvpForm from '@/components/RsvpForm';
 import Countdown from '@/components/Countdown';
 import AddToCalendar from '@/components/AddToCalendar';

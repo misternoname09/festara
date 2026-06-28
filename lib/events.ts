@@ -55,22 +55,3 @@ export async function getEventBySlug(slug: string): Promise<EventRow | null> {
   return data as EventRow;
 }
 
-// Construit l'URL d'embed Google Maps sans cle API (iframe leger).
-export function mapsEmbedUrl(c: Ceremony): string {
-  const q = encodeURIComponent(c.maps_url || c.location);
-  return `https://www.google.com/maps?q=${q}&output=embed`;
-}
-
-// Formatage date FR court (ex: "vendredi 19 décembre 2026")
-export function formatDateFr(iso: string): string {
-  try {
-    return new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  } catch {
-    return iso;
-  }
-}
