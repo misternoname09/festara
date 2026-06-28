@@ -33,7 +33,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 import { createServerSupabase } from '@/lib/supabase/server';
 
 export default async function InvitationPage({ params }: Props) {
-  const event = await getEventBySlug(params.slug);
+  const supabase = createServerSupabase();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let event = await getEventBySlug(params.slug);
+
+  // Si l'événement n'est pas trouvé (probablement car is_published=false),
+  // on vérifie si l'utilisateur actuel est le propriétaire de cet événement.
+  if (!event && user) {
+    const { data } = await supabase
+      .from('events')
+      .select('*')
+      .eq('slug', params.slug)
+      .eq('user_id', user.id)
+      .maybeSingle();
+    
+    if (data) event = data as typeof event;
+  }
+
   if (!event) notFound();
 
   let messages = [];
