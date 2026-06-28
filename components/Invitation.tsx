@@ -83,35 +83,58 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
 
       <div className={`max-w-md w-full mx-auto rounded-[3rem] overflow-hidden relative z-10 animate-fade-in-up shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-white/10 ${t.card} ${t.font}`}>
         
-        {/* HÉROS : Galerie avec Masque Dégradé et Compte à rebours */}
-        <div className="relative w-full bg-black/5">
-          {gallery.length > 0 && (
-            <div className="relative">
-              {gallery.length === 1 ? (
-                <img src={gallery[0]} alt={event.title} className="w-full h-[550px] object-cover" loading="eager" />
-              ) : (
-                <div className="grid grid-cols-2 gap-1 p-1 h-[550px]">
-                  {gallery.map((url, i) => (
-                    <img 
-                      key={i} 
-                      src={url} 
-                      alt="" 
-                      className={`w-full object-cover transition-transform hover:scale-[1.03] duration-700 cursor-default ${i === 0 && gallery.length % 2 !== 0 ? 'col-span-2 h-[350px]' : 'h-[190px]'}`} 
-                      loading={i === 0 ? "eager" : "lazy"} 
-                    />
-                  ))}
-                </div>
-              )}
-              
-              {/* Masque de fusion pour la transition douce avec le reste de la carte */}
-              <div className={`absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t ${isDark ? 'from-[#1A2A4A] to-transparent' : 'from-white to-transparent'}`}></div>
-              
-              {/* Le Compte à Rebours positionné en bas de l'image */}
-              {firstCeremony && (
-                <div className="absolute bottom-10 left-0 w-full px-4">
-                  <Countdown targetDate={firstCeremony.date} isDark={isDark} />
-                </div>
-              )}
+        {/* HÉROS : Galerie avec Montage Décoratif et Compte à rebours */}
+        <div className="relative w-full overflow-hidden pb-8">
+          {/* Decorative background elements */}
+          <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[150%] aspect-square bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-festara-gold/20 via-transparent to-transparent pointer-events-none"></div>
+
+          <div className="relative z-10 pt-16 pb-6 px-6 flex flex-col items-center">
+             
+             {/* Ring Photo Accent (Floating) */}
+             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-[3px] border-festara-gold shadow-[0_10px_30px_rgba(197,154,69,0.4)] z-20 mb-[-2.5rem] bg-white relative animate-float">
+                <img 
+                  src="https://images.unsplash.com/photo-1605100804763-247f66156eb4?q=80&w=400&auto=format&fit=crop" 
+                  alt="Bague de fiançailles" 
+                  className="w-full h-full object-cover"
+                />
+             </div>
+
+             {/* Montage Photos */}
+             {gallery.length === 1 ? (
+               // One Image: Grand Arch
+               <div className="w-full max-w-[280px] sm:max-w-[320px] aspect-[3/4] rounded-t-[10rem] overflow-hidden border-[6px] border-white shadow-2xl relative group">
+                  <div className="absolute inset-0 bg-gradient-to-t from-festara-navy/40 to-transparent group-hover:opacity-0 transition-opacity duration-700 z-10"></div>
+                  <img src={gallery[0]} alt={event.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-1000" loading="eager" />
+               </div>
+             ) : (
+               // Multiple Images: Staggered Elegant Layout
+               <div className="relative w-full h-[420px] sm:h-[480px] max-w-[340px] mx-auto mt-4">
+                  {/* Image 1 (Back left) */}
+                  <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-t-[6rem] overflow-hidden border-[6px] border-white shadow-xl transform -rotate-6 hover:rotate-0 hover:z-30 transition-all duration-500 origin-bottom-left group">
+                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10"></div>
+                     <img src={gallery[0]} alt="" className="w-full h-full object-cover" loading="eager" />
+                  </div>
+                  {/* Image 2 (Front right) */}
+                  <div className="absolute top-12 right-0 w-[65%] aspect-[3/4] rounded-t-[6rem] overflow-hidden border-[6px] border-white shadow-2xl transform rotate-3 hover:rotate-0 hover:z-30 transition-all duration-500 origin-bottom-right z-20">
+                     <img src={gallery[1]} alt="" className="w-full h-full object-cover" loading="eager" />
+                  </div>
+                  {/* Image 3 (Bottom center, circular accent) */}
+                  {gallery[2] && (
+                     <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[45%] aspect-square rounded-full overflow-hidden border-[4px] border-white shadow-lg transform hover:scale-110 hover:z-30 transition-all duration-500 z-30">
+                        <img src={gallery[2]} alt="" className="w-full h-full object-cover" />
+                     </div>
+                  )}
+               </div>
+             )}
+          </div>
+
+          {/* Masque de fusion vers le bas */}
+          <div className={`absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t ${isDark ? 'from-[#1A2A4A] to-transparent' : 'from-white to-transparent'} pointer-events-none z-10`}></div>
+          
+          {/* Le Compte à Rebours positionné harmonieusement sous le montage */}
+          {firstCeremony && (
+            <div className="relative z-20 px-4 mt-6">
+              <Countdown targetDate={firstCeremony.date} isDark={isDark} />
             </div>
           )}
         </div>

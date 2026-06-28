@@ -67,52 +67,138 @@ export default function Home() {
                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-festara-gold/30 via-transparent to-transparent pointer-events-none"></div>
 
                    {/* Pass Header */}
-                   <div className="pt-8 px-6 text-center relative z-10 flex flex-col items-center">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#DFB769] to-[#C59A45] flex items-center justify-center text-xl shadow-[0_0_20px_rgba(197,154,69,0.4)] mb-3 border border-white/20">
+                   <div className="pt-6 px-6 text-center relative z-10 flex flex-col items-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#DFB769] to-[#C59A45] flex items-center justify-center text-lg shadow-[0_0_20px_rgba(197,154,69,0.4)] mb-2 border border-white/20">
                         👑
                       </div>
                       <p className="text-festara-gold/70 text-[9px] uppercase tracking-[0.3em] font-bold mb-1">Pass VIP Exclusif</p>
                       <h2 className="text-2xl font-serif font-bold text-white tracking-wide">Aïda & Modou</h2>
                    </div>
 
-                   {/* Mock QR with Luxury Frame */}
-                   <div className="relative mx-auto my-6 w-44 h-44 flex items-center justify-center group-hover:scale-105 transition-transform duration-500 z-10">
-                     {/* Golden Frame Corners */}
-                     <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-festara-gold rounded-tl-lg"></div>
-                     <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-festara-gold rounded-tr-lg"></div>
-                     <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-festara-gold rounded-bl-lg"></div>
-                     <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-festara-gold rounded-br-lg"></div>
+                   {/* Photo Montage (Replacing QR Code) */}
+                   <div className="relative mx-auto mt-2 mb-4 w-32 h-40 flex items-center justify-center group-hover:scale-105 transition-transform duration-500 z-30">
                      
-                     <div className="bg-white p-3 rounded-2xl w-36 h-36 flex flex-col items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-                        <div className="w-full h-full bg-festara-navy rounded-xl opacity-15 relative">
-                           {/* Faux pattern QR */}
-                           <div className="absolute top-1.5 left-1.5 w-8 h-8 border-[3px] border-festara-navy rounded-md"></div>
-                           <div className="absolute top-1.5 right-1.5 w-8 h-8 border-[3px] border-festara-navy rounded-md"></div>
-                           <div className="absolute bottom-1.5 left-1.5 w-8 h-8 border-[3px] border-festara-navy rounded-md"></div>
-                        </div>
+                     {/* Arched Couple Photo */}
+                     <div className="absolute inset-0 w-full h-full rounded-t-full rounded-b-2xl overflow-hidden border-[2px] border-festara-gold/50 shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+                        <img 
+                          src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400&auto=format&fit=crop" 
+                          alt="Couple" 
+                          className="w-full h-full object-cover"
+                        />
+                     </div>
+
+                     {/* Overlapping Ring Accent */}
+                     <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-full overflow-hidden border-2 border-festara-gold shadow-lg z-20 bg-white">
+                        <img 
+                          src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop" 
+                          alt="Bague" 
+                          className="w-full h-full object-cover"
+                        />
                      </div>
                    </div>
 
                    {/* Divider */}
-                   <div className="w-full border-t border-dashed border-festara-gold/30 relative z-10">
+                   <div className="w-full border-t border-dashed border-festara-gold/30 relative z-10 mt-2">
                       {/* Ticket Notches */}
                       <div className="absolute -left-3 -top-3 w-6 h-6 bg-[#0A1226] rounded-full border-r border-festara-gold/40"></div>
                       <div className="absolute -right-3 -top-3 w-6 h-6 bg-[#0A1226] rounded-full border-l border-festara-gold/40"></div>
                    </div>
 
                    {/* Pass Footer */}
-                   <div className="p-6 text-center relative z-10 bg-gradient-to-t from-festara-gold/10 to-transparent">
+                   <div className="p-5 text-center relative z-10 bg-gradient-to-t from-festara-gold/10 to-transparent">
                       <h3 className="text-lg font-bold text-white mb-1">Mme Fatou Diop</h3>
-                      <div className="flex items-center justify-center gap-2 text-xs font-medium text-white/60">
-                         <span>Table d'Honneur</span>
+                      <div className="flex items-center justify-center gap-2 text-[10px] font-medium text-white/60">
+                         <span className="uppercase tracking-wider">Table d'Honneur</span>
                          <span className="text-[8px] text-festara-gold">💎</span>
-                         <span>2 Personnes</span>
+                         <span className="uppercase tracking-wider">2 Personnes</span>
                       </div>
                    </div>
 
                 </div>
              </div>
           </div>
+
+        </div>
+      </section>
+
+      {/* 
+        ========================================================================
+        INVITATION SHOWCASE SECTION
+        ========================================================================
+      */}
+      <section className="relative z-10 w-full bg-white overflow-hidden py-32 rounded-[3rem] lg:rounded-[5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.02)] -mt-10 mb-10">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-8">
+           
+           {/* Left: The Decorative Invitation Montage */}
+           <div className="flex-1 w-full relative flex justify-center">
+              {/* Decorative background circle */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] max-w-2xl aspect-square bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-festara-gold/10 via-transparent to-transparent pointer-events-none"></div>
+              
+              <div className="relative z-10 pt-10 pb-6 flex flex-col items-center group perspective-1000">
+                 
+                 {/* Ring Photo Accent (Floating) */}
+                 <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-[4px] border-festara-gold shadow-[0_15px_40px_rgba(197,154,69,0.3)] z-30 mb-[-3rem] sm:mb-[-3.5rem] bg-white relative animate-float transform group-hover:-translate-y-2 transition-transform duration-700">
+                    <img 
+                      src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop" 
+                      alt="Bague" 
+                      className="w-full h-full object-cover"
+                    />
+                 </div>
+
+                 {/* Multiple Images: Staggered Elegant Layout */}
+                 <div className="relative w-full h-[450px] sm:h-[550px] w-[300px] sm:w-[380px] mx-auto mt-4 transform rotate-y-[-5deg] group-hover:rotate-y-0 transition-all duration-700 ease-out">
+                    
+                    {/* Image 1 (Back left) */}
+                    <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-t-[8rem] overflow-hidden border-[8px] border-white shadow-2xl transform -rotate-6 group-hover:rotate-[-2deg] group-hover:-translate-x-4 transition-all duration-700 origin-bottom-left z-10">
+                       <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=600&auto=format&fit=crop" alt="Mariés" className="w-full h-full object-cover" />
+                    </div>
+                    
+                    {/* Image 2 (Front right) */}
+                    <div className="absolute top-16 right-0 w-[65%] aspect-[3/4] rounded-t-[8rem] overflow-hidden border-[8px] border-white shadow-2xl transform rotate-6 group-hover:rotate-[2deg] group-hover:translate-x-4 transition-all duration-700 origin-bottom-right z-20">
+                       <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600&auto=format&fit=crop" alt="Mariés 2" className="w-full h-full object-cover" />
+                    </div>
+
+                    {/* Image 3 (Bottom center, circular accent) */}
+                    <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[50%] aspect-square rounded-full overflow-hidden border-[6px] border-white shadow-xl transform group-hover:scale-110 transition-all duration-700 z-30">
+                        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=400&auto=format&fit=crop" alt="Détails" className="w-full h-full object-cover" />
+                    </div>
+                 </div>
+              </div>
+           </div>
+
+           {/* Right: Text Content */}
+           <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-festara-navy/10 bg-festara-navy/5 mb-8">
+                <span className="text-festara-navy font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs">
+                  Design d'Exception
+                </span>
+              </div>
+              <h2 className="text-4xl sm:text-5xl font-bold text-festara-navy font-serif mb-6 leading-tight">
+                 Une invitation qui <br className="hidden lg:block"/> marque les esprits.
+              </h2>
+              <p className="text-lg text-festara-ink/60 font-medium leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                 Dites adieu aux invitations PDF statiques. Offrez à vos invités une expérience visuelle immersive avec vos plus belles photos, magnifiquement agencées dans un design premium aux couleurs harmonieuses (doré, blanc et bleu nuit).
+              </p>
+              
+              <ul className="space-y-4 text-left max-w-sm mx-auto lg:mx-0 mb-10">
+                 <li className="flex items-start gap-4">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-festara-gold/20 flex items-center justify-center text-festara-gold text-xs mt-1">✓</span>
+                    <span className="text-festara-navy font-bold">Montage photo décoratif dynamique</span>
+                 </li>
+                 <li className="flex items-start gap-4">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-festara-gold/20 flex items-center justify-center text-festara-gold text-xs mt-1">✓</span>
+                    <span className="text-festara-navy font-bold">Inclusion de vos bagues et détails raffinés</span>
+                 </li>
+                 <li className="flex items-start gap-4">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-festara-gold/20 flex items-center justify-center text-festara-gold text-xs mt-1">✓</span>
+                    <span className="text-festara-navy font-bold">Mise en page ergonomique et attrayante</span>
+                 </li>
+              </ul>
+
+              <Link href="/i/demo" className="inline-flex items-center gap-3 px-8 py-4 bg-festara-navy text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
+                 Voir un exemple concret <span className="text-festara-gold text-xl leading-none">✨</span>
+              </Link>
+           </div>
 
         </div>
       </section>
