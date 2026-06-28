@@ -174,17 +174,17 @@ export default async function EditEvent({ params }: Props) {
 
                 <div className="pt-6 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-6 bg-festara-navy/[0.02] p-4 rounded-2xl border border-festara-navy/5">
                   <div className="flex flex-col gap-1 w-full sm:w-auto">
-                    <label className={`flex items-center gap-3 ${ev.plan === 'free' ? 'cursor-not-allowed opacity-70' : 'cursor-pointer group'}`}>
+                    <label className={`flex items-center gap-3 ${ev.plan === 'gratuit' ? 'cursor-not-allowed opacity-70' : 'cursor-pointer group'}`}>
                       <div className="relative">
-                        <input type="checkbox" name="is_published" defaultChecked={ev.plan === 'free' ? false : ev.is_published} disabled={ev.plan === 'free'} className="peer sr-only" />
-                        <div className={`w-12 h-6 rounded-full transition-colors ${ev.plan === 'free' ? 'bg-black/10' : 'bg-black/10 peer-checked:bg-festara-teal'}`}></div>
+                        <input type="checkbox" name="is_published" defaultChecked={ev.plan === 'gratuit' ? false : ev.is_published} disabled={ev.plan === 'gratuit'} className="peer sr-only" />
+                        <div className={`w-12 h-6 rounded-full transition-colors ${ev.plan === 'gratuit' ? 'bg-black/10' : 'bg-black/10 peer-checked:bg-festara-teal'}`}></div>
                         <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6 shadow-sm"></div>
                       </div>
                       <span className="text-sm font-bold text-festara-navy flex items-center gap-2">
-                        Publier officiellement {ev.plan === 'free' && '🔒'}
+                        Publier officiellement {ev.plan === 'gratuit' && '🔒'}
                       </span>
                     </label>
-                    {ev.plan === 'free' && (
+                    {ev.plan === 'gratuit' && (
                       <p className="text-[10px] font-bold uppercase tracking-wider text-red-500/80 mt-1 ml-1 max-w-[200px] leading-tight">
                         Achetez un abonnement pour activer le lien de vos invités.
                       </p>

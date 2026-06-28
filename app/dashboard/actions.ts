@@ -51,9 +51,9 @@ export async function updateEvent(eventId: string, formData: FormData) {
   const template = String(formData.get('template') || 'modern');
   let is_published = formData.get('is_published') === 'on';
 
-  // Sécurité Paywall : Interdire la publication si le plan est "free"
+  // Sécurité Paywall : Interdire la publication si le plan est "gratuit"
   const { data: ev } = await supabase.from('events').select('plan').eq('id', eventId).single();
-  if (ev && ev.plan === 'free') {
+  if (ev && ev.plan === 'gratuit') {
     is_published = false;
   }
 
