@@ -205,60 +205,103 @@ export default function Home() {
 
       {/* 
         ========================================================================
-        BENTO GRID SECTION (SAND MODE)
+        BENTO GRID SECTION (DARK LUXURY MODE)
         ========================================================================
       */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-40">
+      <section className="relative z-10 w-full bg-[#0A1226] text-white overflow-hidden py-32 lg:py-40 rounded-[3rem] lg:rounded-[5rem] shadow-2xl mb-10">
+        {/* Abstract Background Accents */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-festara-gold/5 rounded-full blur-[150px] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-[-20%] w-[600px] h-[600px] bg-festara-teal/5 rounded-full blur-[120px] pointer-events-none"></div>
         
-        <div className="text-center mb-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <h2 className="text-3xl md:text-5xl font-bold text-festara-navy font-serif mb-4">L'excellence dans chaque détail.</h2>
-          <p className="text-festara-ink/60 font-medium max-w-2xl mx-auto">Une suite complète d'outils conçue pour vous libérer des contraintes logistiques et sublimer l'expérience de vos invités.</p>
-        </div>
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none opacity-20"></div>
 
-        {/* The Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
-          
-          {/* Card 1: RSVP (Large Horizontal) */}
-          <div className="md:col-span-2 glass bg-white/70 hover:bg-white border border-black/5 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-500 hover:shadow-xl">
-             <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-festara-teal/10 rounded-full blur-3xl group-hover:bg-festara-teal/20 transition-colors"></div>
-             <div className="relative z-10 max-w-sm">
-               <div className="w-14 h-14 rounded-2xl bg-festara-teal/10 text-festara-teal flex items-center justify-center text-2xl mb-6 shadow-sm">✨</div>
-               <h3 className="text-2xl font-bold font-serif text-festara-navy mb-3">Réponses instantanées</h3>
-               <p className="text-festara-ink/70 leading-relaxed font-medium">Vos invités confirment leur présence en un clic depuis un lien élégant. Fini les appels interminables pour savoir qui vient avec qui.</p>
-             </div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+           
+          <div className="text-center mb-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-festara-gold/30 bg-festara-gold/5 mb-6">
+               <span className="w-2 h-2 rounded-full bg-festara-gold animate-pulse"></span>
+               <span className="text-festara-gold font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs">
+                 Fonctionnalités Premium
+               </span>
+            </div>
+            <h2 className="text-4xl md:text-6xl font-bold font-serif mb-6 tracking-tight">
+               L'excellence dans <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFB769] to-[#C59A45] italic pr-2">chaque détail.</span>
+            </h2>
+            <p className="text-white/60 font-medium text-lg max-w-2xl mx-auto leading-relaxed">
+               Une suite complète d'outils conçue pour vous libérer des contraintes logistiques et sublimer l'expérience de vos invités.
+            </p>
           </div>
 
-          {/* Card 2: Sécurité (Tall Vertical) */}
-          <div className="md:col-span-1 md:row-span-2 glass bg-[#0A1226] border border-[#0A1226] text-white rounded-[2.5rem] p-10 flex flex-col justify-between relative overflow-hidden group transition-all duration-500 hover:shadow-2xl">
-             <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-festara-gold/0 to-festara-gold/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-             <div className="relative z-10">
-               <div className="w-14 h-14 rounded-2xl bg-festara-gold/20 text-festara-gold flex items-center justify-center text-2xl mb-6 shadow-sm border border-festara-gold/30">🎫</div>
-               <h3 className="text-2xl font-bold font-serif mb-3">Contrôle absolu</h3>
-               <p className="text-white/60 leading-relaxed font-medium">Chaque invité reçoit un QR Code unique et infalsifiable. À l'entrée, votre équipe de sécurité le scanne en une seconde avec notre scanner intégré.</p>
-             </div>
-             <div className="relative z-10 w-full aspect-square border-2 border-dashed border-white/20 rounded-3xl mt-8 flex items-center justify-center group-hover:border-festara-gold/50 transition-colors">
-                <span className="text-4xl animate-bounce">📷</span>
-             </div>
-          </div>
+          {/* The Bento Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[320px]">
+            
+            {/* Card 1: RSVP (Large Horizontal) */}
+            <div className="md:col-span-2 bg-gradient-to-br from-white/[0.05] to-transparent border border-white/10 hover:border-festara-gold/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,154,69,0.15)]">
+               {/* Hover Glow */}
+               <div className="absolute inset-0 bg-gradient-to-r from-festara-gold/0 via-festara-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+               <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-festara-gold/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000 pointer-events-none"></div>
+               
+               <div className="relative z-10 max-w-lg">
+                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#DFB769] to-[#C59A45] flex items-center justify-center text-2xl mb-8 shadow-lg border border-white/20 transform group-hover:scale-110 transition-transform duration-500">✨</div>
+                 <h3 className="text-3xl font-bold font-serif mb-4 tracking-wide text-white">Réponses instantanées</h3>
+                 <p className="text-white/60 leading-relaxed font-medium text-lg">
+                    Vos invités confirment leur présence en un clic depuis un lien élégant. Fini les appels interminables pour savoir qui vient avec qui.
+                 </p>
+               </div>
+            </div>
 
-          {/* Card 3: WhatsApp (Square) */}
-          <div className="md:col-span-1 glass bg-white/70 hover:bg-white border border-black/5 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-500 hover:shadow-xl">
-             <div className="relative z-10">
-               <div className="w-14 h-14 rounded-2xl bg-green-500/10 text-green-600 flex items-center justify-center text-2xl mb-6 shadow-sm">📱</div>
-               <h3 className="text-2xl font-bold font-serif text-festara-navy mb-3">Envois WhatsApp</h3>
-               <p className="text-festara-ink/70 leading-relaxed font-medium">Importez votre liste d'invités et envoyez leurs Pass VIP sécurisés d'un simple clic via WhatsApp.</p>
-             </div>
-          </div>
+            {/* Card 2: Sécurité (Tall Vertical) */}
+            <div className="md:col-span-1 md:row-span-2 bg-gradient-to-b from-[#1A2A4A]/50 to-[#0A1226] border border-festara-teal/30 hover:border-festara-teal/70 rounded-[2.5rem] p-10 flex flex-col justify-between relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(20,184,166,0.15)]">
+               {/* Animated Background Line */}
+               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-festara-teal to-transparent opacity-50"></div>
+               
+               <div className="relative z-10">
+                 <div className="w-16 h-16 rounded-2xl bg-festara-teal/20 text-festara-teal flex items-center justify-center text-2xl mb-8 shadow-sm border border-festara-teal/30 transform group-hover:scale-110 transition-transform duration-500">🎫</div>
+                 <h3 className="text-3xl font-bold font-serif mb-4 text-white">Contrôle absolu</h3>
+                 <p className="text-white/60 leading-relaxed font-medium text-lg">
+                    Chaque invité reçoit un QR Code unique. À l'entrée, votre sécurité le scanne en une seconde avec notre scanner intégré ultra-rapide.
+                 </p>
+               </div>
+               
+               {/* Visual Element: Scanner Interface */}
+               <div className="relative z-10 w-full aspect-square mt-10 flex items-center justify-center">
+                  {/* Scanner Frame */}
+                  <div className="absolute inset-0 border-2 border-festara-teal/20 rounded-[2rem] group-hover:border-festara-teal/50 transition-colors duration-500"></div>
+                  {/* Scanning Laser (animates on hover) */}
+                  <div className="absolute top-[20%] group-hover:top-[80%] left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-festara-teal shadow-[0_0_15px_rgba(20,184,166,1)] transition-all duration-[2s] ease-in-out"></div>
+                  {/* Faux QR Code Icon */}
+                  <div className="w-20 h-20 bg-white/5 rounded-xl border border-white/10 flex items-center justify-center backdrop-blur-sm group-hover:scale-105 transition-transform duration-500">
+                     <span className="text-4xl opacity-50 group-hover:opacity-100 transition-opacity">📷</span>
+                  </div>
+               </div>
+            </div>
 
-          {/* Card 4: Analytics (Square) */}
-          <div className="md:col-span-1 glass bg-white/70 hover:bg-white border border-black/5 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-500 hover:shadow-xl">
-             <div className="relative z-10">
-               <div className="w-14 h-14 rounded-2xl bg-festara-gold/10 text-festara-gold flex items-center justify-center text-2xl mb-6 shadow-sm">📊</div>
-               <h3 className="text-2xl font-bold font-serif text-festara-navy mb-3">Suivi en temps réel</h3>
-               <p className="text-festara-ink/70 leading-relaxed font-medium">Un tableau de bord complet pour exporter vos listes et suivre les statistiques d'entrées en direct le jour J.</p>
-             </div>
-          </div>
+            {/* Card 3: WhatsApp (Square) */}
+            <div className="md:col-span-1 bg-gradient-to-br from-[#121B2F] to-[#0A1226] border border-white/10 hover:border-[#25D366]/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(37,211,102,0.1)]">
+               <div className="absolute -right-10 -top-10 w-48 h-48 bg-[#25D366]/5 rounded-full blur-3xl group-hover:bg-[#25D366]/15 transition-colors duration-700 pointer-events-none"></div>
+               <div className="relative z-10">
+                 <div className="w-16 h-16 rounded-2xl bg-[#25D366]/10 text-[#25D366] flex items-center justify-center text-3xl mb-8 shadow-sm border border-[#25D366]/20 transform group-hover:-rotate-12 transition-transform duration-500">📱</div>
+                 <h3 className="text-2xl font-bold font-serif mb-3 text-white">Envois WhatsApp</h3>
+                 <p className="text-white/60 leading-relaxed font-medium">
+                    Importez votre liste et envoyez les Pass VIP de vos invités d'un simple clic directement sur WhatsApp.
+                 </p>
+               </div>
+            </div>
 
+            {/* Card 4: Analytics (Square) */}
+            <div className="md:col-span-1 bg-gradient-to-bl from-[#121B2F] to-[#0A1226] border border-white/10 hover:border-festara-gold/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,154,69,0.1)]">
+               <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-festara-gold/5 rounded-full blur-3xl group-hover:bg-festara-gold/15 transition-colors duration-700 pointer-events-none"></div>
+               <div className="relative z-10">
+                 <div className="w-16 h-16 rounded-2xl bg-white/5 text-festara-gold flex items-center justify-center text-3xl mb-8 shadow-sm border border-white/10 transform group-hover:translate-x-2 transition-transform duration-500">📊</div>
+                 <h3 className="text-2xl font-bold font-serif mb-3 text-white">Suivi en direct</h3>
+                 <p className="text-white/60 leading-relaxed font-medium">
+                    Un tableau de bord complet pour suivre les statistiques d'entrées en temps réel le jour de l'événement.
+                 </p>
+               </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
