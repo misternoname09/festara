@@ -52,38 +52,64 @@ export default function Home() {
 
           {/* Right Visual Block (Floating VIP Pass) */}
           <div className="flex-1 w-full max-w-md lg:max-w-none relative perspective-1000 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-             <div className="relative w-full aspect-[3/4] max-w-sm mx-auto transform rotate-y-[-10deg] rotate-x-[5deg] hover:rotate-y-0 hover:rotate-x-0 transition-transform duration-700 ease-out">
-                {/* Floating Glow Behind */}
-                <div className="absolute inset-0 bg-festara-gold/20 blur-3xl rounded-[3rem]"></div>
+             <div className="relative w-full aspect-[4/5] max-w-[320px] mx-auto transform rotate-y-[-10deg] rotate-x-[5deg] hover:rotate-y-0 hover:rotate-x-0 transition-all duration-700 ease-out group">
                 
-                {/* The Pass */}
-                <div className="absolute inset-0 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2.5rem] shadow-2xl p-8 flex flex-col justify-between overflow-hidden group">
+                {/* Deep Glow Behind */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-festara-gold/40 to-festara-teal/20 blur-[50px] rounded-[2.5rem] group-hover:blur-[70px] transition-all duration-700"></div>
+                
+                {/* The Ticket / Pass */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1528] via-[#0A1226] to-[#120F08] border-[1.5px] border-festara-gold/40 rounded-[2.5rem] shadow-2xl flex flex-col justify-between overflow-hidden">
+                   
+                   {/* Golden Shine Overlay (Animated on hover) */}
+                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-all duration-1000 ease-in-out pointer-events-none"></div>
+
+                   {/* Background Ornaments (Subtle pattern) */}
+                   <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-festara-gold/30 via-transparent to-transparent pointer-events-none"></div>
+
                    {/* Pass Header */}
-                   <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold mb-1">Pass VIP</p>
-                        <p className="text-xl font-serif font-bold">Aïda & Modou</p>
+                   <div className="pt-8 px-6 text-center relative z-10 flex flex-col items-center">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#DFB769] to-[#C59A45] flex items-center justify-center text-xl shadow-[0_0_20px_rgba(197,154,69,0.4)] mb-3 border border-white/20">
+                        👑
                       </div>
-                      <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-sm">
-                        💎
-                      </div>
+                      <p className="text-festara-gold/70 text-[9px] uppercase tracking-[0.3em] font-bold mb-1">Pass VIP Exclusif</p>
+                      <h2 className="text-2xl font-serif font-bold text-white tracking-wide">Aïda & Modou</h2>
                    </div>
 
-                   {/* Mock QR */}
-                   <div className="bg-white p-4 rounded-3xl mx-auto my-8 w-48 h-48 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                     <div className="w-full h-full bg-festara-navy rounded-xl opacity-10 relative">
-                        {/* Faux pattern QR */}
-                        <div className="absolute top-2 left-2 w-10 h-10 border-4 border-festara-navy rounded-lg"></div>
-                        <div className="absolute top-2 right-2 w-10 h-10 border-4 border-festara-navy rounded-lg"></div>
-                        <div className="absolute bottom-2 left-2 w-10 h-10 border-4 border-festara-navy rounded-lg"></div>
+                   {/* Mock QR with Luxury Frame */}
+                   <div className="relative mx-auto my-6 w-44 h-44 flex items-center justify-center group-hover:scale-105 transition-transform duration-500 z-10">
+                     {/* Golden Frame Corners */}
+                     <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-festara-gold rounded-tl-lg"></div>
+                     <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-festara-gold rounded-tr-lg"></div>
+                     <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-festara-gold rounded-bl-lg"></div>
+                     <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-festara-gold rounded-br-lg"></div>
+                     
+                     <div className="bg-white p-3 rounded-2xl w-36 h-36 flex flex-col items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                        <div className="w-full h-full bg-festara-navy rounded-xl opacity-15 relative">
+                           {/* Faux pattern QR */}
+                           <div className="absolute top-1.5 left-1.5 w-8 h-8 border-[3px] border-festara-navy rounded-md"></div>
+                           <div className="absolute top-1.5 right-1.5 w-8 h-8 border-[3px] border-festara-navy rounded-md"></div>
+                           <div className="absolute bottom-1.5 left-1.5 w-8 h-8 border-[3px] border-festara-navy rounded-md"></div>
+                        </div>
                      </div>
                    </div>
 
-                   {/* Pass Footer */}
-                   <div className="bg-black/20 rounded-2xl p-4 border border-white/10">
-                      <p className="text-sm font-bold">Mme Fatou Diop</p>
-                      <p className="text-xs text-white/50">Table d'Honneur • 2 Personnes</p>
+                   {/* Divider */}
+                   <div className="w-full border-t border-dashed border-festara-gold/30 relative z-10">
+                      {/* Ticket Notches */}
+                      <div className="absolute -left-3 -top-3 w-6 h-6 bg-[#0A1226] rounded-full border-r border-festara-gold/40"></div>
+                      <div className="absolute -right-3 -top-3 w-6 h-6 bg-[#0A1226] rounded-full border-l border-festara-gold/40"></div>
                    </div>
+
+                   {/* Pass Footer */}
+                   <div className="p-6 text-center relative z-10 bg-gradient-to-t from-festara-gold/10 to-transparent">
+                      <h3 className="text-lg font-bold text-white mb-1">Mme Fatou Diop</h3>
+                      <div className="flex items-center justify-center gap-2 text-xs font-medium text-white/60">
+                         <span>Table d'Honneur</span>
+                         <span className="text-[8px] text-festara-gold">💎</span>
+                         <span>2 Personnes</span>
+                      </div>
+                   </div>
+
                 </div>
              </div>
           </div>
