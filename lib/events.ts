@@ -1,4 +1,3 @@
-import { createServerSupabase } from '@/lib/supabase/server';
 import type { EventRow, Ceremony } from '@/lib/types';
 
 // Event de demonstration (pour /i/demo, sans base de donnees)
@@ -43,6 +42,7 @@ export const DEMO_EVENT: EventRow = {
 export async function getEventBySlug(slug: string): Promise<EventRow | null> {
   if (slug === 'demo') return DEMO_EVENT;
 
+  const { createServerSupabase } = await import('@/lib/supabase/server');
   const supabase = createServerSupabase();
   const { data, error } = await supabase
     .from('events')
