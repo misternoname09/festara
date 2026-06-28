@@ -93,7 +93,7 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
              {/* Ring Photo Accent (Floating) */}
              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-[3px] border-festara-gold shadow-[0_10px_30px_rgba(197,154,69,0.4)] z-20 mb-[-2.5rem] bg-white relative animate-float">
                 <img 
-                  src="https://images.unsplash.com/photo-1605100804763-247f66156eb4?q=80&w=400&auto=format&fit=crop" 
+                  src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop" 
                   alt="Bague de fiançailles" 
                   className="w-full h-full object-cover"
                 />
