@@ -1,10 +1,25 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import Script from 'next/script';
 
 export default function Home() {
+  const softwareSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Festara",
+    "operatingSystem": "Web",
+    "applicationCategory": "EventManagementApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "XOF"
+    },
+    "description": "Plateforme SaaS de gestion d'événements, mariages et RSVPs au Sénégal."
+  };
+
   return (
     <main className="min-h-screen bg-festara-sand font-sans selection:bg-festara-gold/30">
-      
+      <Script id="software-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
       {/* 
         ========================================================================
         HERO SECTION (DARK MODE) 

@@ -2,6 +2,8 @@ import { unstable_noStore as noStore } from 'next/cache';
 import type { Metadata } from 'next';
 import { getEventBySlug } from '@/lib/events';
 import Invitation from '@/components/Invitation';
+import Script from 'next/script';
+import { createServerSupabase } from '@/lib/supabase/server';
 
 // Rendu dynamique (donnees a jour). Page legere : pas de JS lourd cote client.
 export const dynamic = 'force-dynamic';
@@ -36,8 +38,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-import { createServerSupabase } from '@/lib/supabase/server';
-
 export default async function InvitationPage({ params }: Props) {
   noStore(); // Interdit absolument le cache agressif de Vercel (evite les 404 fantomes)
   const supabase = createServerSupabase();
@@ -45,30 +45,18 @@ export default async function InvitationPage({ params }: Props) {
 
   let event = await getEventBySlug(params.slug);
 
-  // Si l'événement n'est pas trouvé (probablement car is_published=false),
-  // on vérifie si l'utilisateur actuel est le propriétaire de cet événement.
+  // Fallback si l'evenement n'est pas publie MAIS que c'est le proprietaire qui le regarde
   if (!event && user) {
-    const { data } = await supabase
-      .from('events')
-      .select('*')
-      .eq('slug', params.slug)
-      .eq('user_id', user.id)
-      .maybeSingle();
-    
+    const { data } = await supabase.from('events').select('*').eq('slug', params.slug).eq('user_id', user.id).maybeSingle();
     if (data) event = data as typeof event;
   }
 
   if (!event) {
-    // Écran de debug temporaire pour comprendre pourquoi Vercel renvoie 404
     return (
-      <div style={{ padding: '50px', textAlign: 'center', fontFamily: 'sans-serif' }}>
-        <h1 style={{ color: 'red' }}>🚨 Écran de Diagnostic (Debug)</h1>
-        <p>L'invitation n'a pas pu être chargée.</p>
-        <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '8px', display: 'inline-block', textAlign: 'left', marginTop: '20px' }}>
-          <p><strong>Slug cherché :</strong> {params.slug}</p>
-          <p><strong>Êtes-vous connecté ?</strong> {user ? `Oui (${user.id})` : 'Non (user = null)'}</p>
-          <p><strong>Explication :</strong> Si vous n'êtes pas connecté ici, le serveur refuse de vous montrer le brouillon. Assurez-vous d'ouvrir ce lien dans le même navigateur où vous êtes connecté au Dashboard.</p>
-          <p><strong>Astuce Cache :</strong> Si l'événement devrait exister, essayez d'ajouter <code>?t=1</code> à l'URL pour forcer le cache Vercel.</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 font-sans">
+        <div className="text-center p-8 bg-white rounded-xl shadow-sm border border-gray-200">
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">404</h1>
+          <p className="text-gray-500">Cette page est introuvable ou n'est pas encore publique.</p>
         </div>
       </div>
     );
