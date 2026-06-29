@@ -45,9 +45,37 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
     }
   }
 
-  // Image de bague de fiançailles par défaut (Unsplash haute qualité) si le client n'a pas encore mis de photo
+  let defaultRing = "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop";
+
+  // Curation Intelligente : Choix des photos premium par défaut selon le type d'événement
   if (gallery.length === 0) {
-    gallery = ["https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop"];
+    const titleLower = event.title.toLowerCase();
+    
+    if (titleLower.includes('bapt') || titleLower.includes('ngente') || titleLower.includes('naissance')) {
+      // Thème Baptême / Naissance
+      defaultRing = "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?q=80&w=400&auto=format&fit=crop"; // Chaussons bébé
+      gallery = [
+        "https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=2070&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1504194921103-f8b80cadd5e4?q=80&w=2070&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2070&auto=format&fit=crop"
+      ];
+    } else if (titleLower.includes('gala') || titleLower.includes('anniversaire') || titleLower.includes('soirée') || titleLower.includes('diner')) {
+      // Thème Soirée / Gala
+      defaultRing = "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=400&auto=format&fit=crop"; // Coupe Champagne
+      gallery = [
+        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2070&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1478146896981-b80fe463b330?q=80&w=2070&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2070&auto=format&fit=crop"
+      ];
+    } else {
+      // Thème Mariage par défaut (Takk, Union, Wedding...)
+      defaultRing = "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop"; // Bague
+      gallery = [
+        "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2070&auto=format&fit=crop"
+      ];
+    }
   }
 
   // La première cérémonie sert pour le compte à rebours et l'ajout au calendrier
@@ -90,11 +118,11 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
 
           <div className="relative z-10 pt-16 pb-6 px-6 flex flex-col items-center">
              
-             {/* Ring Photo Accent (Floating) */}
+             {/* Ring/Icon Photo Accent (Floating) */}
              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-[3px] border-festara-gold shadow-[0_10px_30px_rgba(197,154,69,0.4)] z-20 mb-[-2.5rem] bg-white relative animate-float">
                 <img 
-                  src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop" 
-                  alt="Bague de fiançailles" 
+                  src={defaultRing} 
+                  alt="Icône de l'événement" 
                   className="w-full h-full object-cover"
                 />
              </div>
