@@ -51,9 +51,23 @@ export default async function InvitationPage({ params }: Props) {
     if (data) event = data as typeof event;
   }
 
-  if (!event) notFound();
+  if (!event) {
+    // Écran de debug temporaire pour comprendre pourquoi Vercel renvoie 404
+    return (
+      <div style={{ padding: '50px', textAlign: 'center', fontFamily: 'sans-serif' }}>
+        <h1 style={{ color: 'red' }}>🚨 Écran de Diagnostic (Debug)</h1>
+        <p>L'invitation n'a pas pu être chargée.</p>
+        <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '8px', display: 'inline-block', textAlign: 'left', marginTop: '20px' }}>
+          <p><strong>Slug cherché :</strong> {params.slug}</p>
+          <p><strong>Êtes-vous connecté ?</strong> {user ? `Oui (${user.id})` : 'Non (user = null)'}</p>
+          <p><strong>Explication :</strong> Si vous n'êtes pas connecté ici, le serveur refuse de vous montrer le brouillon. Assurez-vous d'ouvrir ce lien dans le même navigateur où vous êtes connecté au Dashboard.</p>
+          <p><strong>Astuce Cache :</strong> Si l'événement devrait exister, essayez d'ajouter <code>?t=1</code> à l'URL pour forcer le cache Vercel.</p>
+        </div>
+      </div>
+    );
+  }
 
-  let messages = [];
+  let messages: any[] = [];
   
   if (params.slug === 'demo') {
     messages = [
