@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -80,19 +81,24 @@ export default function Home() {
                      
                      {/* Arched Couple Photo */}
                      <div className="absolute inset-0 w-full h-full rounded-t-full rounded-b-2xl overflow-hidden border-[2px] border-festara-gold/50 shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
-                        <img 
+                        <Image 
                           src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400&auto=format&fit=crop" 
                           alt="Couple" 
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="128px"
+                          className="object-cover"
+                          priority
                         />
                      </div>
 
                      {/* Overlapping Ring Accent */}
                      <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-full overflow-hidden border-2 border-festara-gold shadow-lg z-20 bg-white">
-                        <img 
+                        <Image 
                           src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop" 
                           alt="Bague" 
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="48px"
+                          className="object-cover"
                         />
                      </div>
                    </div>
@@ -138,10 +144,12 @@ export default function Home() {
                  
                  {/* Ring Photo Accent (Floating) */}
                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-[4px] border-festara-gold shadow-[0_15px_40px_rgba(197,154,69,0.3)] z-30 mb-[-3rem] sm:mb-[-3.5rem] bg-white relative animate-float transform group-hover:-translate-y-2 transition-transform duration-700">
-                    <img 
+                    <Image 
                       src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=400&auto=format&fit=crop" 
                       alt="Bague" 
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="112px"
+                      className="object-cover"
                     />
                  </div>
 
@@ -150,17 +158,17 @@ export default function Home() {
                     
                     {/* Image 1 (Back left) */}
                     <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-t-[8rem] overflow-hidden border-[8px] border-white shadow-2xl transform -rotate-6 group-hover:rotate-[-2deg] group-hover:-translate-x-4 transition-all duration-700 origin-bottom-left z-10">
-                       <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=600&auto=format&fit=crop" alt="Mariés" className="w-full h-full object-cover" />
+                       <Image src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=600&auto=format&fit=crop" alt="Mariés" fill sizes="(max-width: 768px) 195px, 247px" className="object-cover" />
                     </div>
                     
                     {/* Image 2 (Front right) */}
                     <div className="absolute top-16 right-0 w-[65%] aspect-[3/4] rounded-t-[8rem] overflow-hidden border-[8px] border-white shadow-2xl transform rotate-6 group-hover:rotate-[2deg] group-hover:translate-x-4 transition-all duration-700 origin-bottom-right z-20">
-                       <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600&auto=format&fit=crop" alt="Mariés 2" className="w-full h-full object-cover" />
+                       <Image src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600&auto=format&fit=crop" alt="Mariés 2" fill sizes="(max-width: 768px) 195px, 247px" className="object-cover" />
                     </div>
 
                     {/* Image 3 (Bottom center, circular accent) */}
                     <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[50%] aspect-square rounded-full overflow-hidden border-[6px] border-white shadow-xl transform group-hover:scale-110 transition-all duration-700 z-30">
-                        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=400&auto=format&fit=crop" alt="Détails" className="w-full h-full object-cover" />
+                        <Image src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=400&auto=format&fit=crop" alt="Détails" fill sizes="(max-width: 768px) 150px, 190px" className="object-cover" />
                     </div>
                  </div>
               </div>

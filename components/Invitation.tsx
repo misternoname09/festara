@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import type { EventRow, GuestbookMessageRow } from '@/lib/types';
 import { TEMPLATES } from '@/components/templates';
 import type { Ceremony } from '@/lib/types';
@@ -120,10 +121,12 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
              
              {/* Ring/Icon Photo Accent (Floating) */}
              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-[3px] border-festara-gold shadow-[0_10px_30px_rgba(197,154,69,0.4)] z-20 mb-[-2.5rem] bg-white relative animate-float">
-                <img 
+                <Image 
                   src={defaultRing} 
                   alt="Icône de l'événement" 
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="96px"
+                  className="object-cover"
                 />
              </div>
 
@@ -132,7 +135,7 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
                // One Image: Grand Arch
                <div className="w-full max-w-[280px] sm:max-w-[320px] aspect-[3/4] rounded-t-[10rem] overflow-hidden border-[6px] border-white shadow-2xl relative group">
                   <div className="absolute inset-0 bg-gradient-to-t from-festara-navy/40 to-transparent group-hover:opacity-0 transition-opacity duration-700 z-10"></div>
-                  <img src={gallery[0]} alt={event.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-1000" loading="eager" />
+                  <Image src={gallery[0]} alt={event.title} fill sizes="(max-width: 640px) 280px, 320px" className="object-cover group-hover:scale-[1.03] transition-transform duration-1000" priority />
                </div>
              ) : (
                // Multiple Images: Staggered Elegant Layout
@@ -140,16 +143,16 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
                   {/* Image 1 (Back left) */}
                   <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-t-[6rem] overflow-hidden border-[6px] border-white shadow-xl transform -rotate-6 hover:rotate-0 hover:z-30 transition-all duration-500 origin-bottom-left group">
                      <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10"></div>
-                     <img src={gallery[0]} alt="" className="w-full h-full object-cover" loading="eager" />
+                     <Image src={gallery[0]} alt="" fill sizes="220px" className="object-cover" priority />
                   </div>
                   {/* Image 2 (Front right) */}
                   <div className="absolute top-12 right-0 w-[65%] aspect-[3/4] rounded-t-[6rem] overflow-hidden border-[6px] border-white shadow-2xl transform rotate-3 hover:rotate-0 hover:z-30 transition-all duration-500 origin-bottom-right z-20">
-                     <img src={gallery[1]} alt="" className="w-full h-full object-cover" loading="eager" />
+                     <Image src={gallery[1]} alt="" fill sizes="220px" className="object-cover" priority />
                   </div>
                   {/* Image 3 (Bottom center, circular accent) */}
                   {gallery[2] && (
                      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[45%] aspect-square rounded-full overflow-hidden border-[4px] border-white shadow-lg transform hover:scale-110 hover:z-30 transition-all duration-500 z-30">
-                        <img src={gallery[2]} alt="" className="w-full h-full object-cover" />
+                        <Image src={gallery[2]} alt="" fill sizes="150px" className="object-cover" />
                      </div>
                   )}
                </div>

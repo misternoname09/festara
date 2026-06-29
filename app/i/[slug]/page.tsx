@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from 'next/cache';
 import type { Metadata } from 'next';
 import { getEventBySlug } from '@/lib/events';
 import Invitation from '@/components/Invitation';
@@ -26,12 +27,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       images: event.couple_photo_url ? [{ url: event.couple_photo_url }] : [],
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: event.title,
+      description: desc,
+      images: event.couple_photo_url ? [event.couple_photo_url] : [],
+    }
   };
 }
 
 import { createServerSupabase } from '@/lib/supabase/server';
 
 export default async function InvitationPage({ params }: Props) {
+  noStore(); // Interdit absolument le cache agressif de Vercel (evite les 404 fantomes)
   const supabase = createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
 
