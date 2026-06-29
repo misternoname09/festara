@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getEventBySlug } from '@/lib/events';
 import Invitation from '@/components/Invitation';
 
