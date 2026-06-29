@@ -169,7 +169,7 @@ export default function Home() {
                  </div>
 
                  {/* Multiple Images: Staggered Elegant Layout */}
-                 <div className="relative w-full h-[450px] sm:h-[550px] w-[300px] sm:w-[380px] mx-auto mt-4 transform rotate-y-[-5deg] group-hover:rotate-y-0 transition-all duration-700 ease-out">
+                 <div className="relative w-full h-[450px] sm:h-[550px] max-w-[300px] sm:max-w-[380px] mx-auto mt-4 transform rotate-y-[-5deg] group-hover:rotate-y-0 transition-all duration-700 ease-out">
                     
                     {/* Image 1 (Back left) */}
                     <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-t-[8rem] overflow-hidden border-[8px] border-white shadow-2xl transform -rotate-6 group-hover:rotate-[-2deg] group-hover:-translate-x-4 transition-all duration-700 origin-bottom-left z-10">
