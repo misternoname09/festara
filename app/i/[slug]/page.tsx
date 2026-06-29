@@ -61,7 +61,6 @@ export default async function InvitationPage({ params }: Props) {
       { id: '2', event_id: 'demo', author_name: 'Moussa', message: 'Heureux ménage ! Je serai là avec toute la famille.', created_at: new Date().toISOString() }
     ];
   } else {
-    const supabase = createServerSupabase();
     const { data } = await supabase
       .from('guestbook_messages')
       .select('*')
