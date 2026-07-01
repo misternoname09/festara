@@ -60,7 +60,7 @@ export default function Home() {
               <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-festara-gold hover:bg-[#DFB769] text-white font-bold rounded-xl shadow-[0_0_30px_rgba(197,154,69,0.3)] hover:shadow-[0_0_40px_rgba(197,154,69,0.5)] transition-all hover:-translate-y-1 text-center">
                 Créer un événement
               </Link>
-              <Link href="/i/demo" className="w-full sm:w-auto px-8 py-4 border-2 border-white/10 hover:border-white/30 hover:bg-white/5 text-white font-bold rounded-xl transition-all text-center flex items-center justify-center gap-2">
+              <Link href="/i/demo?ref=home" className="w-full sm:w-auto px-8 py-4 border-2 border-white/10 hover:border-white/30 hover:bg-white/5 text-white font-bold rounded-xl transition-all text-center flex items-center justify-center gap-2">
                 Voir une démo ↗
               </Link>
             </div>

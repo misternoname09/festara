@@ -8,7 +8,7 @@ import { createServerSupabase } from '@/lib/supabase/server';
 // Rendu dynamique (donnees a jour). Page legere : pas de JS lourd cote client.
 export const dynamic = 'force-dynamic';
 
-type Props = { params: { slug: string } };
+type Props = { params: { slug: string }, searchParams?: { ref?: string } };
 
 // Open Graph : apercu automatique sur WhatsApp (photo couple + nom + date)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function InvitationPage({ params }: Props) {
+export default async function InvitationPage({ params, searchParams }: Props) {
   noStore(); // Interdit absolument le cache agressif de Vercel (evite les 404 fantomes)
   const supabase = createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
@@ -78,5 +78,5 @@ export default async function InvitationPage({ params }: Props) {
     if (data) messages = data;
   }
 
-  return <Invitation event={event} messages={messages} />;
+  return <Invitation event={event} messages={messages} refParam={searchParams?.ref} />;
 }

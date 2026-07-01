@@ -88,7 +88,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
             <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${ev.is_published ? 'bg-green-500/20 text-green-300 border-green-500/50' : 'bg-amber-500/20 text-amber-300 border-amber-500/50'}`}>
               {ev.is_published ? 'Publiée' : 'Brouillon'}
             </span>
-            <Link href={`/i/${ev.slug}`} target="_blank" className="relative group inline-flex items-center justify-center gap-2 px-8 py-2.5 text-xs font-bold text-festara-navy uppercase tracking-widest rounded-full overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all hover:-translate-y-1 bg-gradient-to-r from-white to-[#F5F0E6] border border-white/50">
+            <Link href={`/i/${ev.slug}?ref=dashboard`} className="relative group inline-flex items-center justify-center gap-2 px-8 py-2.5 text-xs font-bold text-festara-navy uppercase tracking-widest rounded-full overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all hover:-translate-y-1 bg-gradient-to-r from-white to-[#F5F0E6] border border-white/50">
               <span className="absolute inset-0 w-full h-full bg-festara-gold/5 group-hover:opacity-0 transition-opacity"></span>
               <span className="relative flex items-center gap-2">
                 Aperçu Public <span className="text-lg leading-none group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-festara-gold">↗</span>

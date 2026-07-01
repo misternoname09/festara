@@ -25,13 +25,14 @@ function formatDateFr(iso: string): string {
     return iso;
   }
 }
+import Link from 'next/link';
 import RsvpForm from '@/components/RsvpForm';
 import Countdown from '@/components/Countdown';
 import AddToCalendar from '@/components/AddToCalendar';
 import GuestbookForm from '@/components/GuestbookForm';
 import GuestbookList from '@/components/GuestbookList';
 
-export default function Invitation({ event, messages = [] }: { event: EventRow, messages?: GuestbookMessageRow[] }) {
+export default function Invitation({ event, messages = [], refParam }: { event: EventRow, messages?: GuestbookMessageRow[], refParam?: string }) {
   const t = TEMPLATES[event.template] ?? TEMPLATES.modern;
   const isDark = event.template === 'arabic';
 
@@ -106,6 +107,18 @@ export default function Invitation({ event, messages = [] }: { event: EventRow, 
 
   return (
     <main className={`min-h-[120vh] relative overflow-hidden flex flex-col items-center py-8 sm:py-16 px-4 ${t.page}`}>
+      {/* Bouton Retour contextuel */}
+      {refParam === 'dashboard' && (
+        <Link href={`/dashboard/${event.id}`} className="fixed top-4 sm:top-8 left-4 sm:left-8 z-50 flex items-center gap-2 bg-black/50 hover:bg-black/80 text-white backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+          <span className="text-lg leading-none">←</span> Retour au compte
+        </Link>
+      )}
+      {refParam === 'home' && (
+        <Link href="/" className="fixed top-4 sm:top-8 left-4 sm:left-8 z-50 flex items-center gap-2 bg-black/50 hover:bg-black/80 text-white backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+          <span className="text-lg leading-none">←</span> Retour à l'accueil
+        </Link>
+      )}
+
       {/* Ornements de fond luxueux */}
       <div className="fixed top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/5 blur-[120px] pointer-events-none"></div>
       <div className="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-black/5 blur-[100px] pointer-events-none"></div>
