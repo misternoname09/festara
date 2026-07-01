@@ -291,9 +291,9 @@ export default function LoginPage() {
                   className="w-full bg-white border-2 border-festara-navy/10 rounded-2xl px-4 py-4 text-festara-navy font-bold tracking-[0.7em] text-center text-3xl outline-none focus:border-festara-gold transition-colors shadow-inner"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  placeholder="000000"
+                  placeholder="00000000"
                   inputMode="numeric"
-                  maxLength={6}
+                  maxLength={8}
                 />
               </div>
               {error && <p className="text-sm text-red-600 bg-red-50 p-4 rounded-xl border border-red-100">{error}</p>}
