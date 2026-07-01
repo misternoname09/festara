@@ -107,15 +107,21 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
 
   return (
     <main className={`min-h-[120vh] relative overflow-hidden flex flex-col items-center py-8 sm:py-16 px-4 ${t.page}`}>
-      {/* Bouton Retour contextuel */}
+      {/* Bouton Retour contextuel Premium */}
       {refParam === 'dashboard' && (
-        <Link href={`/dashboard/${event.id}`} className="fixed top-4 sm:top-8 left-4 sm:left-8 z-50 flex items-center gap-2 bg-black/50 hover:bg-black/80 text-white backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-          <span className="text-lg leading-none">←</span> Retour au compte
+        <Link href={`/dashboard/${event.id}`} className="fixed top-6 sm:top-8 left-4 sm:left-8 z-50 group flex items-center gap-3 bg-[#0A1226]/80 hover:bg-[#0A1226] backdrop-blur-xl border border-white/10 text-white px-4 sm:px-5 py-2.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.3)] hover:border-festara-gold/50 hover:-translate-y-1">
+          <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-festara-gold group-hover:text-[#0A1226] transition-all duration-500">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </div>
+          <span className="pr-1">Retour au compte</span>
         </Link>
       )}
       {refParam === 'home' && (
-        <Link href="/" className="fixed top-4 sm:top-8 left-4 sm:left-8 z-50 flex items-center gap-2 bg-black/50 hover:bg-black/80 text-white backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-          <span className="text-lg leading-none">←</span> Retour à l'accueil
+        <Link href="/" className="fixed top-6 sm:top-8 left-4 sm:left-8 z-50 group flex items-center gap-3 bg-[#0A1226]/80 hover:bg-[#0A1226] backdrop-blur-xl border border-white/10 text-white px-4 sm:px-5 py-2.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.3)] hover:border-festara-gold/50 hover:-translate-y-1">
+          <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-festara-gold group-hover:text-[#0A1226] transition-all duration-500">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </div>
+          <span className="pr-1">Retour à l'accueil</span>
         </Link>
       )}
 
