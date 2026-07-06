@@ -24,11 +24,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Trop de tentatives d\'envoi en masse. Réessayez plus tard.' }, { status: 429 });
     }
 
-    const { event_id, mode } = await req.json();
-
-    if (!event_id || !['invite', 'remind'].includes(mode)) {
-      return NextResponse.json({ error: 'Paramètres invalides.' }, { status: 400 });
-    }
 
     // Vérifie la propriété de l'événement et son plan
     await verifyEventAccess(event_id);
