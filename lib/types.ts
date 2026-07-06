@@ -31,6 +31,7 @@ export interface EventRow {
   theme_colors: ThemeColors;
   plan: PlanKind;
   is_published: boolean;
+  organization_id: string | null;
   created_at: string;
   updated_at: string;
 }
