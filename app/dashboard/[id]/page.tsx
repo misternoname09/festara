@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { updateEvent } from '../actions';
-import type { EventRow, EventStats } from '@/lib/types';
+import type { EventRow, EventStats, GuestRow } from '@/lib/types';
 import { TEMPLATES } from '@/components/templates';
 import PayButton from '@/components/PayButton';
 import GalleryUploader from '@/components/GalleryUploader';
@@ -10,6 +10,7 @@ import AiTextGenerator from '@/components/AiTextGenerator';
 import GuestImporter from '@/components/GuestImporter';
 import WhatsAppDispatcher from '@/components/WhatsAppDispatcher';
 import ScrollToTop from '@/components/ScrollToTop';
+import GuestTable from '@/components/GuestTable';
 
 import DashboardTabs from '@/components/DashboardTabs';
 import CircularGauge from '@/components/CircularGauge';
@@ -95,8 +96,8 @@ export default async function EditEvent({ params, searchParams }: Props) {
   const userOrgs = userOrgsData || [];
 
   const tab = searchParams.tab || 'studio';
-  const confirmedGuestsCount = guests.filter((g: any) => g.rsvp_confirmed_at).length;
-  const scannedGuestsCount = guests.filter((g: any) => g.scanned_at).length;
+  const confirmedGuestsCount = guests.filter((g: GuestRow) => g.rsvp_confirmed_at).length;
+  const scannedGuestsCount = guests.filter((g: GuestRow) => g.scanned_at).length;
   const totalPeopleCount = s?.people_confirmed ?? 0;
 
   return (
@@ -284,40 +285,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
                       <p className="text-xs text-[#0A1226]/40 uppercase tracking-widest font-bold">Utilisez le module d'import Excel à droite pour commencer.</p>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-sm">
-                        <thead>
-                          <tr className="border-b border-black/5 text-[#0A1226]/40 uppercase tracking-widest text-[10px] font-bold">
-                            <th className="pb-4 pl-4">Nom Complet</th>
-                            <th className="pb-4 text-center">Personnes</th>
-                            <th className="pb-4 text-center">RSVP</th>
-                            <th className="pb-4 text-center">Statut Jour-J</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {guests.map((g: any) => (
-                            <tr key={g.id} className="border-b border-black/[0.02] hover:bg-black/[0.02] transition-colors">
-                              <td className="py-4 pl-4 font-bold text-[#0A1226]">{g.first_name} {g.last_name}</td>
-                              <td className="py-4 text-center text-[#0A1226]/70 font-mono text-xs"><span className="bg-[#FDFBF7] border border-black/5 px-3 py-1 rounded-lg">{g.party_size}</span></td>
-                              <td className="py-4 text-center">
-                                {g.rsvp_confirmed_at ? (
-                                  <span className="px-3 py-1.5 bg-green-500/10 text-green-700 border border-green-500/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">Confirmé</span>
-                                ) : (
-                                  <span className="px-3 py-1.5 bg-gray-500/10 text-gray-500 border border-gray-500/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">En attente</span>
-                                )}
-                              </td>
-                              <td className="py-4 text-center">
-                                {g.scanned_at ? (
-                                  <span className="px-3 py-1.5 bg-festara-gold/10 text-festara-gold border border-festara-gold/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">Scanné</span>
-                                ) : (
-                                  <span className="text-[#0A1226]/20 font-bold">-</span>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    <GuestTable guests={guests} />
                   )}
                 </div>
               </div>
@@ -381,7 +349,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
                         <label className={labelClass}>Agence (B2B)</label>
                         <select name="organization_id" defaultValue={ev.organization_id || ''} className={inputClass}>
                           <option value="">-- Aucune (Événement personnel) --</option>
-                          {userOrgs.map((org: any) => (
+                          {userOrgs.map((org: { id: string, name: string }) => (
                             <option key={org.id} value={org.id}>{org.name}</option>
                           ))}
                         </select>

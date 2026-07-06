@@ -54,12 +54,14 @@ create table if not exists public.events (
   title             text not null,
   template          template_kind not null default 'modern',
   couple_photo_url  text,
+  welcome_message   text,                                    -- Message de bienvenue personnalisé
   -- Array : [{ "id","name","date","time","location","maps_url" }]
   ceremonies        jsonb not null default '[]'::jsonb,
   -- Couleurs choisies par les maries (pass + invitation)
   theme_colors      jsonb not null default '{"primary":"#1A2A4A","accent":"#B68A35"}'::jsonb,
   plan              plan_kind not null default 'gratuit',
   is_published      boolean not null default false,
+  organization_id   uuid references public.organizations(id) on delete set null,  -- Lien agence B2B
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now()
 );

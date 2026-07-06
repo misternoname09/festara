@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og';
-import { getEventBySlug } from '@/lib/events';
+import { createClient } from '@supabase/supabase-js';
 
-export const runtime = 'edge';
+// Utilise le Node runtime (pas Edge) pour compatibilité avec Supabase
+// export const runtime = 'edge'; // REMOVED — incompatible avec cookies/Supabase SSR
 
 export async function GET(request: Request) {
   try {
@@ -12,13 +13,34 @@ export async function GET(request: Request) {
       return new Response('Slug is required', { status: 400 });
     }
 
-    const event = await getEventBySlug(slug);
-    if (!event) {
+    // Client Supabase léger (pas besoin de cookies ici, lecture publique uniquement)
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    // Événement de démo
+    if (slug === 'demo') {
+      return generateOgImage(
+        'Mariage Aïda & Modou',
+        'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop',
+        'vendredi 19 décembre 2026'
+      );
+    }
+
+    const { data: event, error } = await supabase
+      .from('events')
+      .select('title, couple_photo_url, ceremonies, is_published')
+      .eq('slug', slug)
+      .eq('is_published', true)
+      .maybeSingle();
+
+    if (error || !event) {
       return new Response('Not Found', { status: 404 });
     }
 
     // Extract photo url
-    let imageUrl = "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop";
+    let imageUrl = '';
     if (event.couple_photo_url) {
       try {
         const parsed = JSON.parse(event.couple_photo_url);
@@ -30,27 +52,38 @@ export async function GET(request: Request) {
     }
 
     const title = event.title || 'Célébration';
-    const dateStr = event.ceremonies?.[0]?.date 
-      ? new Date(event.ceremonies[0].date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    const ceremonies = event.ceremonies as any[];
+    const dateStr = ceremonies?.[0]?.date 
+      ? new Date(ceremonies[0].date + 'T00:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
       : '';
 
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#0A1226',
-            color: '#fff',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Background image */}
+    return generateOgImage(title, imageUrl, dateStr);
+  } catch (e) {
+    console.error('OG image generation error:', e);
+    return new Response('Failed to generate image', { status: 500 });
+  }
+}
+
+function generateOgImage(title: string, imageUrl: string, dateStr: string) {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#0A1226',
+          backgroundImage: imageUrl ? 'none' : 'linear-gradient(135deg, #0A1226 0%, #0B5959 50%, #C59A45 100%)',
+          color: '#fff',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Background image si fournie */}
+        {imageUrl && (
           <img
             src={imageUrl}
             style={{
@@ -63,65 +96,75 @@ export async function GET(request: Request) {
               opacity: 0.5,
             }}
           />
-          {/* Content overlay */}
-          <div
+        )}
+        {/* Content overlay */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(10, 18, 38, 0.85)',
+            padding: '60px 100px',
+            borderRadius: '40px',
+            border: '4px solid #C59A45',
+            zIndex: 10,
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+          }}
+        >
+          <span
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(10, 18, 38, 0.85)',
-              padding: '60px 100px',
-              borderRadius: '40px',
-              border: '4px solid #C59A45',
-              zIndex: 10,
-              boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+              fontSize: 32,
+              textTransform: 'uppercase',
+              letterSpacing: '0.2em',
+              color: '#DFB769',
+              marginBottom: 20,
+              fontWeight: 'bold',
             }}
           >
+            Vous êtes invité(e)
+          </span>
+          <span
+            style={{
+              fontSize: 80,
+              fontWeight: 'bold',
+              fontFamily: 'Georgia, serif',
+              textAlign: 'center',
+              marginBottom: 30,
+              lineHeight: 1.1,
+            }}
+          >
+            {title}
+          </span>
+          {dateStr && (
             <span
               style={{
-                fontSize: 32,
-                textTransform: 'uppercase',
-                letterSpacing: '0.2em',
-                color: '#DFB769',
-                marginBottom: 20,
-                fontWeight: 'bold',
+                fontSize: 36,
+                color: '#fff',
+                opacity: 0.9,
+                textTransform: 'capitalize',
               }}
             >
-              Vous êtes invité(e)
+              {dateStr}
             </span>
-            <span
-              style={{
-                fontSize: 90,
-                fontWeight: 'bold',
-                fontFamily: 'Georgia, serif',
-                textAlign: 'center',
-                marginBottom: 30,
-              }}
-            >
-              {title}
-            </span>
-            {dateStr && (
-              <span
-                style={{
-                  fontSize: 40,
-                  color: '#fff',
-                  opacity: 0.9,
-                  textTransform: 'capitalize',
-                }}
-              >
-                {dateStr}
-              </span>
-            )}
-          </div>
+          )}
+          <span
+            style={{
+              fontSize: 22,
+              color: '#C59A45',
+              marginTop: 25,
+              letterSpacing: '0.15em',
+              fontWeight: 'bold',
+            }}
+          >
+            FESTARA
+          </span>
         </div>
-      ),
-      {
-        width: 1200,
-        height: 630,
-      }
-    );
-  } catch (e) {
-    return new Response(`Failed to generate image`, { status: 500 });
-  }
+      </div>
+    ),
+    {
+      width: 1200,
+      height: 630,
+    }
+  );
 }

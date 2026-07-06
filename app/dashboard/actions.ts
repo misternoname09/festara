@@ -59,24 +59,19 @@ export async function updateEvent(eventId: string, formData: FormData) {
 
   const organization_id = String(formData.get('organization_id') || '').trim() || null;
 
-  // Sécurité Paywall : Interdire la publication si le plan est "gratuit" et pas "agency"
+  // Fix #6 : Valider que l'organization_id appartient bien à l'utilisateur (RLS filtre déjà)
   let orgPlan = null;
   if (organization_id) {
-    const { data: org } = await supabase.from('organizations').select('plan').eq('id', organization_id).single();
-    orgPlan = org?.plan;
+    const { data: org } = await supabase.from('organizations').select('id, plan').eq('id', organization_id).single();
+    if (!org) {
+      // L'utilisateur n'a pas accès à cette organisation (RLS bloque)
+      throw new Error('Organisation introuvable ou accès refusé.');
+    }
+    orgPlan = org.plan;
   }
   
   const { data: ev } = await supabase.from('events').select('plan').eq('id', eventId).single();
   const isFreePlan = ev?.plan === 'gratuit' && orgPlan !== 'agency';
-  
-  console.log("DEBUG publish:", {
-    checkbox_val: formData.get('is_published'),
-    is_published,
-    organization_id,
-    orgPlan,
-    eventPlan: ev?.plan,
-    isFreePlan
-  });
 
   if (isFreePlan) {
     is_published = false;
