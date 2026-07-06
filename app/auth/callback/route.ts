@@ -5,7 +5,13 @@ import { createServerSupabase } from '@/lib/supabase/server';
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
-  const next = url.searchParams.get('next') || '/dashboard';
+  const rawNext = url.searchParams.get('next') || '/dashboard';
+
+  // Sécurité : n'autoriser que des chemins internes relatifs (jamais une URL absolue
+  // ni une URL "protocol-relative" comme //evil.com), pour éviter un open redirect.
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//')
+    ? rawNext
+    : '/dashboard';
 
   if (code) {
     const supabase = createServerSupabase();
