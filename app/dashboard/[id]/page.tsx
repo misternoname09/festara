@@ -44,8 +44,8 @@ export default async function EditEvent({ params, searchParams }: Props) {
   const rows = Array.from({ length: 3 }, (_, i) => ev.ceremonies[i] ?? null);
   const action = updateEvent.bind(null, ev.id);
 
-  const inputClass = 'w-full rounded-xl px-4 min-h-[50px] text-base border border-festara-navy/10 bg-white/60 focus:bg-white focus:ring-2 focus:ring-festara-gold/50 outline-none transition-all placeholder:text-festara-ink/30';
-  const labelClass = 'block text-xs font-bold text-festara-navy uppercase tracking-wider ml-1 mb-1.5';
+  const inputClass = 'w-full rounded-2xl px-6 py-4 text-base border-2 border-[#0A1226]/5 bg-[#FDFBF7] focus:bg-white focus:border-festara-gold/50 outline-none transition-all placeholder:text-[#0A1226]/30 font-medium shadow-inner';
+  const labelClass = 'block text-[11px] font-bold text-[#0A1226]/70 uppercase tracking-[0.2em] ml-1 mb-2';
 
   // Récupération des messages du livre d'or
   const { data: messagesData } = await supabase
@@ -69,56 +69,88 @@ export default async function EditEvent({ params, searchParams }: Props) {
   const totalPeopleCount = s?.people_confirmed ?? 0;
 
   return (
-    <main className="min-h-screen bg-festara-sand relative overflow-hidden font-sans pb-20">
-      {/* Background Ornaments */}
-      <div className="absolute top-0 left-0 w-full h-[400px] bg-festara-navy pointer-events-none rounded-b-[4rem] shadow-2xl"></div>
+    <main className="min-h-screen bg-[#FDFBF7] relative overflow-hidden font-sans pb-32 selection:bg-festara-gold selection:text-white">
+      {/* --- CSS Animations Inline --- */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2.5s infinite;
+        }
+        @keyframes fade-in-up {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+      `}} />
 
-      <div className="max-w-6xl mx-auto px-4 py-8 relative z-10 animate-fade-in-up">
+      {/* --- PRESTIGE BACKGROUND --- */}
+      <div className="absolute top-0 left-0 w-full h-[550px] bg-gradient-to-b from-[#050B14] to-[#0A1226] rounded-b-[4rem] sm:rounded-b-[8rem] shadow-[0_20px_60px_rgba(10,18,38,0.2)] pointer-events-none z-0 overflow-hidden">
+        {/* Animated Orbs */}
+        <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(197,154,69,0.15)_0%,transparent_60%)] blur-[80px] animate-pulse" style={{ animationDuration: '6s' }}></div>
+        <div className="absolute top-[10%] right-[-15%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.06)_0%,transparent_60%)] blur-[60px]"></div>
+        {/* Subtle geometric pattern overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] opacity-30"></div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 pt-16 pb-12 relative z-10">
         
         {/* Navigation / Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-16 text-white opacity-0 animate-fade-in-up" style={{ animationDelay: '0s' }}>
           <div>
-            <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-white/60 hover:text-white transition-colors uppercase tracking-wider mb-2">
-              <span>←</span> Mes Événements
+            <Link href="/dashboard" className="inline-flex items-center gap-3 text-[11px] font-bold text-festara-gold/80 hover:text-festara-gold transition-colors uppercase tracking-[0.3em] mb-4 bg-black/20 px-4 py-1.5 rounded-full border border-festara-gold/20 backdrop-blur-md">
+              <span className="text-sm leading-none -translate-y-[1px]">←</span> Mes Événements
             </Link>
-            <h1 className="text-4xl font-bold font-serif">{ev.title}</h1>
-            <p className="text-sm text-white/70 mt-1 font-medium">Lien public : <span className="bg-white/20 px-2 py-0.5 rounded text-white selection:bg-white/40">festara.app/i/{ev.slug}</span></p>
+            <h1 className="text-5xl sm:text-6xl font-bold font-serif tracking-tight drop-shadow-md">{ev.title}</h1>
+            <p className="text-sm text-white/70 mt-3 font-medium flex items-center gap-2">
+              Lien public : 
+              <span className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-lg text-white border border-white/10 selection:bg-white/30 font-mono text-xs">
+                festara.app/i/{ev.slug}
+              </span>
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${ev.is_published ? 'bg-green-500/20 text-green-300 border-green-500/50' : 'bg-amber-500/20 text-amber-300 border-amber-500/50'}`}>
-              {ev.is_published ? 'Publiée' : 'Brouillon'}
+          <div className="flex flex-col sm:items-end gap-4">
+            <span className={`inline-flex px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] border backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.2)] ${ev.is_published ? 'bg-green-500/10 text-green-400 border-green-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}`}>
+              {ev.is_published ? '✨ Publiée' : 'Brouillon'}
             </span>
-            <Link href={`/i/${ev.slug}?ref=dashboard`} className="relative group inline-flex items-center justify-center gap-2 px-8 py-2.5 text-xs font-bold text-festara-navy uppercase tracking-widest rounded-full overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all hover:-translate-y-1 bg-gradient-to-r from-white to-[#F5F0E6] border border-white/50">
-              <span className="absolute inset-0 w-full h-full bg-festara-gold/5 group-hover:opacity-0 transition-opacity"></span>
+            <Link href={`/i/${ev.slug}?ref=dashboard`} className="relative group inline-flex items-center justify-center gap-3 px-8 py-4 text-xs font-bold text-[#0A1226] uppercase tracking-widest rounded-full overflow-hidden shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:shadow-[0_15px_40px_rgba(255,255,255,0.4)] transition-all hover:-translate-y-1 bg-gradient-to-r from-white to-[#FDFBF7] border border-white/50">
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-festara-gold/10 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
               <span className="relative flex items-center gap-2">
-                Aperçu Public <span className="text-lg leading-none group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-festara-gold">↗</span>
+                Aperçu Public <span className="text-xl leading-none group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-festara-gold">↗</span>
               </span>
             </Link>
           </div>
         </div>
 
         {/* Dashboard Tabs Navigation */}
-        <DashboardTabs eventId={ev.id} />
+        <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <DashboardTabs eventId={ev.id} />
+        </div>
 
         {/* Tab Content Area */}
-        <div className="animate-fade-in">
+        <div className="opacity-0 animate-fade-in-up mt-10" style={{ animationDelay: '0.2s' }}>
           
           {tab === 'overview' && (
-            <div className="grid lg:grid-cols-3 gap-6">
+            <div className="grid lg:grid-cols-3 gap-8">
               {/* Main Overview Stats */}
-              <div className="lg:col-span-2 space-y-6">
-                <div className="glass bg-white/90 rounded-3xl p-8 shadow-sm border border-black/5">
-                  <h2 className="text-2xl font-bold text-festara-navy font-serif mb-8 flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-full bg-festara-gold/10 flex items-center justify-center text-festara-gold">📊</span>
+              <div className="lg:col-span-2 space-y-8">
+                <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-festara-gold/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+                  
+                  <h2 className="text-2xl font-bold text-[#0A1226] font-serif mb-10 flex items-center gap-4 relative z-10">
+                    <span className="w-12 h-12 rounded-2xl bg-gradient-to-br from-festara-sand to-festara-gold/20 flex items-center justify-center text-festara-gold shadow-inner border border-white text-xl">📊</span>
                     Statistiques en Temps Réel
                   </h2>
-                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 relative z-10">
                     <CircularGauge 
                       value={confirmedGuestsCount} 
                       max={guests.length} 
                       label="RSVP Confirmés" 
                       sublabel="Groupes d'invités"
-                      colorClass="text-festara-navy" 
+                      colorClass="text-[#0A1226]" 
                       strokeColor="#0A1226" 
                     />
                     <CircularGauge 
@@ -141,27 +173,29 @@ export default async function EditEvent({ params, searchParams }: Props) {
                 </div>
 
                 {/* Latest Guestbook Messages */}
-                <div className="glass bg-white/90 rounded-3xl p-8 shadow-sm border border-black/5">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-festara-navy font-serif flex items-center gap-3">
-                      <span className="w-8 h-8 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 text-sm">📖</span>
+                <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                  <div className="flex items-center justify-between mb-8 relative z-10">
+                    <h2 className="text-2xl font-bold text-[#0A1226] font-serif flex items-center gap-4">
+                      <span className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-50 to-pink-500/10 flex items-center justify-center text-pink-500 shadow-inner border border-white text-xl">📖</span>
                       Derniers Mots Doux
                     </h2>
-                    <span className="text-xs font-bold text-festara-ink/40 uppercase tracking-wider">{messages.length} total</span>
+                    <span className="text-[10px] font-bold text-[#0A1226]/40 uppercase tracking-[0.2em] bg-festara-sand/50 px-4 py-2 rounded-full">{messages.length} total</span>
                   </div>
                   {messages.length === 0 ? (
-                    <div className="text-center py-6 bg-festara-sand/30 rounded-2xl border border-dashed border-black/10">
-                      <p className="text-sm text-festara-ink/60 font-medium">Aucun message pour le moment.</p>
+                    <div className="text-center py-12 bg-[#FDFBF7] rounded-[1.5rem] border border-dashed border-[#0A1226]/10 relative z-10">
+                      <p className="text-base text-[#0A1226]/40 font-medium">Aucun message pour le moment.</p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-4 relative z-10">
                       {messages.slice(0, 3).map((msg: any) => (
-                        <div key={msg.id} className="bg-festara-sand/30 rounded-2xl p-4 border border-black/5">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-bold text-festara-navy text-sm">{msg.author_name}</span>
-                            <span className="text-[10px] uppercase tracking-widest text-festara-ink/40">{new Date(msg.created_at).toLocaleDateString('fr-FR')}</span>
+                        <div key={msg.id} className="bg-[#FDFBF7] rounded-[1.5rem] p-6 border border-black/5 hover:border-black/10 transition-colors shadow-sm">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-bold text-[#0A1226] text-sm">{msg.author_name}</span>
+                            <span className="text-[9px] uppercase tracking-widest text-[#0A1226]/40 font-bold">{new Date(msg.created_at).toLocaleDateString('fr-FR')}</span>
                           </div>
-                          <p className="text-sm text-festara-ink/80 italic">"{msg.message}"</p>
+                          <p className="text-base text-[#0A1226]/80 italic leading-relaxed">"{msg.message}"</p>
                         </div>
                       ))}
                     </div>
@@ -170,71 +204,75 @@ export default async function EditEvent({ params, searchParams }: Props) {
               </div>
 
               {/* Sidebar Overview */}
-              <div className="space-y-6">
-                <div className="glass bg-white/90 rounded-3xl p-6 shadow-sm border border-black/5 flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-festara-teal/10 flex items-center justify-center text-festara-teal">📋</div>
-                    <h2 className="text-lg font-bold text-festara-navy font-serif">Export Données</h2>
+              <div className="space-y-8">
+                <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white flex flex-col gap-6 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-festara-teal/5 rounded-full blur-2xl pointer-events-none"></div>
+                  <div className="flex items-center gap-4 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-50 to-festara-teal/10 flex items-center justify-center text-festara-teal shadow-inner border border-white text-xl">📋</div>
+                    <h2 className="text-xl font-bold text-[#0A1226] font-serif">Export Données</h2>
                   </div>
-                  <p className="text-xs text-festara-ink/60 font-medium">Récupérez la liste complète en format Excel/CSV pour votre suivi.</p>
-                  <a href={`/api/export/${ev.id}`} className="btn-outline w-full text-center border-festara-teal/30 text-festara-teal hover:bg-festara-teal hover:text-white">
+                  <p className="text-sm text-[#0A1226]/60 font-medium leading-relaxed relative z-10">Récupérez la liste complète en format Excel/CSV pour votre suivi.</p>
+                  <a href={`/api/export/${ev.id}`} className="relative inline-flex items-center justify-center w-full px-6 py-4 text-xs font-bold uppercase tracking-widest text-festara-teal border border-festara-teal/20 rounded-2xl hover:bg-festara-teal hover:text-white transition-all hover:shadow-[0_10px_20px_rgba(15,118,110,0.2)] hover:-translate-y-1 z-10 bg-white/50">
                     Télécharger Export CSV
                   </a>
                 </div>
 
-                <div className="glass bg-white/90 rounded-3xl p-6 shadow-sm border border-black/5">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-full bg-festara-gold/10 flex items-center justify-center text-festara-gold">💎</div>
-                    <h2 className="text-lg font-bold text-festara-navy font-serif">Abonnement</h2>
+                <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-festara-gold/5 rounded-full blur-2xl pointer-events-none"></div>
+                  <div className="flex items-center gap-4 mb-6 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-festara-sand to-festara-gold/20 flex items-center justify-center text-festara-gold shadow-inner border border-white text-xl">💎</div>
+                    <h2 className="text-xl font-bold text-[#0A1226] font-serif">Abonnement</h2>
                   </div>
-                  <PayButton eventId={ev.id} currentPlan={ev.plan} />
+                  <div className="relative z-10">
+                    <PayButton eventId={ev.id} currentPlan={ev.plan} />
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
           {tab === 'guests' && (
-            <div className="grid lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <div className="glass bg-white/90 rounded-3xl p-8 shadow-sm border border-black/5">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-8 rounded-full bg-festara-teal/10 flex items-center justify-center text-festara-teal text-lg">👥</div>
-                    <h2 className="text-2xl font-bold text-festara-navy font-serif">CRM Événementiel ({guests.length} invités)</h2>
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-50 to-festara-teal/10 flex items-center justify-center text-festara-teal shadow-inner border border-white text-xl">👥</div>
+                    <h2 className="text-2xl font-bold text-[#0A1226] font-serif">CRM Événementiel ({guests.length} invités)</h2>
                   </div>
                   
                   {guests.length === 0 ? (
-                    <div className="text-center py-12 bg-festara-sand/30 rounded-2xl border border-dashed border-black/10">
-                      <p className="text-sm text-festara-ink/60 font-medium mb-2">Votre liste d'invités est vide.</p>
-                      <p className="text-xs text-festara-ink/40">Utilisez le module d'import Excel à droite pour commencer.</p>
+                    <div className="text-center py-16 bg-[#FDFBF7] rounded-[1.5rem] border border-dashed border-[#0A1226]/10">
+                      <p className="text-base text-[#0A1226]/60 font-medium mb-2">Votre liste d'invités est vide.</p>
+                      <p className="text-xs text-[#0A1226]/40 uppercase tracking-widest font-bold">Utilisez le module d'import Excel à droite pour commencer.</p>
                     </div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-sm">
                         <thead>
-                          <tr className="border-b border-black/5 text-festara-ink/50 uppercase tracking-wider text-[10px] font-bold">
-                            <th className="pb-3 pl-2">Nom</th>
-                            <th className="pb-3 text-center">Personnes</th>
-                            <th className="pb-3 text-center">RSVP</th>
-                            <th className="pb-3 text-center">Statut Jour-J</th>
+                          <tr className="border-b border-black/5 text-[#0A1226]/40 uppercase tracking-widest text-[10px] font-bold">
+                            <th className="pb-4 pl-4">Nom Complet</th>
+                            <th className="pb-4 text-center">Personnes</th>
+                            <th className="pb-4 text-center">RSVP</th>
+                            <th className="pb-4 text-center">Statut Jour-J</th>
                           </tr>
                         </thead>
                         <tbody>
                           {guests.map((g: any) => (
-                            <tr key={g.id} className="border-b border-black/[0.02] hover:bg-black/[0.01]">
-                              <td className="py-3 pl-2 font-bold text-festara-navy">{g.first_name} {g.last_name}</td>
-                              <td className="py-3 text-center text-festara-ink/70 font-mono"><span className="bg-festara-sand/50 px-2 py-0.5 rounded-md">{g.party_size}</span></td>
-                              <td className="py-3 text-center">
+                            <tr key={g.id} className="border-b border-black/[0.02] hover:bg-black/[0.02] transition-colors">
+                              <td className="py-4 pl-4 font-bold text-[#0A1226]">{g.first_name} {g.last_name}</td>
+                              <td className="py-4 text-center text-[#0A1226]/70 font-mono text-xs"><span className="bg-[#FDFBF7] border border-black/5 px-3 py-1 rounded-lg">{g.party_size}</span></td>
+                              <td className="py-4 text-center">
                                 {g.rsvp_confirmed_at ? (
-                                  <span className="px-2 py-1 bg-green-100 text-green-700 rounded-md text-[10px] font-bold uppercase tracking-wider">Confirmé</span>
+                                  <span className="px-3 py-1.5 bg-green-500/10 text-green-700 border border-green-500/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">Confirmé</span>
                                 ) : (
-                                  <span className="px-2 py-1 bg-gray-100 text-gray-500 rounded-md text-[10px] font-bold uppercase tracking-wider">En attente</span>
+                                  <span className="px-3 py-1.5 bg-gray-500/10 text-gray-500 border border-gray-500/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">En attente</span>
                                 )}
                               </td>
-                              <td className="py-3 text-center">
+                              <td className="py-4 text-center">
                                 {g.scanned_at ? (
-                                  <span className="px-2 py-1 bg-festara-gold/20 text-festara-gold rounded-md text-[10px] font-bold uppercase tracking-wider">Scanné</span>
+                                  <span className="px-3 py-1.5 bg-festara-gold/10 text-festara-gold border border-festara-gold/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">Scanné</span>
                                 ) : (
-                                  <span className="text-festara-ink/20">-</span>
+                                  <span className="text-[#0A1226]/20 font-bold">-</span>
                                 )}
                               </td>
                             </tr>
@@ -245,7 +283,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
                   )}
                 </div>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <GuestImporter eventId={ev.id} />
                 <WhatsAppDispatcher guests={guests} eventSlug={ev.slug} />
               </div>
@@ -253,16 +291,16 @@ export default async function EditEvent({ params, searchParams }: Props) {
           )}
 
           {tab === 'studio' && (
-            <div className="grid lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <div className="glass bg-white/90 rounded-3xl p-8 shadow-sm border border-black/5">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-8 h-8 rounded-full bg-festara-navy/10 flex items-center justify-center text-festara-navy">⚙️</div>
-                    <h2 className="text-2xl font-bold text-festara-navy font-serif">Studio de Personnalisation</h2>
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white">
+                  <div className="flex items-center gap-4 mb-10">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-200/50 flex items-center justify-center text-slate-600 shadow-inner border border-white text-xl">🎨</div>
+                    <h2 className="text-2xl font-bold text-[#0A1226] font-serif">Studio de Personnalisation</h2>
                   </div>
 
-                  <form action={action} className="space-y-8">
-                    <div className="grid sm:grid-cols-2 gap-6">
+                  <form action={action} className="space-y-10">
+                    <div className="grid sm:grid-cols-2 gap-8">
                       <div>
                         <label className={labelClass}>Titre de l'événement</label>
                         <input name="title" defaultValue={ev.title} className={inputClass} placeholder="Aïda & Modou" />
@@ -277,101 +315,105 @@ export default async function EditEvent({ params, searchParams }: Props) {
                       </div>
                     </div>
 
-                    <div className="pt-2">
+                    <div className="pt-4">
                       <AiTextGenerator initialText={ev.welcome_message} title={ev.title} />
                     </div>
 
-                    <div className="pt-6 border-t border-black/5">
-                      <h3 className="text-lg font-bold text-festara-navy mb-4">Programme & Lieux</h3>
-                      <div className="space-y-4">
+                    <div className="pt-8 border-t border-black/5">
+                      <h3 className="text-xl font-bold text-[#0A1226] font-serif mb-6">Programme & Lieux</h3>
+                      <div className="space-y-6">
                         {rows.map((c, i) => (
-                          <div key={i} className="bg-festara-sand/50 border border-black/5 rounded-2xl p-5 transition-shadow hover:shadow-md relative overflow-hidden group">
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-festara-gold/30 group-focus-within:bg-festara-gold transition-colors"></div>
+                          <div key={i} className="bg-[#FDFBF7] border border-black/5 rounded-3xl p-8 transition-shadow hover:shadow-md relative overflow-hidden group">
+                            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-festara-gold/30 group-focus-within:bg-festara-gold transition-colors"></div>
                             <input type="hidden" name={`cid_${i}`} defaultValue={c?.id || `c${i}`} />
                             
-                            <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                            <div className="grid sm:grid-cols-2 gap-6 mb-6">
                               <div>
                                 <label className={labelClass}>Cérémonie</label>
-                                <input name={`name_${i}`} defaultValue={c?.name || ''} placeholder={`Nom (ex: Mairie)`} className={inputClass} />
+                                <input name={`name_${i}`} defaultValue={c?.name || ''} placeholder={`Nom (ex: Mairie)`} className={inputClass + ' bg-white'} />
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex gap-4">
                                 <div className="flex-1">
                                   <label className={labelClass}>Date</label>
-                                  <input type="date" name={`date_${i}`} defaultValue={c?.date || ''} className={inputClass} />
+                                  <input type="date" name={`date_${i}`} defaultValue={c?.date || ''} className={inputClass + ' bg-white'} />
                                 </div>
                                 <div className="flex-1">
                                   <label className={labelClass}>Heure</label>
-                                  <input type="time" name={`time_${i}`} defaultValue={c?.time || ''} className={inputClass} />
+                                  <input type="time" name={`time_${i}`} defaultValue={c?.time || ''} className={inputClass + ' bg-white'} />
                                 </div>
                               </div>
                             </div>
                             
                             <div>
                               <label className={labelClass}>Adresse exacte</label>
-                              <input name={`location_${i}`} defaultValue={c?.location || ''} placeholder="Lieu complet" className={inputClass} />
+                              <input name={`location_${i}`} defaultValue={c?.location || ''} placeholder="Lieu complet" className={inputClass + ' bg-white'} />
                             </div>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="pt-6 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-6 bg-festara-navy/[0.02] p-4 rounded-2xl border border-festara-navy/5">
-                      <div className="flex flex-col gap-1 w-full sm:w-auto">
-                        <label className={`flex items-center gap-3 ${ev.plan === 'gratuit' ? 'cursor-not-allowed opacity-70' : 'cursor-pointer group'}`}>
+                    <div className="pt-8 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-8 bg-gradient-to-r from-festara-sand/50 to-transparent p-6 rounded-3xl border border-[#0A1226]/5">
+                      <div className="flex flex-col gap-2 w-full sm:w-auto">
+                        <label className={`flex items-center gap-4 ${ev.plan === 'gratuit' ? 'cursor-not-allowed opacity-60' : 'cursor-pointer group'}`}>
                           <div className="relative">
                             <input type="checkbox" name="is_published" defaultChecked={ev.plan === 'gratuit' ? false : ev.is_published} disabled={ev.plan === 'gratuit'} className="peer sr-only" />
-                            <div className={`w-12 h-6 rounded-full transition-colors ${ev.plan === 'gratuit' ? 'bg-black/10' : 'bg-black/10 peer-checked:bg-festara-teal'}`}></div>
-                            <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-6 shadow-sm"></div>
+                            <div className={`w-14 h-7 rounded-full transition-colors border border-black/5 ${ev.plan === 'gratuit' ? 'bg-[#0A1226]/10' : 'bg-[#0A1226]/10 peer-checked:bg-festara-teal'}`}></div>
+                            <div className="absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform peer-checked:translate-x-7 shadow-sm"></div>
                           </div>
-                          <span className="text-sm font-bold text-festara-navy flex items-center gap-2">
+                          <span className="text-sm font-bold text-[#0A1226] flex items-center gap-2 uppercase tracking-wider">
                             Publier officiellement {ev.plan === 'gratuit' && '🔒'}
                           </span>
                         </label>
                         {ev.plan === 'gratuit' && (
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-red-500/80 mt-1 ml-1 max-w-[200px] leading-tight">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-red-500/80 mt-1 max-w-[250px] leading-relaxed">
                             Achetez un abonnement pour activer le lien de vos invités.
                           </p>
                         )}
                       </div>
 
-                      <button className="btn-primary w-full sm:w-auto px-8 py-3 rounded-xl">Enregistrer les modifications</button>
+                      <button className="relative group overflow-hidden bg-[#0A1226] text-white w-full sm:w-auto px-10 py-5 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all hover:shadow-[0_15px_30px_rgba(10,18,38,0.2)] hover:-translate-y-1">
+                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
+                        <span className="relative z-10">Enregistrer les modifications</span>
+                      </button>
                     </div>
                   </form>
                 </div>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <GalleryUploader eventId={ev.id} initialUrls={ev.couple_photo_url} />
               </div>
             </div>
           )}
 
           {tab === 'security' && (
-            <div className="max-w-2xl mx-auto">
-              <div className="glass bg-[#0A1226] text-white rounded-3xl p-8 shadow-2xl relative overflow-hidden group border border-white/10">
-                <div className="absolute -right-20 -top-20 w-64 h-64 bg-festara-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-[#0A1226] text-white rounded-[3rem] p-10 sm:p-16 shadow-[0_30px_60px_rgba(10,18,38,0.4)] relative overflow-hidden group border border-white/10">
+                <div className="absolute -right-32 -top-32 w-96 h-96 bg-[radial-gradient(circle,rgba(197,154,69,0.15)_0%,transparent_60%)] rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
                 
-                <div className="flex items-center gap-4 mb-6 relative z-10">
-                  <div className="w-12 h-12 rounded-full bg-festara-gold/20 flex items-center justify-center text-festara-gold text-2xl">🛡️</div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-festara-gold/20 to-festara-gold/5 flex items-center justify-center text-festara-gold text-3xl shadow-inner border border-festara-gold/20">🛡️</div>
                   <div>
-                    <h2 className="text-2xl font-bold font-serif">Mode Sécurité & Vigiles</h2>
-                    <p className="text-sm text-white/60 font-medium mt-1">Interface isolée pour le contrôle d'accès</p>
+                    <h2 className="text-3xl font-bold font-serif mb-2">Mode Sécurité & Vigiles</h2>
+                    <p className="text-base text-white/60 font-medium">Interface isolée pour le contrôle d'accès</p>
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 relative z-10">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-festara-gold mb-3">Comment ça marche ?</h3>
-                  <ul className="text-sm text-white/80 space-y-3 font-medium">
-                    <li className="flex gap-3"><span className="text-festara-gold">1.</span> Cliquez sur le bouton ci-dessous pour générer le lien de sécurité.</li>
-                    <li className="flex gap-3"><span className="text-festara-gold">2.</span> Partagez ce lien à vos agents de sécurité à l'entrée.</li>
-                    <li className="flex gap-3"><span className="text-festara-gold">3.</span> Les agents ouvrent le lien sur leur smartphone (la caméra s'active).</li>
-                    <li className="flex gap-3"><span className="text-festara-gold">4.</span> Ils scannent les QR Codes. Le retour aux paramètres privés de l'événement est bloqué pour eux.</li>
+                <div className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-10 relative z-10 backdrop-blur-md">
+                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-festara-gold mb-5">Comment ça marche ?</h3>
+                  <ul className="text-sm text-white/80 space-y-5 font-medium leading-relaxed">
+                    <li className="flex gap-4"><span className="text-festara-gold font-bold">1.</span> Cliquez sur le bouton ci-dessous pour générer le lien de sécurité.</li>
+                    <li className="flex gap-4"><span className="text-festara-gold font-bold">2.</span> Partagez ce lien à vos agents de sécurité à l'entrée.</li>
+                    <li className="flex gap-4"><span className="text-festara-gold font-bold">3.</span> Les agents ouvrent le lien sur leur smartphone (la caméra s'active).</li>
+                    <li className="flex gap-4"><span className="text-festara-gold font-bold">4.</span> Ils scannent les QR Codes. Le retour aux paramètres privés de l'événement est bloqué pour eux.</li>
                   </ul>
                 </div>
                 
-                <Link href={`/scan/${ev.id}`} target="_blank" className="btn bg-festara-gold hover:bg-[#DFB769] text-festara-navy font-bold w-full py-5 text-lg shadow-[0_10px_30px_rgba(197,154,69,0.3)] hover:shadow-[0_15px_40px_rgba(197,154,69,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-3 relative z-10 rounded-xl">
-                  <span className="text-2xl">📷</span>
-                  Ouvrir le Scanner de QR Codes
+                <Link href={`/scan/${ev.id}`} target="_blank" className="relative group overflow-hidden bg-gradient-to-r from-festara-gold to-[#DFB769] hover:from-[#DFB769] hover:to-[#C59A45] text-[#0A1226] font-bold w-full py-6 text-lg shadow-[0_15px_40px_rgba(197,154,69,0.3)] hover:shadow-[0_20px_50px_rgba(197,154,69,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-4 z-10 rounded-[2rem]">
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
+                  <span className="text-3xl relative z-10 group-hover:scale-110 transition-transform">📷</span>
+                  <span className="relative z-10 tracking-wide">Ouvrir le Scanner de QR Codes</span>
                 </Link>
               </div>
             </div>
