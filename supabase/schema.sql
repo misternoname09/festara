@@ -197,7 +197,9 @@ create policy contrib_owner_read on public.contributions
 -- =====================================================================
 -- 8. VUE : statistiques dashboard (confirmes / en attente / total)
 -- =====================================================================
-create or replace view public.event_stats as
+drop view if exists public.event_stats;
+create view public.event_stats
+with (security_invoker = true) as
 select
   e.id as event_id,
   count(g.*)                                              as guests_total,
@@ -208,6 +210,8 @@ from public.events e
 left join public.guests g on g.event_id = e.id
 group by e.id;
 
--- =====================================================================
+-- NOTE: Si vous avez déjà exécuté une ancienne version de ce script, 
+-- vous DEVEZ le ré-exécuter dans l'éditeur SQL de Supabase manuellement 
+-- pour appliquer le security_invoker = true à la vue event_stats.-- =====================================================================
 -- FIN — Festara / Yëgël schema v2.0
 -- =====================================================================

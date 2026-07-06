@@ -19,7 +19,11 @@ export default async function Dashboard() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
-  const { data: stats } = await supabase.from('event_stats').select('*');
+  const eventIds = (events ?? []).map(e => e.id);
+  const { data: stats } = await supabase
+    .from('event_stats')
+    .select('*')
+    .in('event_id', eventIds);
   const statMap = new Map((stats as EventStats[] | null)?.map((s) => [s.event_id, s]) ?? []);
 
   const list = (events as EventRow[] | null) ?? [];

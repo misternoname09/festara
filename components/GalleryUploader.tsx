@@ -37,7 +37,11 @@ export default function GalleryUploader({ eventId, initialUrls }: { eventId: str
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileExt = file.name.split('.').pop();
-        const fileName = `${eventId}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Utilisateur non authentifié.");
+        
+        const fileName = `${user.id}/${eventId}-${Math.random().toString(36).substring(2)}.${fileExt}`;
 
         // Upload to bucket 'festara-images'
         const { error: uploadError } = await supabase.storage
@@ -75,6 +79,16 @@ export default function GalleryUploader({ eventId, initialUrls }: { eventId: str
   async function removeImage(urlToRemove: string) {
     const updatedGallery = images.filter((u) => u !== urlToRemove);
     setImages(updatedGallery);
+    
+    // Supprimer le fichier du bucket si c'est possible
+    try {
+      const pathToRemove = urlToRemove.split('/public/festara-images/')[1];
+      if (pathToRemove) {
+        await supabase.storage.from('festara-images').remove([pathToRemove]);
+      }
+    } catch (e) {
+      console.error("Erreur suppression image:", e);
+    }
     
     await supabase
       .from('events')
