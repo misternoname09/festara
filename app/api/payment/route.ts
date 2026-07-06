@@ -63,7 +63,7 @@ export async function POST(req: Request) {
         actions: {
           cancel_url: `${siteUrl}/dashboard/${eventId}`,
           return_url: `${siteUrl}/dashboard/${eventId}?payment=success`,
-          callback_url: `${siteUrl}/api/webhooks/paydunya`,
+          callback_url: `${siteUrl}/api/pay/paydunya/callback`,
         },
         custom_data: {
           event_id: eventId,

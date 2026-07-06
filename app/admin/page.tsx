@@ -16,8 +16,14 @@ export default async function AdminPage() {
 
   return (
     <AdminClient 
+      currentRole={data.currentRole}
+      initialAdminUsers={data.adminUsersList}
       initialUsers={data.users} 
-      initialTransactions={data.transactions} 
+      initialTransactions={data.transactions}
+      initialPayouts={data.payouts}
+      initialTickets={data.tickets}
+      initialEvents={data.events}
+      initialSettings={data.settings}
       stats={data.stats} 
     />
   );

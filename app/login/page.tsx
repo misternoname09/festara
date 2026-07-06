@@ -8,7 +8,7 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [mode, setMode] = useState<'login' | 'signup' | 'forgot_password'>('login');
   const [step, setStep] = useState<'enter' | 'otp'>('enter');
 
   const [email, setEmail] = useState('');
@@ -61,6 +61,24 @@ export default function LoginPage() {
       } else {
         setError(err.message || 'Erreur lors de la connexion.');
       }
+    }
+  }
+
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/update-password`,
+      });
+      if (error) throw error;
+      alert("Un email contenant un lien de réinitialisation a été envoyé !");
+      setMode('login');
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de l'envoi de l'email.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -159,6 +177,8 @@ export default function LoginPage() {
             <p className="text-festara-ink/50 font-medium">
               {mode === 'login' 
                 ? 'Saisissez vos identifiants pour accéder à votre tableau de bord.' 
+                : mode === 'forgot_password'
+                ? 'Saisissez votre email pour réinitialiser votre mot de passe.'
                 : 'Rejoignez-nous pour concevoir des invitations inoubliables.'}
             </p>
           </div>
@@ -168,11 +188,11 @@ export default function LoginPage() {
               <button
                 onClick={() => { setMode('login'); setError(null); }}
                 className={`text-sm font-bold uppercase tracking-widest transition-all ${
-                  mode === 'login' ? 'text-festara-navy' : 'text-festara-ink/30 hover:text-festara-navy/60'
+                  mode === 'login' || mode === 'forgot_password' ? 'text-festara-navy' : 'text-festara-ink/30 hover:text-festara-navy/60'
                 }`}
               >
                 Connexion
-                {mode === 'login' && <div className="h-0.5 w-full bg-festara-gold mt-4 absolute left-0" style={{ width: '85px' }}></div>}
+                {(mode === 'login' || mode === 'forgot_password') && <div className="h-0.5 w-full bg-festara-gold mt-4 absolute left-0" style={{ width: '85px' }}></div>}
               </button>
               <button
                 onClick={() => { setMode('signup'); setError(null); }}
@@ -215,11 +235,55 @@ export default function LoginPage() {
                 <label htmlFor="pwd_login" className={labelClass + (password ? ' -translate-y-2 scale-90' : '')}>Mot de passe</label>
               </div>
 
+              <div className="flex justify-end">
+                <button 
+                  type="button" 
+                  onClick={() => setMode('forgot_password')} 
+                  className="text-xs text-festara-navy/70 hover:text-festara-navy font-bold underline"
+                >
+                  Mot de passe oublié ?
+                </button>
+              </div>
+
               {error && <p className="text-sm text-red-600 bg-red-50 p-4 rounded-xl border border-red-100">{error}</p>}
               
               <button disabled={loading} className="btn-primary w-full py-4 text-base shadow-lg hover:-translate-y-0.5 transition-all mt-4">
                 {loading ? 'Authentification…' : 'Se connecter'}
               </button>
+            </form>
+          )}
+
+          {/* FORGOT PASSWORD FORM */}
+          {mode === 'forgot_password' && (
+            <form onSubmit={handleResetPassword} className="space-y-5">
+              <div className="relative rounded-xl overflow-hidden shadow-sm">
+                <input
+                  type="email"
+                  required
+                  id="email_forgot"
+                  className={inputClass}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder=" "
+                />
+                <label htmlFor="email_forgot" className={labelClass + (email ? ' -translate-y-2 scale-90' : '')}>Email</label>
+              </div>
+
+              {error && <p className="text-sm text-red-600 bg-red-50 p-4 rounded-xl border border-red-100">{error}</p>}
+              
+              <button disabled={loading} className="btn-primary w-full py-4 text-base shadow-lg hover:-translate-y-0.5 transition-all mt-4">
+                {loading ? 'Envoi...' : 'Réinitialiser le mot de passe'}
+              </button>
+              
+              <div className="text-center mt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setMode('login')} 
+                  className="text-sm text-festara-navy/70 hover:text-festara-navy font-bold"
+                >
+                  Retour à la connexion
+                </button>
+              </div>
             </form>
           )}
 

@@ -3,21 +3,52 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 export default function AdminLogin() {
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
+  const [step, setStep] = useState<'email' | 'otp'>('email');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const supabase = createClient();
 
-  const handleConnect = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp.length >= 5) {
-      // Pour la démo, on définit un cookie pour passer la vérification isAdmin()
-      document.cookie = "admin_demo_auth=true; path=/";
-      setError('');
+    setLoading(true);
+    setError('');
+    
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email,
+      });
+      if (error) throw error;
+      setStep('otp');
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors de l\'envoi du code.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: 'email',
+      });
+      if (error) throw error;
       router.push('/admin');
-    } else {
-      setError("ACCÈS REFUSÉ : Code de sécurité invalide.");
+    } catch (err: any) {
+      setError('ACCÈS REFUSÉ : Code de sécurité invalide.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -33,7 +64,7 @@ export default function AdminLogin() {
           <div>
             <h1 className="text-sm tracking-widest text-green-700">SYSTEM.CORE</h1>
             <h2 className="text-3xl font-bold tracking-tight text-green-400 mt-1">
-              MboloPay Admin<span className="animate-pulse">_</span>
+              Festara Admin<span className="animate-pulse">_</span>
             </h2>
           </div>
           <div className="text-right hidden sm:block">
@@ -66,39 +97,75 @@ export default function AdminLogin() {
             </div>
           )}
 
-          <form onSubmit={handleConnect} className="space-y-6">
-            <div>
-              <label className="block text-sm font-bold text-green-600 mb-2">CODE DE SÉCURITÉ (OTP)</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className="w-full bg-black border-2 border-green-800 text-green-400 text-2xl tracking-[0.5em] p-3 focus:outline-none focus:border-green-400 focus:shadow-[0_0_10px_rgba(0,255,0,0.3)] transition-colors text-center"
-              />
-              <p className="text-xs text-green-700 mt-2">&gt; Code envoyé au +221 781210104</p>
-            </div>
+          {step === 'email' ? (
+            <form onSubmit={handleSendOtp} className="space-y-6 relative z-20">
+              <div>
+                <label className="block text-sm font-bold text-green-600 mb-2">IDENTIFIANT ADMINISTRATEUR (EMAIL)</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-black border-2 border-green-800 text-green-400 text-xl tracking-widest p-3 focus:outline-none focus:border-green-400 focus:shadow-[0_0_10px_rgba(0,255,0,0.3)] transition-colors"
+                  placeholder="admin@domain.com"
+                />
+              </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-              <Link 
-                href="/" 
-                className="text-green-700 hover:text-green-400 text-sm flex items-center transition-colors group"
-              >
-                <span className="group-hover:-translate-x-1 transition-transform mr-2">←</span> RETOUR
-              </Link>
-              
-              <button 
-                type="submit"
-                className="bg-green-900/20 border border-green-500 text-green-400 px-8 py-3 font-bold hover:bg-green-500 hover:text-black transition-all hover:shadow-[0_0_15px_rgba(0,255,0,0.5)] focus:outline-none"
-              >
-                SE CONNECTER
-              </button>
-            </div>
-          </form>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+                <Link 
+                  href="/" 
+                  className="text-green-700 hover:text-green-400 text-sm flex items-center transition-colors group"
+                >
+                  <span className="group-hover:-translate-x-1 transition-transform mr-2">←</span> RETOUR
+                </Link>
+                
+                <button 
+                  type="submit"
+                  disabled={loading}
+                  className="bg-green-900/20 border border-green-500 text-green-400 px-8 py-3 font-bold hover:bg-green-500 hover:text-black transition-all hover:shadow-[0_0_15px_rgba(0,255,0,0.5)] focus:outline-none disabled:opacity-50"
+                >
+                  {loading ? 'ENVOI...' : 'CONTINUER'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOtp} className="space-y-6 relative z-20">
+              <div>
+                <label className="block text-sm font-bold text-green-600 mb-2">CODE DE SÉCURITÉ (OTP)</label>
+                <input
+                  type="text"
+                  required
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="w-full bg-black border-2 border-green-800 text-green-400 text-2xl tracking-[0.5em] p-3 focus:outline-none focus:border-green-400 focus:shadow-[0_0_10px_rgba(0,255,0,0.3)] transition-colors text-center"
+                />
+                <p className="text-xs text-green-700 mt-2">&gt; Code de vérification envoyé à votre adresse enregistrée.</p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+                <button 
+                  type="button"
+                  onClick={() => setStep('email')} 
+                  className="text-green-700 hover:text-green-400 text-sm flex items-center transition-colors group"
+                >
+                  <span className="group-hover:-translate-x-1 transition-transform mr-2">←</span> CHANGER EMAIL
+                </button>
+                
+                <button 
+                  type="submit"
+                  disabled={loading}
+                  className="bg-green-900/20 border border-green-500 text-green-400 px-8 py-3 font-bold hover:bg-green-500 hover:text-black transition-all hover:shadow-[0_0_15px_rgba(0,255,0,0.5)] focus:outline-none disabled:opacity-50"
+                >
+                  {loading ? 'VÉRIFICATION...' : 'SE CONNECTER'}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
         {/* FOOTER */}
         <div className="border-t border-green-900 mt-8 pt-4 text-center">
-          <p className="text-xs text-green-800">© 2026 MboloPay Operations.</p>
+          <p className="text-xs text-green-800">© 2026 Festara Operations.</p>
         </div>
 
       </div>
