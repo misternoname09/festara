@@ -94,10 +94,11 @@ create index if not exists idx_guests_pass_code on public.guests(pass_code);
 -- 4. TABLE : payments  (achat d'un plan par les maries)
 -- =====================================================================
 create table if not exists public.payments (
-  id          uuid primary key default gen_random_uuid(),
-  event_id    uuid not null references public.events(id) on delete cascade,
-  user_id     uuid not null references auth.users(id) on delete cascade,
-  amount      integer not null,             -- FCFA (ou centimes EUR/USD)
+  id               uuid primary key default gen_random_uuid(),
+  event_id         uuid references public.events(id) on delete cascade, -- Nullable for agency plans
+  organization_id  uuid references public.organizations(id) on delete cascade,
+  user_id          uuid not null references auth.users(id) on delete cascade,
+  amount           integer not null,             -- FCFA (ou centimes EUR/USD)
   currency    text not null default 'XOF',  -- XOF | EUR | USD | GBP
   provider    payment_provider not null,
   status      payment_status not null default 'pending',

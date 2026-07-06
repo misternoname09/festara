@@ -9,9 +9,14 @@ import GalleryUploader from '@/components/GalleryUploader';
 import AiTextGenerator from '@/components/AiTextGenerator';
 import GuestImporter from '@/components/GuestImporter';
 import WhatsAppDispatcher from '@/components/WhatsAppDispatcher';
+import ScrollToTop from '@/components/ScrollToTop';
 
 import DashboardTabs from '@/components/DashboardTabs';
 import CircularGauge from '@/components/CircularGauge';
+import BudgetTracker from '@/components/BudgetTracker';
+import PayoutRequest from '@/components/PayoutRequest';
+import ShareLink from '@/components/ShareLink';
+import { getAvailableBalance } from '@/lib/balance';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,11 +31,13 @@ export default async function EditEvent({ params, searchParams }: Props) {
 
   const { data } = await supabase
     .from('events')
-    .select('*')
+    .select('*, organizations(plan)')
     .eq('id', params.id)
     .maybeSingle();
   if (!data) notFound();
-  const ev = data as EventRow;
+  const ev = data as EventRow & { organizations: { plan: string } | null };
+
+  const isFreePlan = ev.plan === 'gratuit' && ev.organizations?.plan !== 'agency';
 
   // Recuperation des statistiques
   const { data: stat } = await supabase
@@ -63,7 +70,31 @@ export default async function EditEvent({ params, searchParams }: Props) {
     .order('created_at', { ascending: false });
   const guests = guestsData || [];
 
-  const tab = searchParams.tab || 'overview';
+  // Récupération des postes budgétaires
+  const { data: budgetData } = await supabase
+    .from('budget_items')
+    .select('*')
+    .eq('event_id', ev.id)
+    .order('created_at', { ascending: true });
+  const budgetItems = budgetData || [];
+
+  // Récupération des reversements et solde
+  const availableBalance = await getAvailableBalance(ev.id);
+  const { data: payoutsData } = await supabase
+    .from('payouts')
+    .select('*')
+    .eq('event_id', ev.id)
+    .order('created_at', { ascending: false });
+  const payouts = payoutsData || [];
+
+  // Récupération des agences de l'utilisateur (filtrées par RLS org_select)
+  const { data: userOrgsData } = await supabase
+    .from('organizations')
+    .select('id, name')
+    .order('name');
+  const userOrgs = userOrgsData || [];
+
+  const tab = searchParams.tab || 'studio';
   const confirmedGuestsCount = guests.filter((g: any) => g.rsvp_confirmed_at).length;
   const scannedGuestsCount = guests.filter((g: any) => g.scanned_at).length;
   const totalPeopleCount = s?.people_confirmed ?? 0;
@@ -201,6 +232,13 @@ export default async function EditEvent({ params, searchParams }: Props) {
                     </div>
                   )}
                 </div>
+
+                {/* Payout Request */}
+                <PayoutRequest 
+                  eventId={ev.id} 
+                  availableBalance={availableBalance} 
+                  payouts={payouts} 
+                />
               </div>
 
               {/* Sidebar Overview */}
@@ -285,7 +323,15 @@ export default async function EditEvent({ params, searchParams }: Props) {
               </div>
               <div className="space-y-8">
                 <GuestImporter eventId={ev.id} />
-                <WhatsAppDispatcher guests={guests} eventSlug={ev.slug} />
+                <WhatsAppDispatcher guests={guests} eventSlug={ev.slug} eventId={ev.id} plan={ev.plan} />
+              </div>
+            </div>
+          )}
+
+          {tab === 'budget' && (
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-3">
+                <BudgetTracker eventId={ev.id} initialItems={budgetItems} />
               </div>
             </div>
           )}
@@ -294,10 +340,25 @@ export default async function EditEvent({ params, searchParams }: Props) {
             <div className="grid lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-8">
                 <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white">
-                  <div className="flex items-center gap-4 mb-10">
+                  <div className="flex items-center gap-4 mb-6">
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-200/50 flex items-center justify-center text-slate-600 shadow-inner border border-white text-xl">🎨</div>
                     <h2 className="text-2xl font-bold text-[#0A1226] font-serif">Studio de Personnalisation</h2>
                   </div>
+
+                  <ScrollToTop trigger={ev.is_published} />
+
+                  {ev.is_published && (
+                    <div id="studio-banner" className="mb-10 p-5 bg-green-50 border border-green-200 rounded-3xl flex flex-col sm:flex-row items-center gap-5 animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm">
+                      <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex flex-shrink-0 items-center justify-center text-2xl shadow-inner">✅</div>
+                      <div className="flex-1 text-center sm:text-left">
+                        <h3 className="text-green-800 font-bold text-lg">Cet événement est en ligne !</h3>
+                        <p className="text-green-700/80 text-sm mt-1">Partagez ce lien avec vos invités pour qu'ils puissent confirmer leur présence.</p>
+                      </div>
+                      <div className="w-full sm:w-auto">
+                        <ShareLink slug={ev.slug} title={ev.title} />
+                      </div>
+                    </div>
+                  )}
 
                   <form action={action} className="space-y-10">
                     <div className="grid sm:grid-cols-2 gap-8">
@@ -310,6 +371,18 @@ export default async function EditEvent({ params, searchParams }: Props) {
                         <select name="template" defaultValue={ev.template} className={inputClass}>
                           {Object.entries(TEMPLATES).map(([k, v]) => (
                             <option key={k} value={k}>{v.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-8">
+                      <div>
+                        <label className={labelClass}>Agence (B2B)</label>
+                        <select name="organization_id" defaultValue={ev.organization_id || ''} className={inputClass}>
+                          <option value="">-- Aucune (Événement personnel) --</option>
+                          {userOrgs.map((org: any) => (
+                            <option key={org.id} value={org.id}>{org.name}</option>
                           ))}
                         </select>
                       </div>
@@ -353,28 +426,44 @@ export default async function EditEvent({ params, searchParams }: Props) {
                       </div>
                     </div>
 
-                    <div className="pt-8 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-8 bg-gradient-to-r from-festara-sand/50 to-transparent p-6 rounded-3xl border border-[#0A1226]/5">
-                      <div className="flex flex-col gap-2 w-full sm:w-auto">
-                        <label className={`flex items-center gap-4 ${ev.plan === 'gratuit' ? 'cursor-not-allowed opacity-60' : 'cursor-pointer group'}`}>
-                          <div className="relative">
-                            <input type="checkbox" name="is_published" defaultChecked={ev.plan === 'gratuit' ? false : ev.is_published} disabled={ev.plan === 'gratuit'} className="peer sr-only" />
-                            <div className={`w-14 h-7 rounded-full transition-colors border border-black/5 ${ev.plan === 'gratuit' ? 'bg-[#0A1226]/10' : 'bg-[#0A1226]/10 peer-checked:bg-festara-teal'}`}></div>
-                            <div className="absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform peer-checked:translate-x-7 shadow-sm"></div>
+                    <div className="group/publish pt-8 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-8 bg-gradient-to-r from-festara-sand/50 to-transparent p-6 rounded-3xl border border-[#0A1226]/5">
+                      <div className="flex flex-col gap-2">
+                        <label className={`flex items-center gap-4 ${isFreePlan ? 'cursor-not-allowed opacity-60' : 'cursor-pointer group/toggle'}`}>
+                          <input type="checkbox" name="is_published" defaultChecked={isFreePlan ? false : ev.is_published} disabled={isFreePlan} className="peer sr-only" />
+                          <div className={`relative w-14 h-7 rounded-full transition-colors border border-black/5 ${isFreePlan ? 'bg-[#0A1226]/10' : 'bg-[#0A1226]/10 peer-checked:bg-festara-teal'}`}>
+                            <div className="absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-all peer-checked:translate-x-7 shadow-sm"></div>
                           </div>
-                          <span className="text-sm font-bold text-[#0A1226] flex items-center gap-2 uppercase tracking-wider">
-                            Publier officiellement {ev.plan === 'gratuit' && '🔒'}
+                          <span className="font-bold text-[#0A1226] text-sm flex items-center gap-2 uppercase tracking-wider group-has-[:checked]/publish:text-festara-teal transition-colors">
+                            Publier officiellement {isFreePlan && '🔒'}
                           </span>
                         </label>
-                        {ev.plan === 'gratuit' && (
+                        {isFreePlan && (
                           <p className="text-[10px] font-bold uppercase tracking-wider text-red-500/80 mt-1 max-w-[250px] leading-relaxed">
                             Achetez un abonnement pour activer le lien de vos invités.
                           </p>
                         )}
                       </div>
 
-                      <button className="relative group overflow-hidden bg-[#0A1226] text-white w-full sm:w-auto px-10 py-5 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all hover:shadow-[0_15px_30px_rgba(10,18,38,0.2)] hover:-translate-y-1">
-                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
-                        <span className="relative z-10">Enregistrer les modifications</span>
+                      <button className="relative group/btn overflow-hidden w-full sm:w-auto px-10 py-5 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all hover:-translate-y-1 bg-[#0A1226] text-white hover:shadow-[0_15px_30px_rgba(10,18,38,0.2)] group-has-[:checked]/publish:bg-gradient-to-r group-has-[:checked]/publish:from-festara-gold group-has-[:checked]/publish:via-[#DFB769] group-has-[:checked]/publish:to-festara-gold group-has-[:checked]/publish:text-[#0A1226] group-has-[:checked]/publish:shadow-[0_15px_40px_rgba(197,154,69,0.4)] group-has-[:checked]/publish:scale-105 duration-300">
+                        {/* Shimmer effect */}
+                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-shimmer"></span>
+                        
+                        {/* Dynamic Button Content */}
+                        <span className="relative z-10 flex items-center justify-center gap-3">
+                          {ev.is_published ? (
+                            <>
+                              <span className="hidden group-has-[:checked]/publish:block">Enregistrer les modifications</span>
+                              <span className="group-has-[:checked]/publish:hidden">🛑 Retirer la publication</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="group-has-[:checked]/publish:hidden">Enregistrer les modifications</span>
+                              <span className="hidden group-has-[:checked]/publish:flex items-center gap-2 animate-pulse">
+                                <span className="text-xl">✨</span> Mettre en ligne l'Événement ! <span className="text-xl">✨</span>
+                              </span>
+                            </>
+                          )}
+                        </span>
                       </button>
                     </div>
                   </form>

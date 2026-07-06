@@ -77,12 +77,17 @@ export default async function Dashboard() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-festara-gold via-[#DFB769] to-festara-gold italic pr-4 drop-shadow-sm">Prestigieux.</span>
             </h1>
           </div>
-          <form action={signOut} className="sm:self-start mt-2">
-            <button className="group flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 text-white/90 hover:text-white border border-white/10 rounded-full transition-all font-medium text-sm hover:border-festara-gold/50 hover:shadow-[0_0_20px_rgba(197,154,69,0.2)]">
-              <span className="tracking-wide">Déconnexion</span>
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            </button>
-          </form>
+          <div className="flex items-center gap-4 sm:self-start mt-2">
+            <Link href="/dashboard/agencies" className="group flex items-center gap-2 px-5 py-2.5 bg-festara-gold/10 hover:bg-festara-gold/20 text-festara-gold border border-festara-gold/30 rounded-full transition-all font-bold text-xs uppercase tracking-widest hover:shadow-[0_0_15px_rgba(197,154,69,0.3)]">
+              <span>🏢 Mes Agences</span>
+            </Link>
+            <form action={signOut}>
+              <button className="group flex items-center gap-3 px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white/90 hover:text-white border border-white/10 rounded-full transition-all font-medium text-sm hover:border-festara-gold/50 hover:shadow-[0_0_20px_rgba(197,154,69,0.2)]">
+                <span className="tracking-wide">Déconnexion</span>
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              </button>
+            </form>
+          </div>
         </div>
 
         {/* --- CREATION ACTION WIDGET --- */}

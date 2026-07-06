@@ -35,6 +35,23 @@ export function createAdminClient() {
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } }
   );
+}
+
+// Helper métier pour vérifier si le user courant a le droit d'éditer/gérer un événement (Phase 4 / B2B)
+export async function verifyEventAccess(eventId: string) {
+  const supabase = createServerSupabase();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Non autorisé');
+
+  const { data: hasAccess } = await supabase.rpc('has_event_access', {
+    evt_id: eventId,
+    usr_id: user.id
+  });
+
+  if (!hasAccess) {
+    throw new Error('Accès refusé (non propriétaire et non membre de l\'agence)');
+  }
+
+  return { supabase, user };
 }

@@ -93,3 +93,14 @@ export interface GuestbookMessageRow {
   message: string;
   created_at: string;
 }
+
+export interface BudgetItem {
+  id: string;
+  event_id: string;
+  category: string;
+  planned_amount: number;
+  actual_amount: number;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}

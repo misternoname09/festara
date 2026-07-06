@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createServerSupabase } from '@/lib/supabase/server';
+import { createServerSupabase, verifyEventAccess } from '@/lib/supabase/server';
 import type { Ceremony } from '@/lib/types';
 
 function slugify(s: string): string {
@@ -29,6 +29,16 @@ export async function createEvent(formData: FormData) {
   const base = slugify(title) || 'mariage';
   const slug = `${base}-${Math.random().toString(36).slice(2, 6)}`;
 
+  // Vérifier la limite de 25 événements
+  const { count } = await supabase
+    .from('events')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id);
+
+  if (count !== null && count >= 25) {
+    throw new Error("Vous avez atteint la limite maximale de 25 événements.");
+  }
+
   const { data, error } = await supabase
     .from('events')
     .insert({ user_id: user.id, title, slug, template: 'modern' })
@@ -41,19 +51,34 @@ export async function createEvent(formData: FormData) {
 
 // Met a jour une invitation (titre, template, ceremonies, publication).
 export async function updateEvent(eventId: string, formData: FormData) {
-  const supabase = createServerSupabase();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect('/login');
+  const { supabase, user } = await verifyEventAccess(eventId);
 
   const title = String(formData.get('title') || '').trim();
   const template = String(formData.get('template') || 'modern');
   let is_published = formData.get('is_published') === 'on';
 
-  // Sécurité Paywall : Interdire la publication si le plan est "gratuit"
+  const organization_id = String(formData.get('organization_id') || '').trim() || null;
+
+  // Sécurité Paywall : Interdire la publication si le plan est "gratuit" et pas "agency"
+  let orgPlan = null;
+  if (organization_id) {
+    const { data: org } = await supabase.from('organizations').select('plan').eq('id', organization_id).single();
+    orgPlan = org?.plan;
+  }
+  
   const { data: ev } = await supabase.from('events').select('plan').eq('id', eventId).single();
-  if (ev && ev.plan === 'gratuit') {
+  const isFreePlan = ev?.plan === 'gratuit' && orgPlan !== 'agency';
+  
+  console.log("DEBUG publish:", {
+    checkbox_val: formData.get('is_published'),
+    is_published,
+    organization_id,
+    orgPlan,
+    eventPlan: ev?.plan,
+    isFreePlan
+  });
+
+  if (isFreePlan) {
     is_published = false;
   }
 
@@ -76,11 +101,14 @@ export async function updateEvent(eventId: string, formData: FormData) {
 
   const { error } = await supabase
     .from('events')
-    .update({ title, template, ceremonies, is_published, welcome_message })
-    .eq('id', eventId)
-    .eq('user_id', user.id);
+    .update({ title, template, ceremonies, is_published, welcome_message, organization_id })
+    .eq('id', eventId);
 
-  if (error) return;
+  if (error) {
+    console.error("Erreur lors de la mise à jour de l'événement:", error);
+    throw new Error(error.message);
+  }
+  
   revalidatePath(`/dashboard/${eventId}`);
   revalidatePath('/dashboard');
 }

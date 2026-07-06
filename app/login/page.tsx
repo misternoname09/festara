@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextUrl = searchParams.get('next') || '/dashboard';
   const supabase = createClient();
 
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot_password'>('login');
@@ -31,7 +33,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`,
         },
       });
       if (error) throw error;
@@ -52,7 +54,7 @@ export default function LoginPage() {
       });
       setLoading(false);
       if (error) throw error;
-      router.push('/dashboard');
+      router.push(nextUrl);
       router.refresh();
     } catch (err: any) {
       setLoading(false);
@@ -117,7 +119,7 @@ export default function LoginPage() {
       });
       setLoading(false);
       if (error) throw error;
-      router.push('/dashboard');
+      router.push(nextUrl);
       router.refresh();
     } catch (err: any) {
       setLoading(false);

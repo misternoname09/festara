@@ -4,6 +4,7 @@ import { getEventBySlug } from '@/lib/events';
 import Invitation from '@/components/Invitation';
 import Script from 'next/script';
 import { createServerSupabase } from '@/lib/supabase/server';
+import { headers } from 'next/headers';
 
 // Rendu dynamique (donnees a jour). Page legere : pas de JS lourd cote client.
 export const dynamic = 'force-dynamic';
@@ -20,6 +21,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `${first.name} · ${first.location}`
     : 'Vous êtes convié(e) à notre célébration.';
 
+  const headersList = headers();
+  const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000';
+  const protocol = host.includes('localhost') ? 'http' : 'https';
+  const ogUrl = `${protocol}://${host}/api/og?slug=${params.slug}`;
+
   return {
     title: `${event.title} — Festara`,
     description: desc,
@@ -27,13 +33,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: event.title,
       description: desc,
       type: 'website',
-      images: event.couple_photo_url ? [{ url: event.couple_photo_url }] : [],
+      images: [{ url: ogUrl }],
     },
     twitter: {
       card: 'summary_large_image',
       title: event.title,
       description: desc,
-      images: event.couple_photo_url ? [event.couple_photo_url] : [],
+      images: [ogUrl],
     }
   };
 }

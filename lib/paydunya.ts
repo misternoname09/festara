@@ -22,6 +22,7 @@ export function paydunyaHeaders(): Record<string, string> {
 export const PLANS: Record<string, { label: string; amount: number }> = {
   essentiel: { label: 'Festara Essentiel', amount: 15000 },
   premium: { label: 'Festara Premium', amount: 25000 },
+  agence: { label: 'Festara Agence Pro', amount: 100000 },
 };
 
 export interface CreateInvoiceResult {

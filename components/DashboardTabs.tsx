@@ -10,15 +10,16 @@ type Tab = {
 };
 
 const TABS: Tab[] = [
+  { id: 'studio', label: 'Studio Design', icon: '🎨' },
   { id: 'overview', label: "Vue d'ensemble", icon: '📊' },
   { id: 'guests', label: 'CRM & Invités', icon: '👥' },
-  { id: 'studio', label: 'Studio Design', icon: '🎨' },
+  { id: 'budget', label: 'Budget', icon: '💰' },
   { id: 'security', label: 'Sécurité & Scan', icon: '🛡️' },
 ];
 
 export default function DashboardTabs({ eventId }: { eventId: string }) {
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get('tab') || 'overview';
+  const currentTab = searchParams.get('tab') || 'studio';
 
   return (
     <div className="w-full overflow-x-auto hide-scrollbar mb-10 pb-2">

@@ -21,12 +21,19 @@ async function handle(token: string | null) {
     })
     .eq('provider_ref', token);
 
-  // Si paye : applique le plan a l'evenement
-  if (newStatus === 'confirmed' && customData?.event_id && PLANS[customData.plan]) {
-    await admin
-      .from('events')
-      .update({ plan: customData.plan, is_published: true })
-      .eq('id', customData.event_id);
+  // Si paye : applique le plan a l'evenement ou a l'agence
+  if (newStatus === 'confirmed' && PLANS[customData?.plan]) {
+    if (customData?.event_id) {
+      await admin
+        .from('events')
+        .update({ plan: customData.plan, is_published: true })
+        .eq('id', customData.event_id);
+    } else if (customData?.organization_id) {
+      await admin
+        .from('organizations')
+        .update({ plan: 'agency' }) // 'agency' est le type enum pour le plan
+        .eq('id', customData.organization_id);
+    }
   }
 
   return NextResponse.json({ received: true, status: newStatus });

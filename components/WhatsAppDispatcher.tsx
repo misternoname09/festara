@@ -3,9 +3,14 @@
 import { useState } from 'react';
 import type { GuestRow } from '@/lib/types';
 
-export default function WhatsAppDispatcher({ guests, eventSlug }: { guests: GuestRow[], eventSlug: string }) {
+export default function WhatsAppDispatcher({ guests, eventSlug, eventId, plan }: { guests: GuestRow[], eventSlug: string, eventId: string, plan: string }) {
   const [guestList, setGuestList] = useState(guests);
   const [mode, setMode] = useState<'invite' | 'remind'>('invite');
+  const [isSendingBulk, setIsSendingBulk] = useState(false);
+  const [bulkResult, setBulkResult] = useState<{sent: number, failed: number} | null>(null);
+
+  const isPro = plan === 'pro' || plan === 'premium';
+  const isDryRun = process.env.NEXT_PUBLIC_WHATSAPP_DRY_RUN === 'true';
 
   const importedGuests = guestList.filter(g => g.phone);
   
@@ -49,6 +54,46 @@ export default function WhatsAppDispatcher({ guests, eventSlug }: { guests: Gues
     });
   };
 
+  const handleBulkSend = async () => {
+    if (!isPro) {
+      alert("L'envoi en masse est réservé aux plans Pro/Premium.");
+      return;
+    }
+    
+    if (!confirm(`Envoyer automatiquement un message WhatsApp à tous les invités de cette liste (${displayedGuests.length} personnes) ?`)) return;
+    
+    setIsSendingBulk(true);
+    setBulkResult(null);
+    try {
+      const res = await fetch('/api/guests/whatsapp/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event_id: eventId, mode })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Erreur lors de l'envoi");
+      }
+      
+      setBulkResult({ sent: data.sent, failed: data.failed });
+      
+      // Update local state for those successfully sent
+      if (mode === 'invite' && data.sent > 0) {
+        setGuestList(prev => prev.map(g => {
+          // Simplification: on suppose que si ça a marché, c'est bon pour tous ceux de la liste ciblée.
+          // En vrai, il faudrait que l'API renvoie les IDs réussis, mais pour l'UX on marque tout.
+          const inDisplay = displayedGuests.some(dg => dg.id === g.id);
+          return inDisplay ? { ...g, whatsapp_sent: true } : g;
+        }));
+      }
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsSendingBulk(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-3xl border border-black/5 shadow-sm overflow-hidden flex flex-col h-[500px]">
       <div className="p-5 border-b border-black/5 bg-festara-sand/30 flex flex-col gap-4">
@@ -70,6 +115,29 @@ export default function WhatsAppDispatcher({ guests, eventSlug }: { guests: Gues
           >
             Relances ({importedGuests.filter(g => !g.rsvp_confirmed_at).length})
           </button>
+        </div>
+        
+        {/* Bulk Send Button */}
+        <div className="mt-2">
+          {isPro ? (
+            <button
+              onClick={handleBulkSend}
+              disabled={isSendingBulk || displayedGuests.length === 0}
+              className="w-full py-3 bg-festara-gold text-white font-bold rounded-lg uppercase tracking-widest text-xs hover:bg-yellow-600 transition-colors disabled:opacity-50 flex flex-col items-center justify-center gap-1"
+            >
+              <span>{isSendingBulk ? "Envoi en cours..." : "Envoyer à tous (Automatique)"}</span>
+              {isDryRun && <span className="text-[9px] bg-white/20 px-2 rounded-full mt-1">Mode Simulation (Dry-Run)</span>}
+            </button>
+          ) : (
+            <div className="w-full py-3 bg-gray-100 text-gray-500 font-bold rounded-lg uppercase tracking-widest text-xs flex items-center justify-center border border-dashed border-gray-300">
+              Envoi automatique (Plan Pro requis)
+            </div>
+          )}
+          {bulkResult && (
+            <p className={`text-xs mt-2 text-center font-bold ${bulkResult.failed > 0 ? 'text-red-500' : 'text-green-500'}`}>
+              Résultat : {bulkResult.sent} envoyé(s), {bulkResult.failed} échec(s).
+            </p>
+          )}
         </div>
       </div>
       
