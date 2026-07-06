@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 // POST /api/rsvp
 // Cree un invite (RSVP) cote serveur avec le service_role (l'invite est anonyme,
@@ -16,6 +17,12 @@ export async function POST(req: Request) {
 
   if (!event_id || typeof first_name !== 'string' || !first_name.trim()) {
     return NextResponse.json({ error: 'Prénom requis.' }, { status: 400 });
+  }
+
+  const ip = getClientIp(req);
+  const { ok } = rateLimit(`rsvp:${ip}`, 20, 10 * 60 * 1000);
+  if (!ok) {
+    return NextResponse.json({ error: 'Trop de tentatives. Réessayez plus tard.' }, { status: 429 });
   }
   const size = Math.min(Math.max(parseInt(party_size, 10) || 1, 1), 20);
 

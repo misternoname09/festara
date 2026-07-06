@@ -17,6 +17,12 @@ export default function UpdatePasswordPage() {
     setError(null);
 
     try {
+      if (password.length < 6) {
+        setError('Le mot de passe doit contenir au moins 6 caractères.');
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: password,
       });
@@ -55,6 +61,7 @@ export default function UpdatePasswordPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
             />
+            <p className="text-xs text-gray-400 mt-1">Minimum 6 caractères.</p>
           </div>
 
           {error && <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>}

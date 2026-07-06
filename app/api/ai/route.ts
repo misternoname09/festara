@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabase } from '@/lib/supabase/server';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(req: Request) {
   try {
@@ -9,6 +10,11 @@ export async function POST(req: Request) {
     // Securite : L'utilisateur doit etre connecte pour utiliser l'IA
     if (!user) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    const { ok } = rateLimit(`ai:${user.id}`, 10, 10 * 60 * 1000);
+    if (!ok) {
+      return NextResponse.json({ error: 'Trop de demandes. Réessayez dans quelques minutes.' }, { status: 429 });
     }
 
     const { title } = await req.json();

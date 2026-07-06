@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/dashboard/', '/api/', '/i/'], // Bloque les tableaux de bord, l'API et les invitations publiques
+      disallow: ['/dashboard/', '/api/', '/i/', '/admin/'], // Bloque les tableaux de bord, l'API, les invitations publiques et l'admin
     },
     sitemap: `${baseUrl}/sitemap.xml`,
   };
