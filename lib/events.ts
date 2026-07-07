@@ -4,6 +4,7 @@ import type { EventRow, Ceremony } from '@/lib/types';
 export const DEMO_EVENT: EventRow = {
   id: 'demo',
   user_id: 'demo',
+  organization_id: null,
   slug: 'demo',
   title: 'Mariage Aïda & Modou',
   template: 'wax',
