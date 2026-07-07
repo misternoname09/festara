@@ -64,7 +64,7 @@ export default function ShareLink({ slug, title }: { slug: string; title: string
 
 
 
-      {typeof navigator !== 'undefined' && navigator.share ? (
+      {typeof navigator !== 'undefined' && typeof navigator.share === 'function' ? (
         <button 
           onClick={shareNative} 
           className="flex items-center justify-center gap-1.5 px-4 py-2 bg-white text-green-800 border border-green-200 hover:bg-green-100 font-bold rounded-xl text-xs sm:text-sm transition-all shadow-sm whitespace-nowrap"
