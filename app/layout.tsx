@@ -1,19 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { Outfit, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-outfit',
-  display: 'swap',
-});
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-  display: 'swap',
-});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://festara-seven.vercel.app';
 
@@ -58,7 +45,7 @@ const organizationSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${outfit.variable} ${playfair.variable}`}>
+    <html lang="fr">
       <body className="bg-festara-sand text-festara-ink font-sans antialiased selection:bg-festara-gold/30 selection:text-festara-navy">
         <Script id="org-schema" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         {children}

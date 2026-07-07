@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  --font-outfit: 'Outfit', system-ui, sans-serif;
+  --font-playfair: 'Playfair Display', Georgia, serif;
   --festara-navy: #0A1226;
   --festara-gold: #C59A45;
   --festara-teal: #0B5959;
