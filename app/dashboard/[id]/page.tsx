@@ -18,6 +18,7 @@ import BudgetTracker from '@/components/BudgetTracker';
 import PayoutRequest from '@/components/PayoutRequest';
 import ShareLink from '@/components/ShareLink';
 import { getAvailableBalance } from '@/lib/balance';
+import EventTeam from '@/components/EventTeam';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,6 +95,20 @@ export default async function EditEvent({ params, searchParams }: Props) {
     .select('id, name')
     .order('name');
   const userOrgs = userOrgsData || [];
+
+  // Récupération des collaborateurs et invitations
+  const { data: collaboratorsData } = await supabase
+    .from('event_collaborators')
+    .select('id, event_id, user_id, role, users(email)')
+    .eq('event_id', ev.id);
+  const collaborators = collaboratorsData || [];
+
+  const { data: invitationsData } = await supabase
+    .from('event_invitations')
+    .select('*')
+    .eq('event_id', ev.id)
+    .order('created_at', { ascending: false });
+  const invitations = invitationsData || [];
 
   const tab = searchParams.tab || 'studio';
   const confirmedGuestsCount = guests.filter((g: GuestRow) => g.rsvp_confirmed_at).length;
@@ -473,6 +488,16 @@ export default async function EditEvent({ params, searchParams }: Props) {
                   <span className="relative z-10 tracking-wide">Ouvrir le Scanner de QR Codes</span>
                 </Link>
               </div>
+            </div>
+          )}
+
+          {tab === 'team' && (
+            <div className="max-w-4xl mx-auto">
+              <EventTeam 
+                eventId={ev.id} 
+                collaborators={collaborators} 
+                invitations={invitations} 
+              />
             </div>
           )}
 

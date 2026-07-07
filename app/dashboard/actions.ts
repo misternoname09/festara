@@ -113,3 +113,34 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect('/login');
 }
+
+export async function createEventInvitationAction(eventId: string, role: string) {
+  const { supabase, user } = await verifyEventAccess(eventId);
+  
+  const { data, error } = await supabase
+    .from('event_invitations')
+    .insert({ event_id: eventId, role })
+    .select('token')
+    .single();
+
+  if (error || !data) {
+    console.error("createEventInvitationAction err:", error);
+    throw new Error('Impossible de créer l\'invitation.');
+  }
+
+  revalidatePath(`/dashboard/${eventId}`);
+  return data.token;
+}
+
+export async function deleteEventInvitationAction(invitationId: string) {
+  const supabase = createServerSupabase();
+  // TODO: RLS ensures you can only delete if you have access to the event
+  await supabase.from('event_invitations').delete().eq('id', invitationId);
+  // Can't reliably revalidate path without knowing eventId, but we can do a generic approach or assume it works
+}
+
+export async function removeEventCollaboratorAction(eventId: string, userId: string) {
+  const { supabase } = await verifyEventAccess(eventId);
+  await supabase.from('event_collaborators').delete().eq('event_id', eventId).eq('user_id', userId);
+  revalidatePath(`/dashboard/${eventId}`);
+}

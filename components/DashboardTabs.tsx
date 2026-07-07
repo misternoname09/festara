@@ -15,6 +15,7 @@ const TABS: Tab[] = [
   { id: 'guests', label: 'CRM & Invités', icon: '👥' },
   { id: 'budget', label: 'Budget', icon: '💰' },
   { id: 'security', label: 'Sécurité & Scan', icon: '🛡️' },
+  { id: 'team', label: 'Équipe', icon: '🤝' },
 ];
 
 export default function DashboardTabs({ eventId }: { eventId: string }) {

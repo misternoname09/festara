@@ -38,11 +38,11 @@ export async function createInvitationAction(organizationId: string, email: stri
   if (!user) throw new Error('Non autorisé');
 
   email = email.trim().toLowerCase();
-  if (!email) throw new Error('Email invalide');
+  const finalEmail = email ? email : null;
 
   const { data, error } = await supabase
     .from('agency_invitations')
-    .insert({ organization_id: organizationId, email })
+    .insert({ organization_id: organizationId, email: finalEmail })
     .select('token')
     .single();
 
@@ -90,7 +90,7 @@ export async function acceptInvitationAction(token: string) {
   // Vérifier si l'utilisateur est bien celui invité ?
   // On peut forcer la correspondance de l'email, mais pour être souple, 
   // on accepte qu'il utilise le lien avec n'importe quel email, ou on peut le restreindre:
-  if (user.email !== invite.email) {
+  if (invite.email && user.email !== invite.email) {
     throw new Error(`Cette invitation est destinée à ${invite.email}. Veuillez vous connecter avec ce compte.`);
   }
 

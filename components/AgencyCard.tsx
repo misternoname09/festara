@@ -59,10 +59,9 @@ export default function AgencyCard({ org }: { org: any }) {
           <form onSubmit={handleInvite} className="space-y-3">
             <input 
               type="email" 
-              placeholder="Email du collaborateur" 
+              placeholder="Email (Optionnel) pour sécuriser le lien" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               className="w-full px-4 py-2 rounded-xl border border-gray-200 text-sm focus:border-festara-gold outline-none"
             />
             {error && <p className="text-xs text-red-500 font-bold">{error}</p>}
