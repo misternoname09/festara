@@ -16,9 +16,9 @@ export async function POST(req: Request) {
   let user;
   let eventTitle = '';
 
+  const admin = createAdminClient();
+
   try {
-    const admin = createAdminClient();
-    
     if (event_id) {
       const access = await verifyEventAccess(event_id);
       user = access.user;
@@ -31,7 +31,6 @@ export async function POST(req: Request) {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 });
       user = currentUser;
-      user = currentUser;
       const { data: org } = await admin.from('organizations').select('name').eq('id', organization_id).single();
       if (!org) return NextResponse.json({ error: 'Agence introuvable.' }, { status: 404 });
       eventTitle = org.name;
@@ -40,7 +39,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: err.message }, { status: 403 });
   }
 
-  const admin = createAdminClient();
+
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 

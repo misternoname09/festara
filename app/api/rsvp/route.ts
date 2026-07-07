@@ -55,7 +55,10 @@ export async function POST(req: Request) {
       first_name: first_name.trim().slice(0, 80),
       party_size: size,
       ceremonies_attending: Array.isArray(ceremonies_attending)
-        ? ceremonies_attending.slice(0, 10)
+        ? ceremonies_attending
+            .slice(0, 10)
+            .filter((c: unknown) => typeof c === 'string' && c.length <= 50)
+            .map((c: string) => c.replace(/[^\w\-]/g, '').slice(0, 50))
         : [],
       rsvp_confirmed_at: new Date().toISOString(),
     })

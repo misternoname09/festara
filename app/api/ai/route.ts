@@ -2,6 +2,15 @@ import { NextResponse } from 'next/server';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { rateLimit } from '@/lib/rate-limit';
 
+// Assainit l'entrée utilisateur pour éviter les injections de prompt
+function sanitizeTitle(raw: unknown): string {
+  if (typeof raw !== 'string') return 'notre mariage';
+  return raw
+    .replace(/[\x00-\x1F\x7F]/g, '') // supprime les caractères de contrôle
+    .trim()
+    .slice(0, 200) || 'notre mariage';
+}
+
 export async function POST(req: Request) {
   try {
     const supabase = createServerSupabase();
@@ -17,18 +26,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Trop de demandes. Réessayez dans quelques minutes.' }, { status: 429 });
     }
 
-    const { title } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const title = sanitizeTitle(body?.title);
 
     const groqKey = process.env.GROQ_API_KEY;
     if (!groqKey) {
       return NextResponse.json({ 
-        error: "Clé API Groq manquante. Veuillez l'ajouter dans .env.local." 
-      }, { status: 500 });
+        error: "Service IA temporairement indisponible." 
+      }, { status: 503 });
     }
 
-    // Le Prompt secret pour formater le texte selon les standards de Festara
-    const prompt = `Tu es un prestigieux organisateur de mariage au Sénégal. 
-Rédige un magnifique texte d'invitation (un faire-part) pour l'événement intitulé "${title || 'notre mariage'}".
+    // Prompt système séparé du contenu utilisateur pour éviter les injections
+    const systemPrompt = `Tu es un prestigieux organisateur de mariage au Sénégal. 
+Rédige un magnifique texte d'invitation (un faire-part) pour un événement.
 Le ton doit être solennel, poétique, romantique, très chaleureux, et respectueux des valeurs traditionnelles sénégalaises.
 Le texte doit faire environ 2 à 3 petits paragraphes. 
 Ne mets PAS de variables entre crochets, sois direct. Ne mets pas de titre au texte. Écris en français parfait. Ne rajoute aucun commentaire.`;
@@ -41,19 +51,21 @@ Ne mets PAS de variables entre crochets, sois direct. Ne mets pas de titre au te
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant', // Le modele surpuissant de Meta, ultra rapide
-        messages: [{ role: 'user', content: prompt }],
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: `L'événement s'intitule : "${title}"` },
+        ],
         temperature: 0.7,
+        max_tokens: 1024,
       }),
     });
 
     if (!response.ok) {
       const err = await response.text();
       console.error("Erreur Groq API:", err);
-      // On retourne l'erreur reelle pour comprendre ce qui bloque
-      let parsedErr = err;
-      try { parsedErr = JSON.parse(err).error.message; } catch {}
-      return NextResponse.json({ error: `Erreur Groq : ${parsedErr}` }, { status: 500 });
+      // V6 : Ne jamais exposer les détails d'erreur internes au client
+      return NextResponse.json({ error: 'Le service IA est temporairement indisponible. Réessayez plus tard.' }, { status: 502 });
     }
 
     const data = await response.json();
@@ -61,6 +73,8 @@ Ne mets PAS de variables entre crochets, sois direct. Ne mets pas de titre au te
 
     return NextResponse.json({ text });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Erreur AI route:", e);
+    return NextResponse.json({ error: 'Erreur interne du service IA.' }, { status: 500 });
   }
 }
+

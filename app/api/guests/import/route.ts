@@ -16,6 +16,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Données invalides.' }, { status: 400 });
     }
 
+    // V9 : Limiter le nombre d'invités par import pour éviter le DoS
+    if (guests.length > 500) {
+      return NextResponse.json({ error: 'Maximum 500 invités par import.' }, { status: 400 });
+    }
+
     // Vérifier que l'utilisateur est propriétaire de l'événement
     const { data: ev, error: evError } = await supabase
       .from('events')
@@ -32,16 +37,22 @@ export async function POST(req: Request) {
     const allCeremonyIds = ev.ceremonies.map((c: any) => c.id);
 
     // Préparation des lignes à insérer
-    const rowsToInsert = guests.map((g: any) => ({
-      event_id,
-      first_name: g.name.trim(),
-      phone: g.phone ? g.phone.trim() : null,
-      party_size: 1, // Par défaut 1 personne
-      ceremonies_attending: allCeremonyIds,
-      // rsvp_confirmed_at: on le met à jour pour dire que c'est l'hôte qui les a invités directement
-      rsvp_confirmed_at: new Date().toISOString(),
-      whatsapp_sent: false,
-    }));
+    // V9 : Valider chaque invité
+    const rowsToInsert = guests
+      .filter((g: any) => g && typeof g.name === 'string' && g.name.trim().length > 0)
+      .map((g: any) => ({
+        event_id,
+        first_name: g.name.trim().slice(0, 100),
+        phone: (typeof g.phone === 'string' && g.phone.trim()) ? g.phone.trim().slice(0, 20) : null,
+        party_size: 1,
+        ceremonies_attending: allCeremonyIds,
+        rsvp_confirmed_at: new Date().toISOString(),
+        whatsapp_sent: false,
+      }));
+
+    if (rowsToInsert.length === 0) {
+      return NextResponse.json({ error: 'Aucun invité valide trouvé.' }, { status: 400 });
+    }
 
     // Insertion en masse
     const { error: insertError } = await supabase

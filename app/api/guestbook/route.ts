@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(req: Request) {
   try {
@@ -9,12 +10,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Tous les champs sont requis.' }, { status: 400 });
     }
 
-    if (author_name.length > 50) {
+    if (typeof author_name !== 'string' || author_name.length > 50) {
       return NextResponse.json({ error: 'Le nom est trop long.' }, { status: 400 });
     }
 
-    if (message.length > 500) {
+    if (typeof message !== 'string' || message.length > 500) {
       return NextResponse.json({ error: 'Le message est trop long (max 500 caractères).' }, { status: 400 });
+    }
+
+    // V3 : Rate-limiting par IP pour éviter le spam massif
+    const ip = getClientIp(req);
+    const { ok } = rateLimit(`guestbook:${ip}`, 10, 10 * 60 * 1000);
+    if (!ok) {
+      return NextResponse.json({ error: 'Trop de messages. Réessayez plus tard.' }, { status: 429 });
     }
 
     // L'invité n'est pas connecté (anonyme), donc RLS bloque les inserts normaux.
@@ -67,3 +75,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 });
   }
 }
+

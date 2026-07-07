@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabase } from '@/lib/supabase/server';
 
+// V11 : Whitelist des rôles autorisés
+const ALLOWED_ROLES = ['viewer', 'editor', 'member', 'manager'];
+
 export async function POST(req: Request) {
   try {
     const supabase = createServerSupabase();
@@ -10,10 +13,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { target_type, target_id, role } = await req.json();
+    const body = await req.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ error: 'Requête invalide' }, { status: 400 });
+    }
+
+    const { target_type, target_id, role } = body;
 
     if (!target_type || !target_id || !role) {
       return NextResponse.json({ error: 'Paramètres manquants' }, { status: 400 });
+    }
+
+    // V11 : Valider le rôle contre une whitelist
+    if (typeof role !== 'string' || !ALLOWED_ROLES.includes(role)) {
+      return NextResponse.json({ error: `Rôle invalide. Rôles autorisés : ${ALLOWED_ROLES.join(', ')}` }, { status: 400 });
     }
 
     if (target_type === 'event') {
@@ -30,21 +43,24 @@ export async function POST(req: Request) {
         .select('token')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur création invitation event:', error);
+        return NextResponse.json({ error: 'Impossible de créer l\'invitation.' }, { status: 500 });
+      }
       
       return NextResponse.json({ token: invitation.token });
 
     } else if (target_type === 'agency') {
-      // Vérifier si l'utilisateur est owner ou membre de l'agence
-      // Pour des raisons de sécurité, on devrait vérifier la db, 
-      // mais les politiques RLS empêcheront l'insertion si pas autorisé.
       const { data: invitation, error } = await supabase
         .from('agency_invitations')
         .insert({ organization_id: target_id, role })
         .select('token')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur création invitation agence:', error);
+        return NextResponse.json({ error: 'Impossible de créer l\'invitation.' }, { status: 500 });
+      }
       
       return NextResponse.json({ token: invitation.token });
 
@@ -54,6 +70,8 @@ export async function POST(req: Request) {
 
   } catch (err: any) {
     console.error('Erreur API Invitations:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    // V7 : Ne pas exposer les erreurs SQL internes
+    return NextResponse.json({ error: 'Erreur interne du serveur.' }, { status: 500 });
   }
 }
+

@@ -118,8 +118,17 @@ export async function acceptInvitationAction(token: string) {
 }
 
 export async function forceUpgradeAction(organizationId: string) {
-  if (process.env.NODE_ENV !== 'development') throw new Error('Action non autorisée.');
-  
+  // V5 : Vérification admin au lieu du fragile NODE_ENV check
+  const supabase = createServerSupabase();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Non autorisé');
+
+  // Seul un superadmin peut forcer l'upgrade
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail || user.email !== adminEmail) {
+    throw new Error('Action réservée aux super-administrateurs.');
+  }
+
   const admin = createAdminClient();
   await admin
     .from('organizations')
@@ -128,3 +137,4 @@ export async function forceUpgradeAction(organizationId: string) {
     
   revalidatePath('/dashboard/agencies');
 }
+
