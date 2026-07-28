@@ -125,11 +125,17 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
         </Link>
       )}
 
-      {/* Ornements de fond luxueux */}
-      <div className="fixed top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/5 blur-[120px] pointer-events-none"></div>
-      <div className="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-black/5 blur-[100px] pointer-events-none"></div>
+      {/* Ornements de fond luxueux et Immersif */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        {gallery[0] && (
+          <Image src={gallery[0]} alt="Fond immersif" fill className="object-cover opacity-30 sm:opacity-40 blur-[80px] sm:blur-[120px] scale-125 mix-blend-overlay" />
+        )}
+        <div className={`absolute inset-0 ${isDark ? 'bg-[#0A1226]/80' : 'bg-festara-sand/85'} backdrop-blur-2xl`}></div>
+        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-festara-gold/10 blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-festara-teal/10 blur-[100px]"></div>
+      </div>
 
-      <div className={`max-w-md w-full mx-auto rounded-[3rem] overflow-hidden relative z-10 animate-fade-in-up shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-white/10 ${t.card} ${t.font}`}>
+      <div className={`max-w-md w-full mx-auto rounded-[2.5rem] sm:rounded-[3.5rem] overflow-hidden relative z-10 animate-fade-in-up shadow-[0_30px_80px_-20px_rgba(0,0,0,0.5)] border border-white/20 backdrop-blur-md ${isDark ? 'bg-white/5' : 'bg-white/60'} ${t.font}`}>
         
         {/* HÉROS : Galerie avec Montage Décoratif et Compte à rebours */}
         <div className="relative w-full overflow-hidden pb-8">
@@ -152,26 +158,26 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
              {/* Montage Photos */}
              {gallery.length === 1 ? (
                // One Image: Grand Arch
-               <div className="w-full max-w-[280px] sm:max-w-[320px] aspect-[3/4] rounded-t-[10rem] overflow-hidden border-[6px] border-white shadow-2xl relative group scale-95 sm:scale-100">
-                  <div className="absolute inset-0 bg-gradient-to-t from-festara-navy/40 to-transparent group-hover:opacity-0 transition-opacity duration-700 z-10"></div>
-                  <Image src={gallery[0]} alt={event.title} fill sizes="(max-width: 640px) 280px, 320px" className="object-cover group-hover:scale-[1.03] transition-transform duration-1000" priority />
+               <div className="w-full max-w-[280px] sm:max-w-[320px] aspect-[3/4] rounded-[2rem] sm:rounded-[3rem] overflow-hidden border-[4px] border-white/30 shadow-2xl relative group scale-95 sm:scale-100">
+                  <div className="absolute inset-0 bg-gradient-to-t from-festara-navy/60 to-transparent group-hover:opacity-0 transition-opacity duration-1000 z-10"></div>
+                  <Image src={gallery[0]} alt={event.title} fill sizes="(max-width: 640px) 280px, 320px" className="object-cover group-hover:scale-[1.05] transition-transform duration-1000" priority />
                </div>
              ) : (
                // Multiple Images: Staggered Elegant Layout
-               <div className="relative w-full h-[420px] sm:h-[480px] max-w-[340px] mx-auto mt-4 scale-95 sm:scale-100">
+               <div className="relative w-full h-[440px] sm:h-[500px] max-w-[340px] mx-auto mt-4 scale-95 sm:scale-100">
                   {/* Image 1 (Back left) */}
-                  <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-t-[6rem] overflow-hidden border-[6px] border-white shadow-xl transform -rotate-6 hover:rotate-0 hover:z-30 transition-all duration-500 origin-bottom-left group">
-                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10"></div>
-                     <Image src={gallery[0]} alt="" fill sizes="220px" className="object-cover" priority />
+                  <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-[2rem] overflow-hidden border-[3px] border-white/40 shadow-2xl transform -rotate-6 hover:rotate-0 hover:z-40 transition-all duration-700 origin-bottom-left group">
+                     <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700 z-10 pointer-events-none"></div>
+                     <Image src={gallery[0]} alt="" fill sizes="220px" className="object-cover group-hover:scale-110 transition-transform duration-1000" priority />
                   </div>
                   {/* Image 2 (Front right) */}
-                  <div className="absolute top-12 right-0 w-[65%] aspect-[3/4] rounded-t-[6rem] overflow-hidden border-[6px] border-white shadow-2xl transform rotate-3 hover:rotate-0 hover:z-30 transition-all duration-500 origin-bottom-right z-20">
-                     <Image src={gallery[1]} alt="" fill sizes="220px" className="object-cover" priority />
+                  <div className="absolute top-16 right-0 w-[65%] aspect-[3/4] rounded-[2rem] overflow-hidden border-[3px] border-white/40 shadow-2xl transform rotate-6 hover:rotate-0 hover:z-40 transition-all duration-700 origin-bottom-right z-20 group">
+                     <Image src={gallery[1]} alt="" fill sizes="220px" className="object-cover group-hover:scale-110 transition-transform duration-1000" priority />
                   </div>
-                  {/* Image 3 (Bottom center, circular accent) */}
+                  {/* Image 3 (Bottom center accent) */}
                   {gallery[2] && (
-                     <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[45%] aspect-square rounded-full overflow-hidden border-[4px] border-white shadow-lg transform hover:scale-110 hover:z-30 transition-all duration-500 z-30">
-                        <Image src={gallery[2]} alt="" fill sizes="150px" className="object-cover" />
+                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[60%] aspect-[4/3] rounded-[1.5rem] overflow-hidden border-[3px] border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)] transform hover:scale-105 hover:-translate-y-4 hover:z-50 transition-all duration-700 z-30 group">
+                        <Image src={gallery[2]} alt="" fill sizes="200px" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
                      </div>
                   )}
                </div>
@@ -211,34 +217,40 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
             <div className={`h-px w-16 ${isDark ? 'bg-white' : 'bg-black'}`}></div>
           </div>
 
-          {/* Cérémonies - Style Billet VIP */}
-          <div className="space-y-8 text-left relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-current before:to-transparent before:opacity-10">
+          {/* Cérémonies - Style Billet VIP Premium */}
+          <div className="space-y-8 text-left relative before:absolute before:inset-0 before:ml-6 md:before:mx-auto before:h-full before:w-px before:bg-gradient-to-b before:from-transparent before:via-festara-gold/30 before:to-transparent">
             {event.ceremonies.map((c, idx) => (
               <div
                 key={c.id}
-                className={`relative rounded-3xl p-7 overflow-hidden border transition-all hover:-translate-y-1 hover:shadow-2xl ${isDark ? 'bg-white/5 border-white/10 shadow-black/50' : 'bg-white border-black/5 shadow-black/5'}`}
+                className={`relative rounded-[2rem] p-8 overflow-hidden border transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_20px_50px_-15px_rgba(197,154,69,0.3)] group ${isDark ? 'bg-white/10 border-white/20 backdrop-blur-lg' : 'bg-white/80 border-black/10 shadow-xl backdrop-blur-lg'}`}
               >
-                {/* Ligne pointillée effet ticket */}
-                <div className="absolute left-6 top-0 bottom-0 w-px border-l-2 border-dashed opacity-20 border-current"></div>
-                <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-3 h-6 rounded-r-full ${isDark ? 'bg-[#1A2A4A]' : 'bg-[#F9F6F0]'}`}></div>
+                {/* Glow au survol */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-festara-gold/20 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-1000 pointer-events-none"></div>
+
+                {/* Ligne pointillée effet ticket or */}
+                <div className="absolute left-6 top-0 bottom-0 w-px border-l-2 border-dashed border-festara-gold/30"></div>
+                <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-4 h-8 rounded-r-full border border-l-0 ${isDark ? 'bg-[#0A1226] border-white/20' : 'bg-festara-sand border-black/10'}`}></div>
                 
-                <div className="pl-6">
-                  <span className={`inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest mb-3 ${isDark ? 'bg-white/10 text-white' : 'bg-festara-navy/5 text-festara-navy'}`}>
+                <div className="pl-6 relative z-10">
+                  <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] mb-4 ${isDark ? 'bg-festara-gold/20 text-festara-gold border border-festara-gold/30' : 'bg-festara-gold/10 text-festara-navy border border-festara-gold/20'}`}>
                     Étape {idx + 1}
                   </span>
-                  <h2 className={`text-2xl mb-2 ${t.title}`}>{c.name}</h2>
-                  <p className={`text-sm font-semibold tracking-wide ${isDark ? 'text-festara-gold' : 'text-festara-teal'}`}>
+                  <h2 className={`text-2xl sm:text-3xl mb-2 ${t.title}`}>{c.name}</h2>
+                  <p className={`text-sm font-bold tracking-wide ${isDark ? 'text-festara-gold' : 'text-festara-gold'}`}>
                     {formatDateFr(c.date)}
                     {c.time ? ` · ${c.time}` : ''}
                   </p>
-                  <p className={`text-sm mt-2 mb-5 opacity-80 ${isDark ? 'text-white' : 'text-festara-ink'}`}>{c.location}</p>
-                  <iframe
-                    title={`Carte ${c.name}`}
-                    src={mapsEmbedUrl(c)}
-                    className="w-full h-32 rounded-2xl border-0 opacity-80 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
+                  <p className={`text-sm mt-3 mb-6 opacity-90 font-medium ${isDark ? 'text-white/80' : 'text-festara-ink/80'}`}>{c.location}</p>
+                  
+                  <div className="rounded-2xl overflow-hidden border border-white/10 shadow-inner relative group-hover:shadow-[0_0_20px_rgba(197,154,69,0.2)] transition-shadow duration-500">
+                    <iframe
+                      title={`Carte ${c.name}`}
+                      src={mapsEmbedUrl(c)}
+                      className="w-full h-36 border-0 opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
                 </div>
               </div>
             ))}
