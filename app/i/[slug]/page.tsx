@@ -9,10 +9,11 @@ import { headers } from 'next/headers';
 // Rendu dynamique (donnees a jour). Page legere : pas de JS lourd cote client.
 export const dynamic = 'force-dynamic';
 
-type Props = { params: { slug: string }, searchParams?: { ref?: string } };
+type Props = { params: Promise<{ slug: string }>, searchParams?: Promise<{ ref?: string }> };
 
 // Open Graph : apercu automatique sur WhatsApp (photo couple + nom + date)
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const event = await getEventBySlug(params.slug);
   if (!event) return { title: 'Invitation introuvable — Festara' };
 
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `${first.name} · ${first.location}`
     : 'Vous êtes convié(e) à notre célébration.';
 
-  const headersList = headers();
+  const headersList = await headers();
   const host = headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000';
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const ogUrl = `${protocol}://${host}/api/og?slug=${params.slug}`;
@@ -44,9 +45,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function InvitationPage({ params, searchParams }: Props) {
+export default async function InvitationPage(props: Props) {
+  const params = await props.params;
+  const searchParams = props.searchParams ? await props.searchParams : undefined;
   noStore(); // Interdit absolument le cache agressif de Vercel (evite les 404 fantomes)
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
 
   let event = await getEventBySlug(params.slug);

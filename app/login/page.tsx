@@ -22,9 +22,9 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   const inputClass =
-    'w-full bg-white/50 border-b-2 border-festara-navy/10 px-4 pt-6 pb-2 text-festara-navy font-medium outline-none focus:bg-white focus:border-festara-gold transition-all peer';
+    'w-full bg-white/50 border-b-2 border-festara-navy/10 px-4 pt-7 pb-2 text-festara-navy font-medium outline-none focus:bg-white focus:border-festara-gold transition-all peer';
   const labelClass =
-    'absolute left-4 top-4 text-xs font-bold text-festara-ink/40 uppercase tracking-widest peer-focus:text-festara-gold peer-focus:-translate-y-2 peer-focus:scale-90 transition-all pointer-events-none origin-left';
+    'absolute left-4 top-4 text-xs font-bold text-festara-ink/60 uppercase tracking-widest peer-focus:text-festara-gold peer-focus:-translate-y-3 peer-focus:scale-90 transition-all pointer-events-none origin-left';
 
   async function signInWithGoogle() {
     setLoading(true);

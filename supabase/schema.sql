@@ -16,7 +16,7 @@ do $$ begin
 exception when duplicate_object then null; end $$;
 
 do $$ begin
-  create type payment_provider as enum ('paydunya', 'cinetpay', 'stripe', 'wave');
+  create type payment_provider as enum ('naboopay', 'cinetpay', 'stripe', 'wave');
 exception when duplicate_object then null; end $$;
 
 do $$ begin

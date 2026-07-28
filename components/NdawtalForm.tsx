@@ -17,7 +17,7 @@ export default function NdawtalForm({ eventId, isDark }: { eventId: string; isDa
       ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:ring-white/50 focus:bg-white/20'
       : 'bg-white/60 border-black/10 text-festara-navy placeholder-festara-ink/40 focus:ring-[#C59A45]/50 focus:bg-white');
 
-  const labelClass = 'block text-[10px] font-bold uppercase tracking-widest ml-1 mb-1.5 ' + (isDark ? 'text-white/80' : 'text-festara-navy');
+  const labelClass = 'block text-xs font-bold uppercase tracking-widest ml-1 mb-1.5 ' + (isDark ? 'text-white/80' : 'text-festara-navy');
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,7 +35,7 @@ export default function NdawtalForm({ eventId, isDark }: { eventId: string; isDa
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erreur d\'initialisation du paiement.');
       
-      // Redirection vers PayDunya
+      // Redirection vers NabooPay
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -119,7 +119,7 @@ export default function NdawtalForm({ eventId, isDark }: { eventId: string; isDa
         <button type="submit" disabled={loading} className="w-full py-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-transform hover:-translate-y-0.5 shadow-xl bg-[#0070BA] text-white hover:bg-[#005ea6] flex items-center justify-center gap-3">
           {loading ? 'Redirection...' : 'Offrir ce cadeau 💳'}
         </button>
-        <p className="text-[9px] text-center uppercase tracking-widest opacity-50 mt-3 font-bold">Sécurisé par PayDunya</p>
+        <p className="text-[11px] text-center uppercase tracking-widest opacity-50 mt-3 font-bold">Sécurisé par NabooPay</p>
       </form>
     </div>
   );

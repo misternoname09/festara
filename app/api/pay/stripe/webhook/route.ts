@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     const meta = session.metadata || {};
     if (PLANS_EUR[meta.plan]) {
       if (meta.event_id) {
-        await admin.from('events').update({ plan: meta.plan }).eq('id', meta.event_id);
+        await admin.from('events').update({ plan: meta.plan, is_published: true }).eq('id', meta.event_id);
       } else if (meta.organization_id) {
         await admin.from('organizations').update({ plan: 'agency' }).eq('id', meta.organization_id);
       }

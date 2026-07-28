@@ -43,7 +43,7 @@ export default function Countdown({ targetDate, isDark }: { targetDate: string; 
       ].map((item, i) => (
         <div key={i} className={`flex flex-col items-center justify-center w-16 h-16 md:w-[72px] md:h-[72px] rounded-2xl backdrop-blur-md border shadow-2xl transition-transform hover:scale-105 ${bgClass}`}>
           <span className="text-xl md:text-2xl font-bold font-serif leading-none">{String(item.value).padStart(2, '0')}</span>
-          <span className="text-[9px] md:text-[10px] uppercase tracking-widest mt-1 opacity-70 font-semibold">{item.label}</span>
+          <span className="text-[11px] md:text-xs uppercase tracking-widest mt-1 opacity-70 font-semibold">{item.label}</span>
         </div>
       ))}
     </div>

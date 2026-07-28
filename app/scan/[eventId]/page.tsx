@@ -6,10 +6,11 @@ import type { EventRow, EventStats } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
-type Props = { params: { eventId: string } };
+type Props = { params: Promise<{ eventId: string }> };
 
-export default async function ScanPage({ params }: Props) {
-  const supabase = createServerSupabase();
+export default async function ScanPage(props: Props) {
+  const params = await props.params;
+  const supabase = await createServerSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -31,6 +32,14 @@ export default async function ScanPage({ params }: Props) {
     .maybeSingle();
   const s = stat as EventStats | null;
 
+  const { data: guestsData } = await supabase
+    .from('guests')
+    .select('pass_uuid, pass_code, first_name, party_size, scanned_at, rsvp_confirmed_at')
+    .eq('event_id', ev.id)
+    .not('rsvp_confirmed_at', 'is', null);
+    
+  const guests = guestsData || [];
+
   return (
     <main className="min-h-screen bg-[#0A1226] text-white relative overflow-hidden font-sans">
       {/* Background Ornaments (Mode Nuit pour l'extérieur) */}
@@ -43,10 +52,11 @@ export default async function ScanPage({ params }: Props) {
             eventTitle={ev.title}
             initialScanned={s?.guests_scanned ?? 0}
             total={s?.guests_confirmed ?? 0}
+            guests={guests}
           />
         </div>
 
-        <p className="text-center text-white/30 text-[10px] uppercase tracking-widest mt-8 font-semibold">
+        <p className="text-center text-white/30 text-xs uppercase tracking-widest mt-8 font-semibold">
           Interface Agent de Sécurité — Festara
         </p>
       </div>

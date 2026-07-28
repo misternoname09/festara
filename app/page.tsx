@@ -40,7 +40,7 @@ export default function Home() {
           <div className="flex-1 text-center lg:text-left animate-fade-in-up">
             <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-festara-gold/30 bg-festara-gold/5 backdrop-blur-md mb-8 shadow-[0_0_15px_rgba(197,154,69,0.2)]">
               <span className="w-2 h-2 rounded-full bg-festara-gold animate-pulse"></span>
-              <span className="text-festara-gold font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs">
+              <span className="text-festara-gold font-bold tracking-[0.2em] uppercase text-xs sm:text-xs">
                 Le nouveau standard événementiel
               </span>
             </div>
@@ -87,7 +87,7 @@ export default function Home() {
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#DFB769] to-[#C59A45] flex items-center justify-center text-lg shadow-[0_0_20px_rgba(197,154,69,0.4)] mb-2 border border-white/20">
                         👑
                       </div>
-                      <p className="text-festara-gold/70 text-[9px] uppercase tracking-[0.3em] font-bold mb-1">Pass VIP Exclusif</p>
+                      <p className="text-festara-gold/70 text-[11px] uppercase tracking-[0.3em] font-bold mb-1">Pass VIP Exclusif</p>
                       <h2 className="text-2xl font-serif font-bold text-white tracking-wide">Aïda & Modou</h2>
                    </div>
 
@@ -128,7 +128,7 @@ export default function Home() {
                    {/* Pass Footer */}
                    <div className="p-5 text-center relative z-10 bg-gradient-to-t from-festara-gold/10 to-transparent">
                       <h3 className="text-lg font-bold text-white mb-1">Mme Fatou Diop</h3>
-                      <div className="flex items-center justify-center gap-2 text-[10px] font-medium text-white/60">
+                      <div className="flex items-center justify-center gap-2 text-xs font-medium text-white/60">
                          <span className="uppercase tracking-wider">Table d'Honneur</span>
                          <span className="text-[8px] text-festara-gold">💎</span>
                          <span className="uppercase tracking-wider">2 Personnes</span>
@@ -192,7 +192,7 @@ export default function Home() {
            {/* Right: Text Content */}
            <div className="flex-1 text-center lg:text-left">
               <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-festara-navy/10 bg-festara-navy/5 mb-8">
-                <span className="text-festara-navy font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs">
+                <span className="text-festara-navy font-bold tracking-[0.2em] uppercase text-xs sm:text-xs">
                   Design d'Exception
                 </span>
               </div>
@@ -244,7 +244,7 @@ export default function Home() {
           <div className="text-center mb-20 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-festara-gold/30 bg-festara-gold/5 mb-6">
                <span className="w-2 h-2 rounded-full bg-festara-gold animate-pulse"></span>
-               <span className="text-festara-gold font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs">
+               <span className="text-festara-gold font-bold tracking-[0.2em] uppercase text-xs sm:text-xs">
                  Fonctionnalités Premium
                </span>
             </div>
@@ -336,7 +336,7 @@ export default function Home() {
       <footer className="bg-white border-t border-black/5 py-12 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
           <span className="w-1.5 h-1.5 rounded-full bg-festara-gold"></span>
-          <span className="font-bold uppercase tracking-widest text-[10px] text-festara-gold">Festara</span>
+          <span className="font-bold uppercase tracking-widest text-xs text-festara-gold">Festara</span>
         </div>
         <p className="text-xs text-festara-ink/40 font-bold uppercase tracking-widest">
           Conçu pour l'élégance. © {new Date().getFullYear()}

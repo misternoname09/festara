@@ -116,7 +116,7 @@ export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
           
           <div className="flex flex-col items-center justify-center pointer-events-none">
             <span className="text-3xl font-bold font-serif leading-none mb-1">{partySize}</span>
-            <span className={`text-[10px] uppercase tracking-widest font-bold ${dark ? 'text-festara-gold' : 'text-festara-teal'}`}>
+            <span className={`text-xs uppercase tracking-widest font-bold ${dark ? 'text-festara-gold' : 'text-festara-teal'}`}>
               {partySize === 1 ? 'Je viens seul(e)' : `Moi + ${partySize - 1} ${partySize === 2 ? 'accompagnant' : 'accompagnants'}`}
             </span>
           </div>

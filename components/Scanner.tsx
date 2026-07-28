@@ -15,11 +15,13 @@ export default function Scanner({
   eventTitle,
   initialScanned,
   total,
+  guests,
 }: {
   eventId: string;
   eventTitle: string;
   initialScanned: number;
   total: number;
+  guests: any[];
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,13 +29,98 @@ export default function Scanner({
   const [manual, setManual] = useState('');
   const [result, setResult] = useState<ScanResult>({ status: 'idle' });
   const [scanned, setScanned] = useState(initialScanned);
+  const [isOnline, setIsOnline] = useState(true);
+  const [pendingSync, setPendingSync] = useState(0);
   const busy = useRef(false);
   const lastValue = useRef<string>('');
+
+  // Initialisation et gestion de la connexion
+  useEffect(() => {
+    // 1. Sauvegarder les invités en cache local (si on a internet, ça met à jour le cache)
+    if (guests && guests.length > 0) {
+      localStorage.setItem(`festara_guests_${eventId}`, JSON.stringify(guests));
+    }
+
+    // 2. Vérifier la connectivité
+    setIsOnline(navigator.onLine);
+    const handleOnline = () => { setIsOnline(true); syncOfflineScans(); };
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Mettre à jour le compteur des attentes au chargement
+    const queue = JSON.parse(localStorage.getItem(`festara_offline_queue_${eventId}`) || '[]');
+    setPendingSync(queue.length);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [guests, eventId]);
+
+  const syncOfflineScans = async () => {
+    const queue = JSON.parse(localStorage.getItem(`festara_offline_queue_${eventId}`) || '[]');
+    if (queue.length === 0) return;
+
+    for (const val of queue) {
+      try {
+        await fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event_id: eventId, value: val }),
+        });
+      } catch (err) {
+        console.error('Erreur de synchronisation pour', val);
+      }
+    }
+    // Nettoyer la file une fois synchronisé (version simplifiée, idéalement on filtre ceux qui ont échoué)
+    localStorage.setItem(`festara_offline_queue_${eventId}`, '[]');
+    setPendingSync(0);
+  };
 
   async function verify(value: string) {
     if (busy.current) return;
     busy.current = true;
     let finalStatus: Status = 'error';
+    
+    // LOGIQUE HORS-LIGNE
+    if (!navigator.onLine) {
+      const cachedGuests = JSON.parse(localStorage.getItem(`festara_guests_${eventId}`) || '[]');
+      const localGuest = cachedGuests.find((g: any) => g.pass_uuid === value || g.pass_code === value);
+      
+      if (!localGuest) {
+        finalStatus = 'unknown';
+        setResult({ status: 'unknown' });
+      } else {
+        // Est-il déjà scanné localement (dans cette session) ?
+        const queue = JSON.parse(localStorage.getItem(`festara_offline_queue_${eventId}`) || '[]');
+        if (localGuest.scanned_at || queue.includes(value)) {
+          finalStatus = 'already';
+          setResult({ status: 'already', guest: localGuest, scanned_at: localGuest.scanned_at || new Date().toISOString() });
+          if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+        } else {
+          // OK !
+          queue.push(value);
+          localStorage.setItem(`festara_offline_queue_${eventId}`, JSON.stringify(queue));
+          setPendingSync(queue.length);
+          finalStatus = 'valid';
+          setResult({ status: 'valid', guest: localGuest });
+          setScanned((n) => n + 1);
+          if (navigator.vibrate) navigator.vibrate(120);
+        }
+      }
+
+      setTimeout(() => {
+        busy.current = false;
+        lastValue.current = '';
+        if (finalStatus === 'valid') {
+            setTimeout(() => setResult({status: 'idle'}), 2000);
+        }
+      }, 1500);
+      return;
+    }
+
+    // LOGIQUE EN LIGNE (normale)
     try {
       const res = await fetch('/api/scan', {
         method: 'POST',
@@ -130,9 +217,14 @@ export default function Scanner({
       <div className="w-full mb-6 text-center">
         <h1 className="text-2xl font-bold text-festara-navy font-serif mb-1">{eventTitle}</h1>
         <div className="inline-flex items-center gap-2 bg-white/60 px-4 py-1.5 rounded-full border border-black/5 text-sm font-semibold text-festara-ink/70">
-          <span className="w-2 h-2 rounded-full bg-festara-teal animate-pulse"></span>
+          <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-festara-teal animate-pulse' : 'bg-red-500'}`}></span>
           {scanned} / {total} invités scannés
         </div>
+        {!isOnline && (
+          <p className="text-xs text-amber-600 mt-2 font-bold bg-amber-50 inline-block px-3 py-1 rounded-full border border-amber-200">
+            ⚠️ Hors-ligne : {pendingSync} scan(s) en attente
+          </p>
+        )}
       </div>
 
       {/* Resultat pleine largeur */}

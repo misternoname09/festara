@@ -17,7 +17,7 @@ export default function GuestbookList({ messages, isDark }: { messages: Guestboo
             <span className={`font-serif font-bold text-lg ${isDark ? 'text-festara-gold' : 'text-festara-teal'}`}>
               {msg.author_name}
             </span>
-            <span className={`text-[10px] uppercase tracking-widest opacity-50 ${isDark ? 'text-white' : 'text-festara-navy'}`}>
+            <span className={`text-xs uppercase tracking-widest opacity-50 ${isDark ? 'text-white' : 'text-festara-navy'}`}>
               {formatDate(msg.created_at)}
             </span>
           </div>

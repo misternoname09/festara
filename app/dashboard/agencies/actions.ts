@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerSupabase, createAdminClient } from '@/lib/supabase/server';
 
 export async function createAgencyAction(formData: FormData) {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Non autorisé');
 
@@ -33,7 +33,7 @@ export async function createAgencyAction(formData: FormData) {
 }
 
 export async function createInvitationAction(organizationId: string, email: string) {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Non autorisé');
 
@@ -59,19 +59,19 @@ export async function createInvitationAction(organizationId: string, email: stri
 }
 
 export async function deleteInvitationAction(invitationId: string) {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   await supabase.from('agency_invitations').delete().eq('id', invitationId);
   revalidatePath('/dashboard/agencies');
 }
 
 export async function removeMemberAction(organizationId: string, userId: string) {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   await supabase.from('organization_members').delete().eq('organization_id', organizationId).eq('user_id', userId);
   revalidatePath('/dashboard/agencies');
 }
 
 export async function acceptInvitationAction(token: string) {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Vous devez être connecté pour accepter une invitation.');
 
@@ -119,13 +119,13 @@ export async function acceptInvitationAction(token: string) {
 
 export async function forceUpgradeAction(organizationId: string) {
   // V5 : Vérification admin au lieu du fragile NODE_ENV check
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Non autorisé');
 
-  // Seul un superadmin peut forcer l'upgrade
+  // Seul un superadmin peut forcer l'upgrade (ou tout le monde en dev local pour debugger)
   const adminEmail = process.env.ADMIN_EMAIL;
-  if (!adminEmail || user.email !== adminEmail) {
+  if (process.env.NODE_ENV !== 'development' && (!adminEmail || user.email !== adminEmail)) {
     throw new Error('Action réservée aux super-administrateurs.');
   }
 
@@ -138,3 +138,21 @@ export async function forceUpgradeAction(organizationId: string) {
   revalidatePath('/dashboard/agencies');
 }
 
+export async function forceUpgradeEventAction(eventId: string, plan: string) {
+  const supabase = await createServerSupabase();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Non autorisé');
+
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (process.env.NODE_ENV !== 'development' && (!adminEmail || user.email !== adminEmail)) {
+    throw new Error('Action réservée aux super-administrateurs.');
+  }
+
+  const admin = createAdminClient();
+  await admin
+    .from('events')
+    .update({ plan: plan, is_published: true })
+    .eq('id', eventId);
+    
+  revalidatePath(`/dashboard/${eventId}`);
+}

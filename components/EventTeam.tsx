@@ -101,10 +101,10 @@ export default function EventTeam({
                     </button>
                   </div>
                   <div className="flex items-center justify-between gap-2 bg-white p-2 rounded-xl border border-black/5">
-                    <span className="text-[10px] text-[#0A1226]/40 truncate flex-1 pl-2">.../invite/{inv.token.substring(0, 8)}...</span>
+                    <span className="text-xs text-[#0A1226]/40 truncate flex-1 pl-2">.../invite/{inv.token.substring(0, 8)}...</span>
                     <button 
                       onClick={() => copyLink(inv.token)}
-                      className="px-4 py-2 bg-[#0A1226] text-white text-[10px] font-bold rounded-lg hover:bg-festara-gold transition-colors"
+                      className="px-4 py-2 bg-[#0A1226] text-white text-xs font-bold rounded-lg hover:bg-festara-gold transition-colors"
                     >
                       {copiedToken === inv.token ? 'Copié !' : 'Copier'}
                     </button>
@@ -127,7 +127,7 @@ export default function EventTeam({
                   <div>
                     {/* fallback to display user_id since we might not join users easily via RLS */}
                     <p className="font-bold text-[#0A1226] text-sm">Utilisateur ID: {c.user_id.substring(0,8)}...</p>
-                    <p className="text-[10px] text-[#0A1226]/50 uppercase tracking-widest font-bold mt-1">
+                    <p className="text-xs text-[#0A1226]/50 uppercase tracking-widest font-bold mt-1">
                       {c.role === 'co_host' ? 'Co-organisateur' : 'Scanner'}
                     </p>
                   </div>

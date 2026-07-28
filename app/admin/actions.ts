@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { createServerSupabase, createAdminClient } from "@/lib/supabase/server";
 
 export async function getAdminRole(): Promise<string | false> {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return false;
   

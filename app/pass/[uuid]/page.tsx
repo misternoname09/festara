@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-type Props = { params: { uuid: string } };
+type Props = { params: Promise<{ uuid: string }> };
 
 async function getPass(uuid: string) {
   // Pass de demo
@@ -28,7 +28,8 @@ async function getPass(uuid: string) {
   return { ...data, event: (data as any).events };
 }
 
-export default async function PassPage({ params }: Props) {
+export default async function PassPage(props: Props) {
+  const params = await props.params;
   const pass = await getPass(params.uuid);
   if (!pass) notFound();
 
@@ -62,7 +63,7 @@ export default async function PassPage({ params }: Props) {
             {/* Header: Event Title */}
             <div className="px-8 pt-10 pb-6 text-center relative border-b border-white/10">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-festara-gold mb-3">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-festara-gold mb-3">
                 Invitation Privée
               </p>
               <h1 className="text-3xl font-serif font-bold text-white leading-tight drop-shadow-md">
@@ -105,7 +106,7 @@ export default async function PassPage({ params }: Props) {
 
               {/* Code Manuel */}
               <div className="mt-8 text-center bg-black/30 w-full py-4 rounded-2xl border border-white/5">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold mb-1">Code Manuel</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-white/60 font-semibold mb-1">Code Manuel</p>
                 <p className="text-3xl font-mono font-bold tracking-[0.3em] text-festara-gold drop-shadow-sm">
                   {pass.pass_code}
                 </p>
@@ -115,7 +116,7 @@ export default async function PassPage({ params }: Props) {
 
             {/* Footer */}
             <div className="bg-black/40 py-5 text-center flex flex-col items-center justify-center gap-1 border-t border-white/5">
-              <span className="text-[9px] uppercase tracking-[0.4em] text-white/30 font-bold">
+              <span className="text-[11px] uppercase tracking-[0.4em] text-white/30 font-bold">
                 Festara • Yëgël
               </span>
               <span className="text-[8px] uppercase tracking-widest text-white/20">

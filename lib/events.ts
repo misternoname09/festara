@@ -44,7 +44,7 @@ export async function getEventBySlug(slug: string): Promise<EventRow | null> {
   if (slug === 'demo') return DEMO_EVENT;
 
   const { createServerSupabase } = await import('@/lib/supabase/server');
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data, error } = await supabase
     .from('events')
     .select('*')

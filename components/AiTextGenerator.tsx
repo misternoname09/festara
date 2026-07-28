@@ -41,7 +41,7 @@ export default function AiTextGenerator({ initialText, title }: { initialText: s
           type="button" 
           onClick={generateText} 
           disabled={loading}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-festara-gold/10 text-festara-gold border border-festara-gold/30 hover:bg-festara-gold hover:text-white transition-all shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-festara-gold/10 text-festara-gold border border-festara-gold/30 hover:bg-festara-gold hover:text-white transition-all shadow-sm"
         >
           {loading ? (
             <span className="animate-pulse">Génération...</span>
@@ -63,7 +63,7 @@ export default function AiTextGenerator({ initialText, title }: { initialText: s
       />
       
       {error && (
-        <p className="text-[10px] font-bold text-red-500 mt-2 bg-red-50 p-2 rounded-lg border border-red-100">
+        <p className="text-xs font-bold text-red-500 mt-2 bg-red-50 p-2 rounded-lg border border-red-100">
           ⚠️ {error}
         </p>
       )}

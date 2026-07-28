@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient, verifyEventAccess } from '@/lib/supabase/server';
-import { stripe, PLANS_EUR } from '@/lib/stripe';
+import { createInvoice, PLANS } from '@/lib/naboopay';
 
-// POST /api/pay/stripe  { event_id, plan }
-// Cree une session Stripe Checkout (carte internationale, diaspora).
+// POST /api/pay/naboopay  { event_id, plan }
+// Cree une transaction NabooPay pour l'achat d'un plan et renvoie l'URL de paiement.
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const { event_id, organization_id, plan } = body || {};
-  const planDef = PLANS_EUR[plan as string];
+  const planDef = PLANS[plan as string];
   
   if ((!event_id && !organization_id) || !planDef) {
     return NextResponse.json({ error: 'Identifiant ou plan invalide.' }, { status: 400 });
@@ -39,10 +39,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: err.message }, { status: 403 });
   }
 
-
-
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
+  // Enregistre un paiement en attente
   const { data: pay } = await admin
     .from('payments')
     .insert({
@@ -50,38 +49,33 @@ export async function POST(req: Request) {
       organization_id: organization_id || null,
       user_id: user.id,
       amount: planDef.amount,
-      currency: 'EUR',
-      provider: 'stripe',
+      currency: 'XOF',
+      provider: 'naboopay',
       status: 'pending',
     })
     .select('id')
     .single();
 
   const returnPath = event_id ? `/dashboard/${event_id}` : `/dashboard/agencies`;
+  
+  const invoice = await createInvoice({
+    amount: planDef.amount,
+    itemName: planDef.label,
+    description: `${planDef.label} — ${eventTitle}`,
+    returnUrl: `${site}${returnPath}?paid=1`,
+    cancelUrl: `${site}${returnPath}?canceled=1`,
+    callbackUrl: `${site}/api/pay/naboopay/callback`,
+    customData: { event_id: event_id || '', organization_id: organization_id || '', plan, payment_id: pay?.id },
+  });
 
-  try {
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      line_items: [
-        {
-          price_data: {
-            currency: 'eur',
-            product_data: { name: `${planDef.label} — ${eventTitle}` },
-            unit_amount: planDef.amount,
-          },
-          quantity: 1,
-        },
-      ],
-      success_url: `${site}${returnPath}?paid=1`,
-      cancel_url: `${site}${returnPath}?canceled=1`,
-      metadata: { event_id: event_id || '', organization_id: organization_id || '', plan, payment_id: pay?.id ?? '' },
-    });
-
-    if (pay?.id) {
-      await admin.from('payments').update({ provider_ref: session.id }).eq('id', pay.id);
-    }
-    return NextResponse.json({ url: session.url });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message || 'Stripe indisponible.' }, { status: 502 });
+  if (!invoice.ok || !invoice.url) {
+    return NextResponse.json({ error: invoice.error || 'Paiement indisponible.' }, { status: 502 });
   }
+
+  // Memorise le token NabooPay pour reconciliation
+  if (pay?.id) {
+    await admin.from('payments').update({ provider_ref: invoice.token }).eq('id', pay.id);
+  }
+
+  return NextResponse.json({ url: invoice.url });
 }

@@ -13,7 +13,7 @@ function sanitizeTitle(raw: unknown): string {
 
 export async function POST(req: Request) {
   try {
-    const supabase = createServerSupabase();
+    const supabase = await createServerSupabase();
     const { data: { user } } = await supabase.auth.getUser();
     
     // Securite : L'utilisateur doit etre connecte pour utiliser l'IA

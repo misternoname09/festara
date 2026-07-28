@@ -1,22 +1,25 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { guestbookSchema } from '@/lib/validations';
 
 export async function POST(req: Request) {
   try {
-    const { event_id, author_name, message } = await req.json();
-
-    if (!event_id || !author_name || !message) {
-      return NextResponse.json({ error: 'Tous les champs sont requis.' }, { status: 400 });
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Requête invalide.' }, { status: 400 });
     }
 
-    if (typeof author_name !== 'string' || author_name.length > 50) {
-      return NextResponse.json({ error: 'Le nom est trop long.' }, { status: 400 });
+    // Validation Zod
+    const validationResult = guestbookSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errorMessages = validationResult.error.errors.map(err => err.message).join(', ');
+      return NextResponse.json({ error: errorMessages }, { status: 400 });
     }
 
-    if (typeof message !== 'string' || message.length > 500) {
-      return NextResponse.json({ error: 'Le message est trop long (max 500 caractères).' }, { status: 400 });
-    }
+    const { event_id, author_name, message } = validationResult.data;
 
     // V3 : Rate-limiting par IP pour éviter le spam massif
     const ip = getClientIp(req);
@@ -47,7 +50,7 @@ export async function POST(req: Request) {
       .from('guestbook_messages')
       .select('id')
       .eq('event_id', event_id)
-      .eq('author_name', author_name.trim())
+      .eq('author_name', author_name)
       .gte('created_at', oneMinuteAgo)
       .maybeSingle();
 
@@ -60,8 +63,8 @@ export async function POST(req: Request) {
       .from('guestbook_messages')
       .insert({
         event_id,
-        author_name: author_name.trim(),
-        message: message.trim(),
+        author_name,
+        message,
       });
 
     if (insertError) {

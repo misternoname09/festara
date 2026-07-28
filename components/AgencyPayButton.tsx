@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { PLANS } from '@/lib/paydunya';
+import { PLANS } from '@/lib/naboopay';
 
 export default function AgencyPayButton({ organizationId, currentPlan }: { organizationId: string; currentPlan: string }) {
   const [loading, setLoading] = useState<string | null>(null);
@@ -9,7 +9,7 @@ export default function AgencyPayButton({ organizationId, currentPlan }: { organ
 
   const agencyPlan = PLANS['agence'];
 
-  async function pay(provider: 'paydunya' | 'stripe') {
+  async function pay(provider: 'naboopay' | 'stripe') {
     setError(null);
     setLoading(provider);
     try {
@@ -56,11 +56,11 @@ export default function AgencyPayButton({ organizationId, currentPlan }: { organ
         
         <div className="w-full md:w-auto flex flex-col gap-2 min-w-[200px]">
           <button
-            onClick={() => pay('paydunya')}
+            onClick={() => pay('naboopay')}
             disabled={!!loading}
             className="btn-primary w-full"
           >
-            {loading === 'paydunya' ? 'Redirection…' : 'Wave / Orange Money'}
+            {loading === 'naboopay' ? 'Redirection…' : 'Wave / Orange Money'}
           </button>
           <button
             onClick={() => pay('stripe')}

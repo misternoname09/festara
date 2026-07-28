@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       eventTitle = ev.title;
     } else {
       // Pour une agence
-      const supabase = await import('@/lib/supabase/server').then(m => m.createServerSupabase());
+      const supabase = await import('@/lib/supabase/server').then(async m => await m.createServerSupabase());
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 });
       user = currentUser;

@@ -1,7 +1,7 @@
 // Festara — types TypeScript des tables Supabase
 
 export type TemplateKind = 'wax' | 'arabic' | 'modern';
-export type PaymentProvider = 'paydunya' | 'cinetpay' | 'stripe' | 'wave';
+export type PaymentProvider = 'naboopay' | 'cinetpay' | 'stripe' | 'wave';
 export type PaymentStatus = 'pending' | 'confirmed' | 'failed';
 export type PlanKind = 'gratuit' | 'essentiel' | 'premium' | 'pro';
 
@@ -104,4 +104,48 @@ export interface BudgetItem {
   notes: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface OrganizationRow {
+  id: string;
+  owner_id: string;
+  name: string;
+  plan: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrganizationMemberRow {
+  id: string;
+  organization_id: string;
+  user_id: string;
+  role: string;
+  created_at: string;
+}
+
+export interface EventCollaboratorRow {
+  id: string;
+  event_id: string;
+  user_id: string;
+  role: string;
+  created_at: string;
+}
+
+export interface EventInvitationRow {
+  id: string;
+  event_id: string;
+  role: string;
+  token: string;
+  created_at: string;
+  accepted_at: string | null;
+}
+
+export interface AgencyInvitationRow {
+  id: string;
+  organization_id: string;
+  email: string | null;
+  role: string;
+  token: string;
+  created_at: string;
+  accepted_at: string | null;
 }

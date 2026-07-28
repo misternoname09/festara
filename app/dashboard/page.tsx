@@ -7,7 +7,7 @@ import type { EventRow, EventStats } from '@/lib/types';
 export const dynamic = 'force-dynamic';
 
 export default async function Dashboard() {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -163,7 +163,7 @@ export default async function Dashboard() {
                        {/* Status Badge */}
                        <div className="absolute top-6 right-6 z-10">
                          <span
-                            className={`text-[9px] px-4 py-2 rounded-full font-bold uppercase tracking-[0.2em] shadow-sm backdrop-blur-md ${
+                            className={`text-[11px] px-4 py-2 rounded-full font-bold uppercase tracking-[0.2em] shadow-sm backdrop-blur-md ${
                               ev.is_published
                                 ? 'bg-green-500/10 text-green-700 border border-green-500/20'
                                 : 'bg-amber-500/10 text-amber-700 border border-amber-500/20'
@@ -189,15 +189,15 @@ export default async function Dashboard() {
                       <div className="grid grid-cols-3 gap-4">
                         <div className="flex flex-col items-center justify-center py-4 rounded-2xl bg-festara-sand/30 group-hover:bg-festara-sand/80 transition-colors">
                           <span className="text-2xl font-bold text-[#0A1226]">{s?.guests_confirmed ?? 0}</span>
-                          <span className="text-[9px] font-bold text-[#0A1226]/40 uppercase tracking-widest mt-1">Invités</span>
+                          <span className="text-[11px] font-bold text-[#0A1226]/60 uppercase tracking-widest mt-1">Invités</span>
                         </div>
                         <div className="flex flex-col items-center justify-center py-4 rounded-2xl bg-gradient-to-b from-festara-gold/5 to-festara-gold/10 group-hover:from-festara-gold/10 group-hover:to-festara-gold/20 transition-colors">
                           <span className="text-2xl font-bold text-festara-gold">{s?.people_confirmed ?? 0}</span>
-                          <span className="text-[9px] font-bold text-festara-gold/60 uppercase tracking-widest mt-1">Total</span>
+                          <span className="text-[11px] font-bold text-festara-gold/60 uppercase tracking-widest mt-1">Total</span>
                         </div>
                         <div className="flex flex-col items-center justify-center py-4 rounded-2xl bg-[#0A1226]/5 group-hover:bg-[#0A1226]/10 transition-colors">
                           <span className="text-2xl font-bold text-[#0A1226]">{s?.guests_scanned ?? 0}</span>
-                          <span className="text-[9px] font-bold text-[#0A1226]/40 uppercase tracking-widest mt-1">Scans</span>
+                          <span className="text-[11px] font-bold text-[#0A1226]/60 uppercase tracking-widest mt-1">Scans</span>
                         </div>
                       </div>
                     </div>

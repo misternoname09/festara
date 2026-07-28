@@ -97,7 +97,7 @@ export default function AgencyCard({ org }: { org: any }) {
                     >
                       {copiedToken === inv.token ? 'Copié !' : 'Copier le lien'}
                     </button>
-                    <span className="text-[10px] text-festara-navy/40">Créé le {new Date(inv.created_at).toLocaleDateString()}</span>
+                    <span className="text-xs text-festara-navy/40">Créé le {new Date(inv.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>
               ))}

@@ -6,7 +6,7 @@ import AgencyCard from '@/components/AgencyCard';
 export const dynamic = 'force-dynamic';
 
 export default async function AgenciesPage() {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 

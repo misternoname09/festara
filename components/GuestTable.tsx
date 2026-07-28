@@ -24,7 +24,7 @@ export default function GuestTable({ guests }: { guests: GuestRow[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead>
-          <tr className="border-b border-black/5 text-[#0A1226]/40 uppercase tracking-widest text-[10px] font-bold">
+          <tr className="border-b border-black/5 text-[#0A1226]/40 uppercase tracking-widest text-xs font-bold">
             <th className="pb-4 pl-4">Nom Complet</th>
             <th className="pb-4 text-center">Personnes</th>
             <th className="pb-4 text-center">RSVP</th>
@@ -38,14 +38,14 @@ export default function GuestTable({ guests }: { guests: GuestRow[] }) {
               <td className="py-4 text-center text-[#0A1226]/70 font-mono text-xs"><span className="bg-[#FDFBF7] border border-black/5 px-3 py-1 rounded-lg">{g.party_size}</span></td>
               <td className="py-4 text-center">
                 {g.rsvp_confirmed_at ? (
-                  <span className="px-3 py-1.5 bg-green-500/10 text-green-700 border border-green-500/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">Confirmé</span>
+                  <span className="px-3 py-1.5 bg-green-500/10 text-green-700 border border-green-500/20 rounded-lg text-[11px] font-bold uppercase tracking-[0.2em]">Confirmé</span>
                 ) : (
-                  <span className="px-3 py-1.5 bg-gray-500/10 text-gray-500 border border-gray-500/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">En attente</span>
+                  <span className="px-3 py-1.5 bg-gray-500/10 text-gray-500 border border-gray-500/20 rounded-lg text-[11px] font-bold uppercase tracking-[0.2em]">En attente</span>
                 )}
               </td>
               <td className="py-4 text-center">
                 {g.scanned_at ? (
-                  <span className="px-3 py-1.5 bg-festara-gold/10 text-festara-gold border border-festara-gold/20 rounded-lg text-[9px] font-bold uppercase tracking-[0.2em]">Scanné</span>
+                  <span className="px-3 py-1.5 bg-festara-gold/10 text-festara-gold border border-festara-gold/20 rounded-lg text-[11px] font-bold uppercase tracking-[0.2em]">Scanné</span>
                 ) : (
                   <span className="text-[#0A1226]/20 font-bold">-</span>
                 )}

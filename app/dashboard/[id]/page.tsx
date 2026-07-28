@@ -19,13 +19,17 @@ import PayoutRequest from '@/components/PayoutRequest';
 import ShareLink from '@/components/ShareLink';
 import { getAvailableBalance } from '@/lib/balance';
 import EventTeam from '@/components/EventTeam';
+import RsvpTimelineChart from '@/components/charts/RsvpTimelineChart';
+import CeremonyPieChart from '@/components/charts/CeremonyPieChart';
 
 export const dynamic = 'force-dynamic';
 
-type Props = { params: { id: string }, searchParams: { tab?: string } };
+type Props = { params: Promise<{ id: string }>, searchParams: Promise<{ tab?: string }> };
 
-export default async function EditEvent({ params, searchParams }: Props) {
-  const supabase = createServerSupabase();
+export default async function EditEvent(props: Props) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
+  const supabase = await createServerSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -160,7 +164,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
             </p>
           </div>
           <div className="flex flex-col sm:items-end gap-4">
-            <span className={`inline-flex px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] border backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.2)] ${ev.is_published ? 'bg-green-500/10 text-green-400 border-green-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}`}>
+            <span className={`inline-flex px-5 py-2 rounded-full text-xs font-bold uppercase tracking-[0.2em] border backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.2)] ${ev.is_published ? 'bg-green-500/10 text-green-400 border-green-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}`}>
               {ev.is_published ? '✨ Publiée' : 'Brouillon'}
             </span>
             <Link href={`/i/${ev.slug}?ref=dashboard`} className="relative group inline-flex items-center justify-center gap-3 px-8 py-4 text-xs font-bold text-[#0A1226] uppercase tracking-widest rounded-full overflow-hidden shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:shadow-[0_15px_40px_rgba(255,255,255,0.4)] transition-all hover:-translate-y-1 bg-gradient-to-r from-white to-[#FDFBF7] border border-white/50">
@@ -219,6 +223,18 @@ export default async function EditEvent({ params, searchParams }: Props) {
                   </div>
                 </div>
 
+                {/* --- NOUVEAUX GRAPHIQUES ANALYTICS --- */}
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white relative overflow-hidden group">
+                    <h3 className="text-sm font-bold text-[#0A1226]/50 uppercase tracking-widest mb-6">Évolution des Confirmations</h3>
+                    <RsvpTimelineChart guests={guests} />
+                  </div>
+                  <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white relative overflow-hidden group">
+                    <h3 className="text-sm font-bold text-[#0A1226]/50 uppercase tracking-widest mb-6">Répartition par Cérémonie</h3>
+                    <CeremonyPieChart guests={guests} />
+                  </div>
+                </div>
+
                 {/* Latest Guestbook Messages */}
                 <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-white relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
@@ -228,11 +244,11 @@ export default async function EditEvent({ params, searchParams }: Props) {
                       <span className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-50 to-pink-500/10 flex items-center justify-center text-pink-500 shadow-inner border border-white text-xl">📖</span>
                       Derniers Mots Doux
                     </h2>
-                    <span className="text-[10px] font-bold text-[#0A1226]/40 uppercase tracking-[0.2em] bg-festara-sand/50 px-4 py-2 rounded-full">{messages.length} total</span>
+                    <span className="text-xs font-bold text-[#0A1226]/60 uppercase tracking-[0.2em] bg-festara-sand/50 px-4 py-2 rounded-full">{messages.length} total</span>
                   </div>
                   {messages.length === 0 ? (
                     <div className="text-center py-12 bg-[#FDFBF7] rounded-[1.5rem] border border-dashed border-[#0A1226]/10 relative z-10">
-                      <p className="text-base text-[#0A1226]/40 font-medium">Aucun message pour le moment.</p>
+                      <p className="text-base text-[#0A1226]/60 font-medium">Aucun message pour le moment.</p>
                     </div>
                   ) : (
                     <div className="space-y-4 relative z-10">
@@ -240,7 +256,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
                         <div key={msg.id} className="bg-[#FDFBF7] rounded-[1.5rem] p-6 border border-black/5 hover:border-black/10 transition-colors shadow-sm">
                           <div className="flex items-center justify-between mb-3">
                             <span className="font-bold text-[#0A1226] text-sm">{msg.author_name}</span>
-                            <span className="text-[9px] uppercase tracking-widest text-[#0A1226]/40 font-bold">{new Date(msg.created_at).toLocaleDateString('fr-FR')}</span>
+                            <span className="text-[11px] uppercase tracking-widest text-[#0A1226]/60 font-bold">{new Date(msg.created_at).toLocaleDateString('fr-FR')}</span>
                           </div>
                           <p className="text-base text-[#0A1226]/80 italic leading-relaxed">"{msg.message}"</p>
                         </div>
@@ -297,7 +313,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
                   {guests.length === 0 ? (
                     <div className="text-center py-16 bg-[#FDFBF7] rounded-[1.5rem] border border-dashed border-[#0A1226]/10">
                       <p className="text-base text-[#0A1226]/60 font-medium mb-2">Votre liste d'invités est vide.</p>
-                      <p className="text-xs text-[#0A1226]/40 uppercase tracking-widest font-bold">Utilisez le module d'import Excel à droite pour commencer.</p>
+                      <p className="text-xs text-[#0A1226]/60 uppercase tracking-widest font-bold">Utilisez le module d'import Excel à droite pour commencer.</p>
                     </div>
                   ) : (
                     <GuestTable guests={guests} />
@@ -421,7 +437,7 @@ export default async function EditEvent({ params, searchParams }: Props) {
                           </span>
                         </label>
                         {isFreePlan && (
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-red-500/80 mt-1 max-w-[250px] leading-relaxed">
+                          <p className="text-xs font-bold uppercase tracking-wider text-red-500/80 mt-1 max-w-[250px] leading-relaxed">
                             Achetez un abonnement pour activer le lien de vos invités.
                           </p>
                         )}

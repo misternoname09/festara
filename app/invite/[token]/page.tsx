@@ -4,8 +4,9 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default async function InvitePage({ params }: { params: { token: string } }) {
-  const supabase = createServerSupabase();
+export default async function InvitePage(props: { params: Promise<{ token: string }> }) {
+  const params = await props.params;
+  const supabase = await createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   const admin = createAdminClient();
 
@@ -91,7 +92,7 @@ export default async function InvitePage({ params }: { params: { token: string }
           <form action={async () => {
             'use server';
             const { createServerSupabase } = await import('@/lib/supabase/server');
-            const supabase = createServerSupabase();
+            const supabase = await createServerSupabase();
             await supabase.auth.signOut();
             redirect(`/login?next=/invite/${params.token}`);
           }}>

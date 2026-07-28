@@ -62,7 +62,7 @@ export default function CircularGauge({ value, max, label, sublabel, colorClass,
           <span className={`text-2xl font-bold font-serif ${colorClass}`}>
             {value}
           </span>
-          <span className="text-[10px] font-bold text-festara-ink/40 uppercase tracking-widest mt-0.5">
+          <span className="text-xs font-bold text-festara-ink/40 uppercase tracking-widest mt-0.5">
             / {max > 0 ? max : '-'}
           </span>
         </div>
@@ -71,7 +71,7 @@ export default function CircularGauge({ value, max, label, sublabel, colorClass,
       {/* Libellés */}
       <div className="text-center mt-3">
         <span className="block text-xs font-bold text-festara-navy uppercase tracking-wider">{label}</span>
-        {sublabel && <span className="block text-[10px] text-festara-ink/50 mt-1">{sublabel}</span>}
+        {sublabel && <span className="block text-xs text-festara-ink/50 mt-1">{sublabel}</span>}
       </div>
     </div>
   );

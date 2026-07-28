@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     : '/dashboard';
 
   if (code) {
-    const supabase = createServerSupabase();
+    const supabase = await createServerSupabase();
     await supabase.auth.exchangeCodeForSession(code);
   }
   return NextResponse.redirect(new URL(next, url.origin));

@@ -3,8 +3,9 @@ import type { GuestRow } from '@/lib/types';
 
 // GET /api/export/[eventId]
 // Renvoie la liste des invites en CSV (pour le traiteur). Reserve au proprietaire (RLS).
-export async function GET(_req: Request, { params }: { params: { eventId: string } }) {
-  const supabase = createServerSupabase();
+export async function GET(_req: Request, props: { params: Promise<{ eventId: string }> }) {
+  const params = await props.params;
+  const supabase = await createServerSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();

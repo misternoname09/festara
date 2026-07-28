@@ -126,7 +126,7 @@ export default function WhatsAppDispatcher({ guests, eventSlug, eventId, plan }:
               className="w-full py-3 bg-festara-gold text-white font-bold rounded-lg uppercase tracking-widest text-xs hover:bg-yellow-600 transition-colors disabled:opacity-50 flex flex-col items-center justify-center gap-1"
             >
               <span>{isSendingBulk ? "Envoi en cours..." : "Envoyer à tous (Automatique)"}</span>
-              {isDryRun && <span className="text-[9px] bg-white/20 px-2 rounded-full mt-1">Mode Simulation (Dry-Run)</span>}
+              {isDryRun && <span className="text-[11px] bg-white/20 px-2 rounded-full mt-1">Mode Simulation (Dry-Run)</span>}
             </button>
           ) : (
             <div className="w-full py-3 bg-gray-100 text-gray-500 font-bold rounded-lg uppercase tracking-widest text-xs flex items-center justify-center border border-dashed border-gray-300">

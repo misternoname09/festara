@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { rsvpSchema } from '@/lib/validations';
 
 // POST /api/rsvp
 // Cree un invite (RSVP) cote serveur avec le service_role (l'invite est anonyme,
@@ -13,18 +14,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Requête invalide.' }, { status: 400 });
   }
 
-  const { event_id, first_name, party_size, ceremonies_attending } = body || {};
-
-  if (!event_id || typeof first_name !== 'string' || !first_name.trim()) {
-    return NextResponse.json({ error: 'Prénom requis.' }, { status: 400 });
+  // Validation Zod
+  const validationResult = rsvpSchema.safeParse(body);
+  if (!validationResult.success) {
+    const errorMessages = validationResult.error.errors.map(err => err.message).join(', ');
+    return NextResponse.json({ error: errorMessages }, { status: 400 });
   }
+
+  const { event_id, first_name, party_size: size, ceremonies_attending } = validationResult.data;
 
   const ip = getClientIp(req);
   const { ok } = rateLimit(`rsvp:${ip}`, 20, 10 * 60 * 1000);
   if (!ok) {
     return NextResponse.json({ error: 'Trop de tentatives. Réessayez plus tard.' }, { status: 429 });
   }
-  const size = Math.min(Math.max(parseInt(party_size, 10) || 1, 1), 20);
 
   // Mode demo : pas d'ecriture en base, on renvoie un pass factice.
   if (event_id === 'demo') {
@@ -52,14 +55,9 @@ export async function POST(req: Request) {
     .from('guests')
     .insert({
       event_id,
-      first_name: first_name.trim().slice(0, 80),
+      first_name,
       party_size: size,
-      ceremonies_attending: Array.isArray(ceremonies_attending)
-        ? ceremonies_attending
-            .slice(0, 10)
-            .filter((c: unknown) => typeof c === 'string' && c.length <= 50)
-            .map((c: string) => c.replace(/[^\w\-]/g, '').slice(0, 50))
-        : [],
+      ceremonies_attending,
       rsvp_confirmed_at: new Date().toISOString(),
     })
     .select('pass_uuid, pass_code')

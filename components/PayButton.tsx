@@ -11,7 +11,7 @@ export default function PayButton({ eventId, currentPlan }: { eventId: string; c
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function pay(plan: string, provider: 'paydunya' | 'stripe') {
+  async function pay(plan: string, provider: 'naboopay' | 'stripe') {
     setError(null);
     setLoading(`${plan}-${provider}`);
     try {
@@ -47,11 +47,11 @@ export default function PayButton({ eventId, currentPlan }: { eventId: string; c
             <p className="text-festara-gold font-semibold">{p.price}</p>
             <p className="mt-1 text-xs text-festara-ink/60">{p.desc}</p>
             <button
-              onClick={() => pay(p.key, 'paydunya')}
+              onClick={() => pay(p.key, 'naboopay')}
               disabled={!!loading}
               className="btn-primary w-full mt-3"
             >
-              {loading === `${p.key}-paydunya` ? 'Redirection…' : 'Wave / Orange Money'}
+              {loading === `${p.key}-naboopay` ? 'Redirection…' : 'Wave / Orange Money'}
             </button>
             <button
               onClick={() => pay(p.key, 'stripe')}
@@ -60,12 +60,29 @@ export default function PayButton({ eventId, currentPlan }: { eventId: string; c
             >
               {loading === `${p.key}-stripe` ? 'Redirection…' : 'Carte (diaspora)'}
             </button>
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                type="button"
+                className="w-full text-center text-sm text-gray-500 hover:text-festara-navy mt-4 transition-colors font-semibold"
+                onClick={async () => {
+                  try {
+                    const { forceUpgradeEventAction } = await import('@/app/dashboard/agencies/actions');
+                    await forceUpgradeEventAction(eventId, p.key);
+                    window.location.reload();
+                  } catch (e: any) {
+                    alert(e.message);
+                  }
+                }}
+              >
+                🛠️ Bypass Local (Dev)
+              </button>
+            )}
           </div>
         ))}
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <p className="text-xs text-festara-ink/40">
-        Wave / Orange Money via PayDunya (FCFA) · Carte EUR via Stripe (diaspora).
+        Wave / Orange Money via NabooPay (FCFA) · Carte EUR via Stripe (diaspora).
       </p>
     </div>
   );

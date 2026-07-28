@@ -17,7 +17,7 @@ function slugify(s: string): string {
 
 // Cree une nouvelle invitation (brouillon) et redirige vers son edition.
 export async function createEvent(formData: FormData) {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -109,7 +109,7 @@ export async function updateEvent(eventId: string, formData: FormData) {
 }
 
 export async function signOut() {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   await supabase.auth.signOut();
   redirect('/login');
 }
@@ -133,7 +133,7 @@ export async function createEventInvitationAction(eventId: string, role: string)
 }
 
 export async function deleteEventInvitationAction(invitationId: string) {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   // TODO: RLS ensures you can only delete if you have access to the event
   await supabase.from('event_invitations').delete().eq('id', invitationId);
   // Can't reliably revalidate path without knowing eventId, but we can do a generic approach or assume it works

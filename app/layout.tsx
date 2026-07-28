@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   keywords: ['invitation', 'mariage', 'sénégal', 'diaspora', 'rsvp', 'pass vip', 'takk', 'ngente'],
   authors: [{ name: 'Festara Team' }],
+  manifest: '/manifest.json',
   openGraph: {
     type: 'website',
     locale: 'fr_SN',

@@ -15,7 +15,7 @@ export default function GuestbookForm({ eventId, isDark }: { eventId: string; is
       ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:ring-white/50 focus:bg-white/20'
       : 'bg-white/60 border-black/10 text-festara-navy placeholder-festara-ink/40 focus:ring-[#C59A45]/50 focus:bg-white');
 
-  const labelClass = 'block text-[10px] font-bold uppercase tracking-widest ml-1 mb-1.5 ' + (isDark ? 'text-white/80' : 'text-festara-navy');
+  const labelClass = 'block text-xs font-bold uppercase tracking-widest ml-1 mb-1.5 ' + (isDark ? 'text-white/80' : 'text-festara-navy');
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

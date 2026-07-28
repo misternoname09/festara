@@ -109,7 +109,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
     <main className={`min-h-[120vh] relative overflow-hidden flex flex-col items-center py-8 sm:py-16 px-4 ${t.page}`}>
       {/* Bouton Retour contextuel Premium */}
       {refParam === 'dashboard' && (
-        <Link href={`/dashboard/${event.id}`} className="fixed top-6 sm:top-8 left-4 sm:left-8 z-50 group flex items-center gap-3 bg-[#0A1226]/80 hover:bg-[#0A1226] backdrop-blur-xl border border-white/10 text-white px-4 sm:px-5 py-2.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.3)] hover:border-festara-gold/50 hover:-translate-y-1">
+        <Link href={`/dashboard/${event.id}`} className="fixed top-6 sm:top-8 left-4 sm:left-8 z-50 group flex items-center gap-3 bg-[#0A1226]/80 hover:bg-[#0A1226] backdrop-blur-xl border border-white/10 text-white px-4 sm:px-5 py-2.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.3)] hover:border-festara-gold/50 hover:-translate-y-1">
           <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-festara-gold group-hover:text-[#0A1226] transition-all duration-500">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           </div>
@@ -117,7 +117,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
         </Link>
       )}
       {refParam === 'home' && (
-        <Link href="/" className="fixed top-6 sm:top-8 left-4 sm:left-8 z-50 group flex items-center gap-3 bg-[#0A1226]/80 hover:bg-[#0A1226] backdrop-blur-xl border border-white/10 text-white px-4 sm:px-5 py-2.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.3)] hover:border-festara-gold/50 hover:-translate-y-1">
+        <Link href="/" className="fixed top-6 sm:top-8 left-4 sm:left-8 z-50 group flex items-center gap-3 bg-[#0A1226]/80 hover:bg-[#0A1226] backdrop-blur-xl border border-white/10 text-white px-4 sm:px-5 py-2.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.3)] hover:border-festara-gold/50 hover:-translate-y-1">
           <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-festara-gold group-hover:text-[#0A1226] transition-all duration-500">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           </div>
@@ -152,13 +152,13 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
              {/* Montage Photos */}
              {gallery.length === 1 ? (
                // One Image: Grand Arch
-               <div className="w-full max-w-[280px] sm:max-w-[320px] aspect-[3/4] rounded-t-[10rem] overflow-hidden border-[6px] border-white shadow-2xl relative group">
+               <div className="w-full max-w-[280px] sm:max-w-[320px] aspect-[3/4] rounded-t-[10rem] overflow-hidden border-[6px] border-white shadow-2xl relative group scale-95 sm:scale-100">
                   <div className="absolute inset-0 bg-gradient-to-t from-festara-navy/40 to-transparent group-hover:opacity-0 transition-opacity duration-700 z-10"></div>
                   <Image src={gallery[0]} alt={event.title} fill sizes="(max-width: 640px) 280px, 320px" className="object-cover group-hover:scale-[1.03] transition-transform duration-1000" priority />
                </div>
              ) : (
                // Multiple Images: Staggered Elegant Layout
-               <div className="relative w-full h-[420px] sm:h-[480px] max-w-[340px] mx-auto mt-4">
+               <div className="relative w-full h-[420px] sm:h-[480px] max-w-[340px] mx-auto mt-4 scale-95 sm:scale-100">
                   {/* Image 1 (Back left) */}
                   <div className="absolute top-0 left-0 w-[65%] aspect-[3/4] rounded-t-[6rem] overflow-hidden border-[6px] border-white shadow-xl transform -rotate-6 hover:rotate-0 hover:z-30 transition-all duration-500 origin-bottom-left group">
                      <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10"></div>
@@ -190,7 +190,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
         </div>
 
         <div className="px-8 pb-16 pt-6 text-center relative z-20">
-          <p className={`uppercase tracking-[0.35em] text-[10px] font-bold mb-4 opacity-80 ${t.accent}`}>
+          <p className={`uppercase tracking-[0.35em] text-xs font-bold mb-4 opacity-80 ${t.accent}`}>
             Vous êtes convié(e)
           </p>
           <h1 className={`text-5xl sm:text-6xl leading-[1.1] mb-2 ${t.title}`}>{event.title}</h1>
@@ -223,7 +223,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
                 <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-3 h-6 rounded-r-full ${isDark ? 'bg-[#1A2A4A]' : 'bg-[#F9F6F0]'}`}></div>
                 
                 <div className="pl-6">
-                  <span className={`inline-block px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest mb-3 ${isDark ? 'bg-white/10 text-white' : 'bg-festara-navy/5 text-festara-navy'}`}>
+                  <span className={`inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest mb-3 ${isDark ? 'bg-white/10 text-white' : 'bg-festara-navy/5 text-festara-navy'}`}>
                     Étape {idx + 1}
                   </span>
                   <h2 className={`text-2xl mb-2 ${t.title}`}>{c.name}</h2>
@@ -283,7 +283,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
             <a href="/" target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-2 px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-2xl ${isDark ? 'bg-gradient-to-r from-[#C59A45] to-[#DFB769] text-white hover:shadow-[#C59A45]/30' : 'bg-gradient-to-r from-festara-navy to-[#1A2A4A] text-white hover:shadow-festara-navy/30'}`}>
               Créer mon faire-part <span className="text-lg leading-none">✨</span>
             </a>
-            <p className="text-[10px] uppercase tracking-[0.4em] font-bold mt-12 opacity-20">
+            <p className="text-xs uppercase tracking-[0.4em] font-bold mt-12 opacity-20">
               Festara • Yëgël
             </p>
           </div>
