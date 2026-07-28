@@ -27,13 +27,21 @@ export default function Home() {
       */}
       <section className="relative overflow-hidden bg-[#0A1226] text-white pt-32 pb-40 lg:pt-40 lg:pb-56 rounded-b-[3rem] lg:rounded-b-[5rem] shadow-2xl z-20">
         
-        {/* Abstract Lighting Effects */}
-        <div className="absolute top-[-20%] left-[10%] w-[600px] h-[600px] rounded-full bg-festara-gold/10 blur-[120px] pointer-events-none animate-float"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-festara-teal/15 blur-[120px] pointer-events-none animate-float" style={{ animationDelay: '2s' }}></div>
-        
-        {/* Grid Pattern Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] pointer-events-none opacity-50"></div>
+        {/* Abstract luxury background */}
+        <div className="absolute top-0 left-0 w-full h-full bg-[#0A1226] z-0">
+          {/* Image de fond Cinématique */}
+          <div className="absolute inset-0 z-0">
+            <img src="/hero-bg.png" alt="Mariage de prestige" className="w-full h-full object-cover object-center opacity-60 mix-blend-screen" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0A1226]/40 via-[#0A1226]/80 to-[#0A1226]"></div>
+          </div>
 
+          <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(197,154,69,0.3)_0%,transparent_70%)] blur-[80px] animate-pulse pointer-events-none"></div>
+          <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.05)_0%,transparent_60%)] blur-[100px] pointer-events-none"></div>
+          
+          {/* Subtle grid pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
+        </div>
+        
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16 lg:gap-8">
           
           {/* Left Text Block */}
