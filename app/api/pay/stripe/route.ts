@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient, verifyEventAccess } from '@/lib/supabase/server';
-import { stripe, PLANS_EUR } from '@/lib/stripe';
+import { getStripe, PLANS_EUR } from '@/lib/stripe';
 
 // POST /api/pay/stripe  { event_id, plan }
 // Cree une session Stripe Checkout (carte internationale, diaspora).
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
   const returnPath = event_id ? `/dashboard/${event_id}` : `/dashboard/agencies`;
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
       line_items: [
         {
