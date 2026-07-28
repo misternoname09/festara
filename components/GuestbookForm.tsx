@@ -83,7 +83,7 @@ export default function GuestbookForm({ eventId, isDark }: { eventId: string; is
       {error && <p className="text-xs text-red-600 text-center">{error}</p>}
 
       <button type="submit" disabled={loading} className={`w-full py-3.5 rounded-full text-xs font-bold uppercase tracking-widest transition-transform hover:-translate-y-0.5 shadow-xl ${isDark ? 'bg-white text-[#1A2A4A] hover:bg-white/90' : 'bg-[#1A2A4A] text-white hover:bg-[#1A2A4A]/90'}`}>
-        {loading ? 'Envoi...' : 'Publier mon message'}
+        {loading ? 'Envoi...' : 'Envoyer mon message ✉️'}
       </button>
     </form>
   );
