@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { stripe, PLANS_EUR } from '@/lib/stripe';
+import { getStripe, PLANS_EUR } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/server';
 
 // Webhook Stripe — signature verifiee avec STRIPE_WEBHOOK_SECRET.
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const raw = await req.text();
   let event;
   try {
-    event = stripe.webhooks.constructEvent(raw, sig, secret);
+    event = getStripe().webhooks.constructEvent(raw, sig, secret);
   } catch (e: any) {
     return NextResponse.json({ error: `Signature invalide: ${e.message}` }, { status: 400 });
   }
