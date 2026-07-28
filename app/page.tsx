@@ -252,7 +252,7 @@ export default function Home() {
                L'excellence dans <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DFB769] to-[#C59A45] italic pr-2">chaque détail.</span>
             </h2>
             <p className="text-white/60 font-medium text-lg max-w-2xl mx-auto leading-relaxed">
-               Une suite complète d'outils conçue pour vous libérer des contraintes logistiques et sublimer l'expérience de vos invités.
+              Une suite complète d'outils conçue pour vous libérer des contraintes logistiques et sublimer l'expérience de vos invités.
             </p>
           </div>
 
@@ -260,10 +260,15 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[320px]">
             
             {/* Card 1: RSVP (Large Horizontal) */}
-            <div className="md:col-span-2 bg-gradient-to-br from-white/[0.05] to-transparent border border-white/10 hover:border-festara-gold/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,154,69,0.15)]">
+            <div className="md:col-span-2 bg-[#0A1226] border border-white/10 hover:border-festara-gold/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,154,69,0.15)] animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+               {/* Image 3D de fond */}
+               <div className="absolute right-0 top-0 bottom-0 w-3/4 sm:w-1/2 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 pointer-events-none origin-right">
+                 <img src="/bento-gold.png" alt="3D Gold Ribbon" className="w-full h-full object-cover object-center" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 50%)', maskImage: 'linear-gradient(to right, transparent 0%, black 50%)' }} />
+               </div>
+
                {/* Hover Glow */}
-               <div className="absolute inset-0 bg-gradient-to-r from-festara-gold/0 via-festara-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-               <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-festara-gold/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000 pointer-events-none"></div>
+               <div className="absolute inset-0 bg-gradient-to-r from-[#0A1226] via-[#0A1226]/80 to-transparent pointer-events-none z-0"></div>
+               <div className="absolute -left-10 -bottom-10 w-64 h-64 bg-festara-gold/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000 pointer-events-none"></div>
                
                <div className="relative z-10 max-w-lg">
                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#DFB769] to-[#C59A45] flex items-center justify-center text-2xl mb-8 shadow-lg border border-white/20 transform group-hover:scale-110 transition-transform duration-500">✨</div>
@@ -275,7 +280,7 @@ export default function Home() {
             </div>
 
             {/* Card 2: Sécurité (Tall Vertical) */}
-            <div className="md:col-span-1 md:row-span-2 bg-gradient-to-b from-[#1A2A4A]/50 to-[#0A1226] border border-festara-teal/30 hover:border-festara-teal/70 rounded-[2.5rem] p-10 flex flex-col justify-between relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(20,184,166,0.15)]">
+            <div className="md:col-span-1 md:row-span-2 bg-gradient-to-b from-[#1A2A4A]/50 to-[#0A1226] border border-festara-teal/30 hover:border-festara-teal/70 rounded-[2.5rem] p-10 flex flex-col justify-between relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(20,184,166,0.15)] animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                {/* Animated Background Line */}
                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-festara-teal to-transparent opacity-50"></div>
                
@@ -301,7 +306,7 @@ export default function Home() {
             </div>
 
             {/* Card 3: WhatsApp (Square) */}
-            <div className="md:col-span-1 bg-gradient-to-br from-[#121B2F] to-[#0A1226] border border-white/10 hover:border-[#25D366]/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(37,211,102,0.1)]">
+            <div className="md:col-span-1 bg-gradient-to-br from-[#121B2F] to-[#0A1226] border border-white/10 hover:border-[#25D366]/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(37,211,102,0.1)] animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
                <div className="absolute -right-10 -top-10 w-48 h-48 bg-[#25D366]/5 rounded-full blur-3xl group-hover:bg-[#25D366]/15 transition-colors duration-700 pointer-events-none"></div>
                <div className="relative z-10">
                  <div className="w-16 h-16 rounded-2xl bg-[#25D366]/10 text-[#25D366] flex items-center justify-center text-3xl mb-8 shadow-sm border border-[#25D366]/20 transform group-hover:-rotate-12 transition-transform duration-500">📱</div>
@@ -313,7 +318,7 @@ export default function Home() {
             </div>
 
             {/* Card 4: Analytics (Square) */}
-            <div className="md:col-span-1 bg-gradient-to-bl from-[#121B2F] to-[#0A1226] border border-white/10 hover:border-festara-gold/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,154,69,0.1)]">
+            <div className="md:col-span-1 bg-gradient-to-bl from-[#121B2F] to-[#0A1226] border border-white/10 hover:border-festara-gold/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,154,69,0.1)] animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
                <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-festara-gold/5 rounded-full blur-3xl group-hover:bg-festara-gold/15 transition-colors duration-700 pointer-events-none"></div>
                <div className="relative z-10">
                  <div className="w-16 h-16 rounded-2xl bg-white/5 text-festara-gold flex items-center justify-center text-3xl mb-8 shadow-sm border border-white/10 transform group-hover:translate-x-2 transition-transform duration-500">📊</div>
