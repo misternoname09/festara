@@ -43,12 +43,11 @@ export async function createInvoice(opts: {
     opts.callbackUrl.includes('127.0.0.1');
 
   const payload: Record<string, unknown> = {
-    method_of_payment: ['WAVE', 'ORANGE_MONEY'],
+    method_of_payment: ['wave', 'orange_money'],
     products: [
       {
         name: opts.itemName,
-        category: 'service',
-        amount: opts.amount,
+        price: opts.amount,
         quantity: 1,
         description: opts.description,
       },
