@@ -41,12 +41,9 @@ export default async function ScanPage(props: Props) {
   const guests = guestsData || [];
 
   return (
-    <main className="min-h-screen bg-[#0A1226] text-white relative overflow-hidden font-sans">
-      {/* Background Ornaments (Mode Nuit pour l'extérieur) */}
-      <div className="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] rounded-full bg-festara-gold/10 blur-[100px] pointer-events-none"></div>
-      
-      <div className="max-w-md mx-auto px-4 py-12 relative z-10 flex flex-col justify-center min-h-screen">
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-[2.5rem] p-6 sm:p-8 shadow-2xl">
+    <main className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
+      <div className="mx-auto w-full max-w-lg min-h-screen flex flex-col items-center justify-center relative z-10 px-0 sm:px-4 pb-12 sm:py-12">
+        <div className="w-full h-full flex flex-col justify-center sm:bg-white/5 sm:border sm:border-white/10 sm:backdrop-blur-md sm:rounded-[2.5rem] sm:p-8">
           <Scanner
             eventId={ev.id}
             eventTitle={ev.title}
@@ -55,10 +52,6 @@ export default async function ScanPage(props: Props) {
             guests={guests}
           />
         </div>
-
-        <p className="text-center text-white/30 text-xs uppercase tracking-widest mt-8 font-semibold">
-          Interface Agent de Sécurité — Festara
-        </p>
       </div>
     </main>
   );

@@ -212,41 +212,48 @@ export default function Scanner({
     error: 'Erreur réseau',
   }[result.status];
 
-  return (
-    <div className="flex flex-col items-center">
-      <div className="w-full mb-6 text-center">
-        <h1 className="text-2xl font-bold text-festara-navy font-serif mb-1">{eventTitle}</h1>
-        <div className="inline-flex items-center gap-2 bg-white/60 px-4 py-1.5 rounded-full border border-black/5 text-sm font-semibold text-festara-ink/70">
+    <div className="flex flex-col items-center w-full h-full">
+      <div className="w-full mb-6 text-center z-10 relative">
+        <h1 className="text-2xl font-bold text-white font-serif mb-1">{eventTitle}</h1>
+        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/5 text-sm font-semibold text-white/80">
           <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-festara-teal animate-pulse' : 'bg-red-500'}`}></span>
           {scanned} / {total} invités scannés
         </div>
         {!isOnline && (
-          <p className="text-xs text-amber-600 mt-2 font-bold bg-amber-50 inline-block px-3 py-1 rounded-full border border-amber-200">
+          <p className="text-xs text-amber-400 mt-2 font-bold bg-amber-500/10 inline-block px-3 py-1 rounded-full border border-amber-500/20">
             ⚠️ Hors-ligne : {pendingSync} scan(s) en attente
           </p>
         )}
       </div>
 
-      {/* Resultat pleine largeur */}
+      {/* Resultat PLEIN ECRAN (Flash) */}
       {result.status !== 'idle' && (
-        <div className={`w-full mb-6 rounded-2xl p-5 text-center border-2 animate-fade-in-up shadow-sm ${bannerColors}`}>
-          <p className="text-xl font-bold font-serif">{label}</p>
-          {result.guest && (
-            <p className="mt-2 text-md font-medium opacity-90">
-              {result.guest.first_name} <span className="mx-2 opacity-50">•</span> {result.guest.party_size} pers.
-            </p>
-          )}
-          {result.status === 'already' && result.scanned_at && (
-            <p className="mt-2 text-sm opacity-80 font-mono bg-white/50 inline-block px-3 py-1 rounded-md">
-              Scanné à {new Date(result.scanned_at).toLocaleTimeString('fr-FR')}
-            </p>
-          )}
+        <div className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center text-white transition-colors duration-300 ${
+          result.status === 'valid' ? 'bg-green-600' :
+          result.status === 'already' ? 'bg-amber-500' :
+          'bg-red-600'
+        }`}>
+          <div className="animate-fade-in-up">
+            <p className="text-5xl font-bold font-serif mb-6">{label}</p>
+            {result.guest && (
+              <p className="mt-2 text-3xl font-medium opacity-100">
+                {result.guest.first_name}
+                <br/>
+                <span className="opacity-80 text-xl inline-block mt-4">{result.guest.party_size} pers. attendue(s)</span>
+              </p>
+            )}
+            {result.status === 'already' && result.scanned_at && (
+              <p className="mt-8 text-sm opacity-90 font-mono bg-black/20 inline-block px-4 py-2 rounded-xl">
+                Scanné à {new Date(result.scanned_at).toLocaleTimeString('fr-FR')}
+              </p>
+            )}
+          </div>
         </div>
       )}
 
       {/* Camera Container */}
-      <div className={`w-full rounded-[2rem] overflow-hidden bg-[#0A1226] aspect-[4/5] relative shadow-inner border-4 transition-colors duration-300 ${result.status === 'valid' ? 'border-green-500' : result.status === 'idle' ? 'border-[#0A1226]' : 'border-red-500'}`}>
-        <video ref={videoRef} className="w-full h-full object-cover opacity-90" muted playsInline />
+      <div className={`w-full max-w-sm rounded-[2.5rem] overflow-hidden bg-black aspect-[4/5] relative shadow-2xl border-4 transition-colors duration-300 ${result.status === 'valid' ? 'border-green-500' : result.status === 'idle' ? 'border-white/10' : 'border-red-500'}`}>
+        <video ref={videoRef} className="w-full h-full object-cover opacity-100" muted playsInline />
         <canvas ref={canvasRef} className="hidden" />
         
         {/* Cadre de visée decoratif */}
@@ -262,18 +269,18 @@ export default function Scanner({
         )}
 
         {!camOn && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0A1226]/80 backdrop-blur-sm p-6 text-center">
-            <span className="text-4xl mb-4">📷</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md p-6 text-center">
+            <span className="text-5xl mb-6">📷</span>
             <button
               onClick={() => {
                 setResult({ status: 'idle' });
                 setCamOn(true);
               }}
-              className="btn bg-[#C59A45] hover:bg-[#DFB769] text-white shadow-lg w-full max-w-[200px]"
+              className="px-8 py-4 bg-festara-gold hover:bg-[#DFB769] text-[#0A1226] font-bold uppercase tracking-widest text-sm rounded-full transition-all shadow-[0_10px_30px_rgba(197,154,69,0.3)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.5)] hover:-translate-y-1 w-full max-w-[250px]"
             >
               Activer la caméra
             </button>
-            <p className="text-white/40 text-xs mt-4">Autorisez l'accès à la caméra pour scanner les Pass Festara.</p>
+            <p className="text-white/40 text-xs mt-6 font-medium">Autorisez l'accès à la caméra pour scanner les Pass Festara.</p>
           </div>
         )}
       </div>
