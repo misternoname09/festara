@@ -7,11 +7,12 @@ interface Props {
   eventId: string;
   ceremonies: Ceremony[];
   dark?: boolean;
+  dict: any;
 }
 
 type Result = { pass_uuid: string; pass_code: string };
 
-export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
+export default function RsvpForm({ eventId, ceremonies, dark, dict }: Props) {
   const [firstName, setFirstName] = useState('');
   const [partySize, setPartySize] = useState(1);
   const [selected, setSelected] = useState<string[]>(ceremonies.map((c) => c.id));
@@ -90,81 +91,76 @@ export default function RsvpForm({ eventId, ceremonies, dark }: Props) {
 
   return (
     <form onSubmit={submit} className="text-left space-y-6">
-      <p className={`font-serif text-2xl text-center mb-6 ${dark ? 'text-[#DFB769]' : 'text-[#0A1226]'}`}>Confirmer ma présence</p>
+      <p className={`font-serif text-2xl text-center mb-6 ${dark ? 'text-[#DFB769]' : 'text-[#0A1226]'}`}>{dict.rsvpTitle}</p>
 
-      <div>
-        <label className={labelClass}>Ton prénom</label>
-        <input
-          className={inputClass}
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          placeholder="Ex : Fatou"
-        />
-      </div>
+      <div className="space-y-5">
+        <div>
+          <label className={labelClass}>{dict.nameLabel}</label>
+          <input
+            type="text"
+            required
+            placeholder={dict.namePlaceholder}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className={inputClass}
+          />
+        </div>
 
-      <div>
-        <label className={labelClass}>Nombre de personnes (toi inclus)</label>
-        <div className={`mt-2 flex items-center justify-between p-2 rounded-2xl border transition-all ${dark ? 'bg-white/5 border-white/20 text-white hover:border-white/40' : 'bg-white/60 border-black/10 text-festara-navy hover:border-[#C59A45]/50'}`}>
-          <button 
-            type="button" 
-            onClick={() => setPartySize(Math.max(1, partySize - 1))}
-            className={`w-12 h-12 flex items-center justify-center rounded-xl text-2xl font-light transition-all active:scale-95 ${dark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/5 text-festara-navy'}`}
-            aria-label="Diminuer"
-          >
-            −
-          </button>
-          
-          <div className="flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-3xl font-bold font-serif leading-none mb-1">{partySize}</span>
-            <span className={`text-xs uppercase tracking-widest font-bold ${dark ? 'text-festara-gold' : 'text-festara-teal'}`}>
-              {partySize === 1 ? 'Je viens seul(e)' : `Moi + ${partySize - 1} ${partySize === 2 ? 'accompagnant' : 'accompagnants'}`}
+        <div>
+          <label className={labelClass}>{dict.partyLabel}</label>
+          <div className="flex items-center gap-4">
+            <input
+              type="range"
+              min="1"
+              max="5"
+              value={partySize}
+              onChange={(e) => setPartySize(parseInt(e.target.value))}
+              className={`flex-1 h-2 rounded-lg appearance-none cursor-pointer ${dark ? 'bg-white/20 accent-festara-gold' : 'bg-black/10 accent-festara-navy'}`}
+            />
+            <span className={`text-xl font-bold font-serif w-12 text-center ${dark ? 'text-festara-gold' : 'text-festara-gold'}`}>
+              {partySize}
             </span>
           </div>
-
-          <button 
-            type="button" 
-            onClick={() => setPartySize(Math.min(20, partySize + 1))}
-            className={`w-12 h-12 flex items-center justify-center rounded-xl text-2xl font-light transition-all active:scale-95 ${dark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/5 text-festara-navy'}`}
-            aria-label="Augmenter"
-          >
-            +
-          </button>
         </div>
       </div>
 
-      {ceremonies.length > 1 && (
-        <div>
-          <label className={labelClass}>Cérémonies où tu viens</label>
-          <div className="mt-3 space-y-3">
-            {ceremonies.map((c) => (
-              <label key={c.id} className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-colors border ${dark ? 'border-white/10 hover:bg-white/5' : 'border-black/5 hover:bg-white/50'}`}>
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="checkbox"
-                    className="peer sr-only"
-                    checked={selected.includes(c.id)}
-                    onChange={() => toggle(c.id)}
-                  />
-                  <div className={`w-6 h-6 rounded border-2 transition-colors flex items-center justify-center ${dark ? 'border-white/50 peer-checked:bg-[#C59A45] peer-checked:border-[#C59A45]' : 'border-festara-navy/30 peer-checked:bg-festara-navy peer-checked:border-festara-navy'}`}>
-                    <svg className={`w-3 h-3 text-white transition-opacity ${selected.includes(c.id) ? 'opacity-100' : 'opacity-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
+      <div className="mt-8">
+        <label className={labelClass + ' mb-3 block'}>{dict.ceremoniesLabel}</label>
+        <div className="space-y-3">
+          {ceremonies.map((c) => (
+            <label key={c.id} className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-colors border ${dark ? 'border-white/10 hover:bg-white/5' : 'border-black/5 hover:bg-white/50'}`}>
+              <div className="relative flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  className="peer sr-only"
+                  checked={selected.includes(c.id)}
+                  onChange={() => toggle(c.id)}
+                />
+                <div className={`w-6 h-6 rounded border-2 transition-colors flex items-center justify-center ${dark ? 'border-white/50 peer-checked:bg-[#C59A45] peer-checked:border-[#C59A45]' : 'border-festara-navy/30 peer-checked:bg-festara-navy peer-checked:border-festara-navy'}`}>
+                  <svg className={`w-3 h-3 text-white transition-opacity ${selected.includes(c.id) ? 'opacity-100' : 'opacity-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <span className={`font-medium ${dark ? 'text-white' : 'text-festara-navy'}`}>{c.name}</span>
-              </label>
-            ))}
-          </div>
+              </div>
+              <span className={`font-medium ${dark ? 'text-white' : 'text-festara-navy'}`}>{c.name}</span>
+            </label>
+          ))}
         </div>
-      )}
+      </div>
 
-      {error && <p className="text-sm text-red-600 bg-red-50 p-3 rounded-xl border border-red-100 text-center">{error}</p>}
+      {error && <p className="text-red-500 text-sm font-semibold mt-4 text-center bg-red-500/10 p-3 rounded-xl border border-red-500/20">{error}</p>}
 
-      <button type="submit" disabled={loading} className={`relative w-full mt-6 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-all hover:-translate-y-1 overflow-hidden shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 ${dark ? 'bg-gradient-to-r from-[#C59A45] to-[#DFB769] text-white' : 'bg-gradient-to-r from-festara-navy to-[#1A2A4A] text-white'}`}>
-        <span className="absolute inset-0 w-full h-full bg-white/10 opacity-0 hover:opacity-100 transition-opacity"></span>
-        {loading ? 'Envoi en cours...' : (
+      <button
+        type="submit"
+        disabled={loading || selected.length === 0}
+        className={`mt-8 w-full py-4 px-6 rounded-full font-bold uppercase tracking-widest text-sm transition-all flex items-center justify-center gap-2 group ${dark ? 'bg-festara-gold text-[#0A1226] hover:bg-white hover:shadow-[0_0_20px_rgba(197,154,69,0.4)]' : 'bg-festara-navy text-white hover:bg-festara-gold hover:shadow-[0_10px_20px_rgba(197,154,69,0.3)]'} disabled:opacity-50 disabled:cursor-not-allowed`}
+      >
+        {loading ? (
+          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+        ) : (
           <>
-            Je confirme ma présence <span className="text-xl leading-none">✨</span>
+            <span>{dict.confirmBtn}</span>
+            <span className="group-hover:translate-x-1 transition-transform">→</span>
           </>
         )}
       </button>

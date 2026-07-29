@@ -2,7 +2,15 @@
 
 import { useState } from 'react';
 
-export default function GuestbookForm({ eventId, isDark }: { eventId: string; isDark: boolean }) {
+export default function GuestbookForm({
+  eventId,
+  isDark = false,
+  dict,
+}: {
+  eventId: string;
+  isDark?: boolean;
+  dict: any;
+}) {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -58,32 +66,43 @@ export default function GuestbookForm({ eventId, isDark }: { eventId: string; is
   return (
     <form onSubmit={submit} className="text-left space-y-5 relative">
       <div>
-        <label className={labelClass}>Votre prénom / nom</label>
+        <label className={labelClass}>{dict.guestbookNameLabel}</label>
         <input
           type="text"
           maxLength={50}
           className={`${inputClass} min-h-[48px]`}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Famille Ndiaye"
+          placeholder={dict.namePlaceholder}
         />
       </div>
 
       <div>
-        <label className={labelClass}>Votre message</label>
+        <label className={labelClass}>{dict.guestbookMsgLabel}</label>
         <textarea
           className={`${inputClass} py-3 resize-none h-24`}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Laissez un mot aux mariés..."
+          placeholder={dict.guestbookMsgPlaceholder}
           maxLength={500}
         />
       </div>
 
       {error && <p className="text-xs text-red-600 text-center">{error}</p>}
 
-      <button type="submit" disabled={loading} className={`w-full py-3.5 rounded-full text-xs font-bold uppercase tracking-widest transition-transform hover:-translate-y-0.5 shadow-xl ${isDark ? 'bg-white text-[#1A2A4A] hover:bg-white/90' : 'bg-[#1A2A4A] text-white hover:bg-[#1A2A4A]/90'}`}>
-        {loading ? 'Envoi...' : 'Envoyer mon message ✉️'}
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-sm transition-all group flex items-center justify-center gap-2 ${isDark ? 'bg-white/10 text-white hover:bg-white hover:text-[#0A1226]' : 'bg-festara-navy/5 text-festara-navy hover:bg-festara-navy hover:text-white'} disabled:opacity-50`}
+      >
+        {loading ? (
+          <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+        ) : (
+          <>
+            <span>{dict.guestbookBtn}</span>
+            <span className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300">✍️</span>
+          </>
+        )}
       </button>
     </form>
   );

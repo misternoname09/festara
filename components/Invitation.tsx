@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { EventRow, GuestbookMessageRow } from '@/lib/types';
 import { TEMPLATES } from '@/components/templates';
 import type { Ceremony } from '@/lib/types';
+import { DICTIONARY, Language } from '@/lib/i18n';
 
 // Construit l'URL d'embed Google Maps sans cle API (iframe leger).
 function mapsEmbedUrl(c: Ceremony): string {
@@ -31,6 +32,7 @@ import Countdown from '@/components/Countdown';
 import AddToCalendar from '@/components/AddToCalendar';
 import GuestbookForm from '@/components/GuestbookForm';
 import GuestbookList from '@/components/GuestbookList';
+import LiveGallery from '@/components/LiveGallery';
 
 export default function Invitation({ event, messages = [], refParam }: { event: EventRow, messages?: GuestbookMessageRow[], refParam?: string }) {
   const t = TEMPLATES[event.template] ?? TEMPLATES.modern;
@@ -84,6 +86,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
   const firstCeremony = event.ceremonies[0];
 
   const [isOpen, setIsOpen] = useState(false);
+  const [lang, setLang] = useState<Language>('fr');
   
   // Animation d'ouverture
   useEffect(() => {
@@ -99,21 +102,31 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
            <div className="absolute inset-0 border-4 border-festara-gold/20 rounded-full"></div>
            <div className="absolute inset-0 border-4 border-t-festara-gold rounded-full"></div>
         </div>
-        <p className="text-xs uppercase tracking-[0.3em] font-bold text-festara-gold animate-pulse">Ouverture de l'invitation...</p>
+        <p className="text-xs uppercase tracking-[0.3em] font-bold text-festara-gold animate-pulse">{DICTIONARY[lang].loading}</p>
         <h1 className="text-4xl font-serif mt-6 opacity-80">{event.title}</h1>
       </div>
     );
   }
 
+  const dict = DICTIONARY[lang];
+
   return (
     <main className={`min-h-[120vh] relative overflow-hidden flex flex-col items-center py-8 sm:py-16 px-4 ${t.page}`}>
+      
+      {/* Sélecteur de Langue */}
+      <div className="fixed top-6 sm:top-8 right-4 sm:right-8 z-50 flex items-center gap-2 bg-[#0A1226]/80 backdrop-blur-xl border border-white/10 p-1.5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+        <button onClick={() => setLang('fr')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'fr' ? 'bg-festara-gold text-[#0A1226]' : 'text-white/60 hover:text-white'}`}>FR</button>
+        <button onClick={() => setLang('en')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'en' ? 'bg-festara-gold text-[#0A1226]' : 'text-white/60 hover:text-white'}`}>EN</button>
+        <button onClick={() => setLang('wo')} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${lang === 'wo' ? 'bg-festara-gold text-[#0A1226]' : 'text-white/60 hover:text-white'}`}>WO</button>
+      </div>
+
       {/* Bouton Retour contextuel Premium */}
       {refParam === 'dashboard' && (
         <Link href={`/dashboard/${event.id}`} className="fixed top-6 sm:top-8 left-4 sm:left-8 z-50 group flex items-center gap-3 bg-[#0A1226]/80 hover:bg-[#0A1226] backdrop-blur-xl border border-white/10 text-white px-4 sm:px-5 py-2.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(197,154,69,0.3)] hover:border-festara-gold/50 hover:-translate-y-1">
           <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-festara-gold group-hover:text-[#0A1226] transition-all duration-500">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           </div>
-          <span className="pr-1">Retour au compte</span>
+          <span className="pr-1">{dict.backAccount}</span>
         </Link>
       )}
       {refParam === 'home' && (
@@ -121,7 +134,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
           <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-festara-gold group-hover:text-[#0A1226] transition-all duration-500">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           </div>
-          <span className="pr-1">Retour à l'accueil</span>
+          <span className="pr-1">{dict.backHome}</span>
         </Link>
       )}
 
@@ -233,7 +246,7 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
                 
                 <div className="pl-6 relative z-10">
                   <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] mb-4 ${isDark ? 'bg-festara-gold/20 text-festara-gold border border-festara-gold/30' : 'bg-festara-gold/10 text-festara-navy border border-festara-gold/20'}`}>
-                    Étape {idx + 1}
+                    {dict.step} {idx + 1}
                   </span>
                   <h2 className={`text-2xl sm:text-3xl mb-2 ${t.title}`}>{c.name}</h2>
                   <p className={`text-sm font-bold tracking-wide ${isDark ? 'text-festara-gold' : 'text-festara-gold'}`}>
@@ -262,31 +275,37 @@ export default function Invitation({ event, messages = [], refParam }: { event: 
             <div className={`h-px w-16 ${isDark ? 'bg-white' : 'bg-black'}`}></div>
           </div>
 
-          {/* RSVP Magique */}
-          <div className="mt-8 relative z-30">
-            <h3 className={`text-3xl mb-8 ${t.title}`}>Confirmez votre présence</h3>
-            <RsvpForm
-              eventId={event.id}
-              ceremonies={event.ceremonies}
-              dark={isDark}
-            />
+          {/* SECTION RSVP */}
+          <div className={`px-6 sm:px-12 py-10 sm:py-16 ${isDark ? 'bg-white/5' : 'bg-white/40'} border-b ${isDark ? 'border-white/10' : 'border-black/5'}`}>
+            <div className="text-center mb-8">
+              <span className="w-12 h-1 bg-festara-gold mx-auto block mb-6 rounded-full"></span>
+              <h2 className={`text-3xl sm:text-4xl font-serif font-bold ${t.title}`}>{dict.rsvpTitle}</h2>
+              <p className={`mt-3 text-sm font-medium ${isDark ? 'text-white/60' : 'text-festara-ink/70'}`}>
+                {dict.rsvpSubtitle}
+              </p>
+            </div>
+            <RsvpForm eventId={event.id} ceremonies={event.ceremonies} dark={isDark} dict={dict} />
           </div>
 
           {/* Livre d'Or (Guestbook) */}
           <div className="mt-16 pt-16 border-t border-current opacity-90 text-center relative z-30">
-            <h3 className={`text-4xl mb-4 ${t.title}`}>Livre d'Or</h3>
-            <p className={`text-sm mb-10 opacity-80 ${t.font}`}>Laissez un petit mot d'amour aux mariés.</p>
+            <h3 className={`text-4xl mb-4 ${t.title}`}>{dict.guestbookTitle}</h3>
+            <p className={`text-sm mb-10 opacity-80 ${t.font}`}>{dict.guestbookSubtitle}</p>
             
             <div className="mb-12">
-              <GuestbookForm eventId={event.id} isDark={isDark} />
+              <GuestbookForm eventId={event.id} isDark={isDark} dict={dict} />
             </div>
 
             {messages.length > 0 && (
-              <div className="mt-12">
-                <h4 className={`text-lg font-bold mb-6 text-left uppercase tracking-widest ${isDark ? 'text-festara-gold' : 'text-festara-navy'}`}>Mots des invités</h4>
+              <div className="mt-8 relative z-30">
                 <GuestbookList messages={messages} isDark={isDark} />
               </div>
             )}
+            
+            {/* GALERIE LIVE */}
+            <div className={`mt-20 border-t ${isDark ? 'border-white/10' : 'border-black/5'} pt-12`}>
+              <LiveGallery eventId={event.id} isDark={isDark} dict={dict} />
+            </div>
           </div>
 
           {/* CTA Festara Marketing */}
