@@ -34,21 +34,16 @@ export default function Scanner({
   const busy = useRef(false);
   const lastValue = useRef<string>('');
 
-  // Initialisation et gestion de la connexion
   useEffect(() => {
-    // 1. Sauvegarder les invités en cache local (si on a internet, ça met à jour le cache)
     if (guests && guests.length > 0) {
       localStorage.setItem(`festara_guests_${eventId}`, JSON.stringify(guests));
     }
-
-    // 2. Vérifier la connectivité
     setIsOnline(navigator.onLine);
     const handleOnline = () => { setIsOnline(true); syncOfflineScans(); };
     const handleOffline = () => setIsOnline(false);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Mettre à jour le compteur des attentes au chargement
     const queue = JSON.parse(localStorage.getItem(`festara_offline_queue_${eventId}`) || '[]');
     setPendingSync(queue.length);
 
@@ -61,7 +56,6 @@ export default function Scanner({
   const syncOfflineScans = async () => {
     const queue = JSON.parse(localStorage.getItem(`festara_offline_queue_${eventId}`) || '[]');
     if (queue.length === 0) return;
-
     for (const val of queue) {
       try {
         await fetch('/api/scan', {
@@ -70,10 +64,9 @@ export default function Scanner({
           body: JSON.stringify({ event_id: eventId, value: val }),
         });
       } catch (err) {
-        console.error('Erreur de synchronisation pour', val);
+        console.error('Erreur', val);
       }
     }
-    // Nettoyer la file une fois synchronisé (version simplifiée, idéalement on filtre ceux qui ont échoué)
     localStorage.setItem(`festara_offline_queue_${eventId}`, '[]');
     setPendingSync(0);
   };
@@ -83,7 +76,6 @@ export default function Scanner({
     busy.current = true;
     let finalStatus: Status = 'error';
     
-    // LOGIQUE HORS-LIGNE
     if (!navigator.onLine) {
       const cachedGuests = JSON.parse(localStorage.getItem(`festara_guests_${eventId}`) || '[]');
       const localGuest = cachedGuests.find((g: any) => g.pass_uuid === value || g.pass_code === value);
@@ -92,14 +84,12 @@ export default function Scanner({
         finalStatus = 'unknown';
         setResult({ status: 'unknown' });
       } else {
-        // Est-il déjà scanné localement (dans cette session) ?
         const queue = JSON.parse(localStorage.getItem(`festara_offline_queue_${eventId}`) || '[]');
         if (localGuest.scanned_at || queue.includes(value)) {
           finalStatus = 'already';
           setResult({ status: 'already', guest: localGuest, scanned_at: localGuest.scanned_at || new Date().toISOString() });
           if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
         } else {
-          // OK !
           queue.push(value);
           localStorage.setItem(`festara_offline_queue_${eventId}`, JSON.stringify(queue));
           setPendingSync(queue.length);
@@ -120,7 +110,6 @@ export default function Scanner({
       return;
     }
 
-    // LOGIQUE EN LIGNE (normale)
     try {
       const res = await fetch('/api/scan', {
         method: 'POST',
@@ -136,7 +125,7 @@ export default function Scanner({
       } else if (data.status === 'already') {
         if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
       }
-    } catch {
+    } catch (err) {
       setResult({ status: 'error' });
     } finally {
       setTimeout(() => {
@@ -164,7 +153,7 @@ export default function Scanner({
           await videoRef.current.play();
         }
         tick();
-      } catch {
+      } catch (err) {
         setResult({ status: 'error' });
         setCamOn(false);
       }
@@ -173,7 +162,7 @@ export default function Scanner({
     function tick() {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      if (video && canvas && video.readyState === video.HAVE_ENOUGH_DATA) {
+      if (video && canvas && video.readyState === 4) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -196,28 +185,34 @@ export default function Scanner({
     };
   }, [camOn]);
 
-  const bannerColors = {
-    idle: 'border-festara-navy/10',
-    valid: 'bg-green-500/10 border-green-500 text-green-700',
-    already: 'bg-amber-500/10 border-amber-500 text-amber-700',
-    unknown: 'bg-red-500/10 border-red-500 text-red-700',
-    error: 'bg-red-700/10 border-red-700 text-red-800',
-  }[result.status];
+  let label = '';
+  let flashBg = '';
+  let camBg = 'border-white/10';
 
-  const label = {
-    idle: '',
-    valid: 'Bienvenue ! ✅',
-    already: 'Déjà enregistré ⚠️',
-    unknown: 'Pass introuvable ❌',
-    error: 'Erreur réseau',
-  }[result.status];
+  if (result.status === 'valid') {
+    label = 'Bienvenue ! ✅';
+    flashBg = 'bg-green-600';
+    camBg = 'border-green-500';
+  } else if (result.status === 'already') {
+    label = 'Déjà enregistré ⚠️';
+    flashBg = 'bg-amber-500';
+    camBg = 'border-red-500';
+  } else if (result.status === 'unknown') {
+    label = 'Pass introuvable ❌';
+    flashBg = 'bg-red-600';
+    camBg = 'border-red-500';
+  } else if (result.status === 'error') {
+    label = 'Erreur réseau';
+    flashBg = 'bg-red-600';
+    camBg = 'border-red-500';
+  }
 
   return (
     <div className="flex flex-col items-center w-full h-full">
       <div className="w-full mb-6 text-center z-10 relative">
         <h1 className="text-2xl font-bold text-white font-serif mb-1">{eventTitle}</h1>
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/5 text-sm font-semibold text-white/80">
-          <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-festara-teal animate-pulse' : 'bg-red-500'}`}></span>
+          <span className={isOnline ? 'w-2 h-2 rounded-full bg-festara-teal animate-pulse' : 'w-2 h-2 rounded-full bg-red-500'}></span>
           {scanned} / {total} invités scannés
         </div>
         {!isOnline && (
@@ -228,19 +223,15 @@ export default function Scanner({
       </div>
 
       {result.status !== 'idle' && (
-        <div className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center text-white transition-colors duration-300 ${
-          result.status === 'valid' ? 'bg-green-600' :
-          result.status === 'already' ? 'bg-amber-500' :
-          'bg-red-600'
-        }`}>
+        <div className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center text-white transition-colors duration-300 ${flashBg}`}>
           <div className="animate-fade-in-up">
             <p className="text-5xl font-bold font-serif mb-6">{label}</p>
             {result.guest && (
-              <p className="mt-2 text-3xl font-medium opacity-100">
+              <div className="mt-2 text-3xl font-medium opacity-100">
                 {result.guest.first_name}
                 <br/>
                 <span className="opacity-80 text-xl inline-block mt-4">{result.guest.party_size} pers. attendue(s)</span>
-              </p>
+              </div>
             )}
             {result.status === 'already' && result.scanned_at && (
               <p className="mt-8 text-sm opacity-90 font-mono bg-black/20 inline-block px-4 py-2 rounded-xl">
@@ -251,7 +242,7 @@ export default function Scanner({
         </div>
       )}
 
-      <div className={`w-full max-w-sm rounded-[2.5rem] overflow-hidden bg-black aspect-[4/5] relative shadow-2xl border-4 transition-colors duration-300 ${result.status === 'valid' ? 'border-green-500' : result.status === 'idle' ? 'border-white/10' : 'border-red-500'}`}>
+      <div className={`w-full max-w-sm rounded-[2.5rem] overflow-hidden bg-black aspect-[4/5] relative shadow-2xl border-4 transition-colors duration-300 ${camBg}`}>
         <video ref={videoRef} className="w-full h-full object-cover opacity-100" muted playsInline />
         <canvas ref={canvasRef} className="hidden" />
         
