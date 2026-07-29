@@ -227,7 +227,6 @@ export default function Scanner({
         )}
       </div>
 
-      {/* Resultat PLEIN ECRAN (Flash) */}
       {result.status !== 'idle' && (
         <div className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center text-white transition-colors duration-300 ${
           result.status === 'valid' ? 'bg-green-600' :
@@ -252,12 +251,10 @@ export default function Scanner({
         </div>
       )}
 
-      {/* Camera Container */}
       <div className={`w-full max-w-sm rounded-[2.5rem] overflow-hidden bg-black aspect-[4/5] relative shadow-2xl border-4 transition-colors duration-300 ${result.status === 'valid' ? 'border-green-500' : result.status === 'idle' ? 'border-white/10' : 'border-red-500'}`}>
         <video ref={videoRef} className="w-full h-full object-cover opacity-100" muted playsInline />
         <canvas ref={canvasRef} className="hidden" />
         
-        {/* Cadre de visée decoratif */}
         {camOn && (
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
              <div className="w-48 h-48 border-2 border-white/30 rounded-3xl relative">
@@ -281,12 +278,11 @@ export default function Scanner({
             >
               Activer la caméra
             </button>
-            <p className="text-white/40 text-xs mt-6 font-medium">Autorisez l'accès à la caméra pour scanner les Pass Festara.</p>
+            <p className="text-white/40 text-xs mt-6 font-medium">Autorisez l&apos;accès à la caméra pour scanner les Pass Festara.</p>
           </div>
         )}
       </div>
 
-      {/* Saisie manuelle (fallback) */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
