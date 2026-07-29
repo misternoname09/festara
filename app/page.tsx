@@ -41,6 +41,11 @@ export default function Home() {
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20 pointer-events-none"></div>
         </div>
+
+        {/* Logo / Header */}
+        <div className="absolute top-6 left-6 z-50">
+          <img src="/logo.png" alt="Festara" className="h-10 w-auto" />
+        </div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16 lg:gap-8">
           
@@ -348,8 +353,7 @@ export default function Home() {
       */}
       <footer className="bg-white border-t border-black/5 py-12 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-festara-gold"></span>
-          <span className="font-bold uppercase tracking-widest text-xs text-festara-gold">Festara</span>
+          <img src="/logo.png" alt="Festara Logo" className="h-8 object-contain" />
         </div>
         <p className="text-xs text-festara-ink/40 font-bold uppercase tracking-widest">
           Conçu pour l'élégance. © {new Date().getFullYear()}

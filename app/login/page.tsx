@@ -138,8 +138,7 @@ function LoginForm() {
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <span className="w-2 h-2 rounded-full bg-festara-gold"></span>
-          <span className="font-bold uppercase tracking-widest text-sm text-festara-gold">Festara</span>
+          <img src="/logo.png" alt="Festara Logo" className="h-10 object-contain" />
         </div>
 
         {/* Hero Text */}
