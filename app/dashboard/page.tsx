@@ -27,6 +27,7 @@ export default async function Dashboard() {
   const statMap = new Map((stats as EventStats[] | null)?.map((s) => [s.event_id, s]) ?? []);
 
   const list = (events as EventRow[] | null) ?? [];
+  const fullName = user.user_metadata?.full_name || 'Organisateur';
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] relative overflow-hidden flex flex-col font-sans pb-32 selection:bg-festara-gold selection:text-white">
@@ -73,13 +74,16 @@ export default async function Dashboard() {
               <span className="text-festara-gold text-[11px] font-bold uppercase tracking-[0.3em]">Espace Organisateur</span>
             </div>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold font-serif tracking-tight leading-[1.1]">
-              Vos Événements <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-festara-gold via-[#DFB769] to-festara-gold italic pr-4 drop-shadow-sm">Prestigieux.</span>
+              Bienvenue, <br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-festara-gold via-[#DFB769] to-festara-gold italic pr-4 drop-shadow-sm">{fullName} 👋</span>
             </h1>
           </div>
-          <div className="flex items-center gap-4 sm:self-start mt-2">
+          <div className="flex flex-wrap items-center gap-4 sm:self-start mt-2">
             <Link href="/dashboard/agencies" className="group flex items-center gap-2 px-5 py-2.5 bg-festara-gold/10 hover:bg-festara-gold/20 text-festara-gold border border-festara-gold/30 rounded-full transition-all font-bold text-xs uppercase tracking-widest hover:shadow-[0_0_15px_rgba(197,154,69,0.3)]">
               <span>🏢 Mes Agences</span>
+            </Link>
+            <Link href="/dashboard/profile" className="group flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/20 rounded-full transition-all font-bold text-xs uppercase tracking-widest hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+              <span>👤 Mon Profil</span>
             </Link>
             <form action={signOut}>
               <button className="group flex items-center gap-3 px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white/90 hover:text-white border border-white/10 rounded-full transition-all font-medium text-sm hover:border-festara-gold/50 hover:shadow-[0_0_20px_rgba(197,154,69,0.2)]">

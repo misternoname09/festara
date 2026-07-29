@@ -144,3 +144,23 @@ export async function removeEventCollaboratorAction(eventId: string, userId: str
   await supabase.from('event_collaborators').delete().eq('event_id', eventId).eq('user_id', userId);
   revalidatePath(`/dashboard/${eventId}`);
 }
+
+export async function updateProfile(formData: FormData) {
+  const supabase = await createServerSupabase();
+  const full_name = String(formData.get('full_name') || '').trim();
+
+  if (!full_name) {
+    throw new Error('Le nom complet est requis.');
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    data: { full_name }
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/dashboard');
+  revalidatePath('/dashboard/profile');
+}
