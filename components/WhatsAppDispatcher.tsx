@@ -29,7 +29,7 @@ export default function WhatsAppDispatcher({ guests, eventSlug, eventId, plan }:
 
   const handleSend = async (guestId: string, phone: string, name: string, passUuid: string) => {
     // URL du Pass
-    const passUrl = `${window.location.origin}/i/${eventSlug}/pass/${passUuid}`;
+    const passUrl = `${window.location.origin}/pass/${passUuid}`;
     
     // Message contextuel (Invitation vs Relance)
     const message = mode === 'invite'
