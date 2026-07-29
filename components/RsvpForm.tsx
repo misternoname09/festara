@@ -14,6 +14,7 @@ type Result = { pass_uuid: string; pass_code: string };
 
 export default function RsvpForm({ eventId, ceremonies, dark, dict }: Props) {
   const [firstName, setFirstName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [partySize, setPartySize] = useState(1);
   const [selected, setSelected] = useState<string[]>(ceremonies.map((c) => c.id));
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,7 @@ export default function RsvpForm({ eventId, ceremonies, dark, dict }: Props) {
         body: JSON.stringify({
           event_id: eventId,
           first_name: firstName.trim(),
+          phone: phoneNumber.trim() || null,
           party_size: partySize,
           ceremonies_attending: selected,
         }),
@@ -102,6 +104,17 @@ export default function RsvpForm({ eventId, ceremonies, dark, dict }: Props) {
             placeholder={dict.namePlaceholder}
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>{dict.phoneLabel}</label>
+          <input
+            type="tel"
+            placeholder={dict.phonePlaceholder}
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             className={inputClass}
           />
         </div>

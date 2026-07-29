@@ -298,16 +298,7 @@ export default async function EditEvent(props: Props) {
                   </a>
                 </div>
 
-                <div id="abonnement" className="dashboard-card group scroll-mt-8">
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-festara-gold/5 rounded-full blur-2xl pointer-events-none"></div>
-                  <div className="flex items-center gap-4 mb-6 relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-festara-sand to-festara-gold/20 flex items-center justify-center text-festara-gold shadow-inner border border-white text-xl">💎</div>
-                    <h2 className="text-xl font-bold text-[#0A1226] font-serif">Abonnement</h2>
-                  </div>
-                  <div className="relative z-10">
-                    <PayButton eventId={ev.id} currentPlan={ev.plan} />
-                  </div>
-                </div>
+
               </div>
             </div>
           )}
@@ -518,6 +509,25 @@ export default async function EditEvent(props: Props) {
             </div>
           )}
 
+          {tab === 'billing' && (
+            <div className="max-w-4xl mx-auto">
+              <div className="dashboard-card group relative overflow-hidden bg-[#0A1226] text-white rounded-[3rem] p-10 sm:p-16 shadow-[0_30px_60px_rgba(10,18,38,0.4)] border border-white/10">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,rgba(197,154,69,0.15)_0%,transparent_60%)] rounded-full blur-3xl pointer-events-none"></div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-festara-gold/20 to-festara-gold/5 flex items-center justify-center text-festara-gold text-3xl shadow-inner border border-festara-gold/20">💳</div>
+                  <div>
+                    <h2 className="text-3xl font-bold font-serif mb-2">Facturation & Plan</h2>
+                    <p className="text-base text-white/60 font-medium">Gérez votre abonnement et débloquez des fonctionnalités premium.</p>
+                  </div>
+                </div>
+                
+                <div className="relative z-10 bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-md">
+                  <PayButton eventId={ev.id} currentPlan={ev.plan} />
+                </div>
+              </div>
+            </div>
+          )}
+
           {tab === 'team' && (
             <div className="max-w-4xl mx-auto">
               <EventTeam 
@@ -533,3 +543,4 @@ export default async function EditEvent(props: Props) {
     </main>
   );
 }
+

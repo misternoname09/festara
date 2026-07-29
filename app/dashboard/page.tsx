@@ -28,6 +28,7 @@ export default async function Dashboard() {
 
   const list = (events as EventRow[] | null) ?? [];
   const fullName = user.user_metadata?.full_name || 'Organisateur';
+  const initials = fullName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'O';
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] relative overflow-hidden flex flex-col font-sans pb-32 selection:bg-festara-gold selection:text-white">
@@ -73,9 +74,17 @@ export default async function Dashboard() {
               <span className="w-2 h-2 rounded-full bg-festara-gold animate-ping"></span>
               <span className="text-festara-gold text-[11px] font-bold uppercase tracking-[0.3em]">Espace Organisateur</span>
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold font-serif tracking-tight leading-[1.1]">
-              Bienvenue, <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-festara-gold via-[#DFB769] to-festara-gold italic pr-4 drop-shadow-sm">{fullName} 👋</span>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold font-serif tracking-tight leading-[1.1] flex flex-col sm:flex-row sm:items-center gap-6">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[2rem] bg-gradient-to-br from-festara-gold to-[#DFB769] p-[2px] shadow-[0_0_30px_rgba(197,154,69,0.3)] shrink-0 group relative overflow-hidden">
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer"></div>
+                <div className="w-full h-full bg-[#0A1226] rounded-[2rem] flex items-center justify-center relative z-10">
+                  <span className="text-3xl sm:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-br from-festara-gold to-[#DFB769]">{initials}</span>
+                </div>
+              </div>
+              <div>
+                Bienvenue, <br className="hidden sm:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-festara-gold via-[#DFB769] to-festara-gold italic pr-4 drop-shadow-sm">{fullName}</span>
+              </div>
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-4 sm:self-start mt-2">

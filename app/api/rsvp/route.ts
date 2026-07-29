@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: errorMessages }, { status: 400 });
   }
 
-  const { event_id, first_name, party_size: size, ceremonies_attending } = validationResult.data;
+  const { event_id, first_name, phone, party_size: size, ceremonies_attending } = validationResult.data;
 
   const ip = getClientIp(req);
   const { ok } = rateLimit(`rsvp:${ip}`, 20, 10 * 60 * 1000);
@@ -56,6 +56,7 @@ export async function POST(req: Request) {
     .insert({
       event_id,
       first_name,
+      phone,
       party_size: size,
       ceremonies_attending,
       rsvp_confirmed_at: new Date().toISOString(),

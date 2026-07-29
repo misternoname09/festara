@@ -13,6 +13,9 @@ export default async function ProfilePage() {
   if (!user) redirect('/login');
 
   const fullName = user.user_metadata?.full_name || '';
+  const phone = user.user_metadata?.phone || '';
+  const companyName = user.user_metadata?.company_name || '';
+  const initials = fullName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || '👤';
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] relative overflow-hidden flex flex-col font-sans pb-32 selection:bg-festara-gold selection:text-white">
@@ -74,8 +77,11 @@ export default async function ProfilePage() {
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/60 to-transparent group-hover:animate-shimmer pointer-events-none transition-all"></div>
 
             <div className="relative z-10 flex flex-col items-center">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-festara-sand to-festara-gold/20 flex items-center justify-center text-festara-gold shadow-inner border border-white text-4xl mb-8">
-                👤
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-festara-gold to-[#DFB769] p-[2px] shadow-[0_0_30px_rgba(197,154,69,0.3)] shrink-0 mb-8 group/avatar relative overflow-hidden">
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/avatar:animate-shimmer pointer-events-none"></div>
+                <div className="w-full h-full bg-[#0A1226] rounded-full flex items-center justify-center relative z-10">
+                  <span className="text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-br from-festara-gold to-[#DFB769]">{initials}</span>
+                </div>
               </div>
 
               <form action={updateProfile} className="w-full max-w-md space-y-6">
@@ -90,6 +96,34 @@ export default async function ProfilePage() {
                     defaultValue={fullName}
                     placeholder="Ex: Amadou Ndiaye"
                     required
+                    className="w-full bg-[#FDFBF7] border-2 border-[#0A1226]/5 focus:border-festara-gold focus:bg-white rounded-2xl px-6 py-4 text-[#0A1226] placeholder:text-[#0A1226]/30 outline-none shadow-inner transition-all font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-bold text-festara-navy uppercase tracking-widest mb-2">
+                    Numéro de Téléphone
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    defaultValue={phone}
+                    placeholder="Ex: +221 77 123 45 67"
+                    className="w-full bg-[#FDFBF7] border-2 border-[#0A1226]/5 focus:border-festara-gold focus:bg-white rounded-2xl px-6 py-4 text-[#0A1226] placeholder:text-[#0A1226]/30 outline-none shadow-inner transition-all font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="company_name" className="block text-sm font-bold text-festara-navy uppercase tracking-widest mb-2">
+                    Nom de l'Agence / Entreprise <span className="text-xs text-festara-navy/50 normal-case tracking-normal">(Optionnel)</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="company_name"
+                    name="company_name"
+                    defaultValue={companyName}
+                    placeholder="Ex: Festara Agency"
                     className="w-full bg-[#FDFBF7] border-2 border-[#0A1226]/5 focus:border-festara-gold focus:bg-white rounded-2xl px-6 py-4 text-[#0A1226] placeholder:text-[#0A1226]/30 outline-none shadow-inner transition-all font-medium"
                   />
                 </div>

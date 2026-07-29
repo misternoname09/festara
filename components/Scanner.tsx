@@ -212,6 +212,7 @@ export default function Scanner({
     error: 'Erreur réseau',
   }[result.status];
 
+  return (
     <div className="flex flex-col items-center w-full h-full">
       <div className="w-full mb-6 text-center z-10 relative">
         <h1 className="text-2xl font-bold text-white font-serif mb-1">{eventTitle}</h1>

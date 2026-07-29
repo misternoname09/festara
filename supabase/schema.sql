@@ -85,6 +85,8 @@ create table if not exists public.guests (
   -- Controle d'acces jour J
   scanned_at          timestamptz,                 -- null = pas encore scanne
   checked_in_count    integer not null default 0,  -- accompagnants deja entres
+  phone               text,                        -- (Phase 3) Numéro WhatsApp avec indicatif
+  whatsapp_sent       boolean not null default false,
   created_at          timestamptz not null default now()
 );
 

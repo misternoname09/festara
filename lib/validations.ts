@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const rsvpSchema = z.object({
   event_id: z.string().min(1, "L'identifiant de l'événement est requis"),
   first_name: z.string().min(1, "Prénom requis").max(80, "Le prénom est trop long").trim(),
+  phone: z.string().max(25, "Numéro trop long").nullable().optional(),
   party_size: z.union([z.string(), z.number()]).transform((val) => {
     const parsed = typeof val === 'string' ? parseInt(val, 10) : val;
     return isNaN(parsed) ? 1 : Math.min(Math.max(parsed, 1), 20);

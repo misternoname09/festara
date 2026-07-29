@@ -148,13 +148,15 @@ export async function removeEventCollaboratorAction(eventId: string, userId: str
 export async function updateProfile(formData: FormData) {
   const supabase = await createServerSupabase();
   const full_name = String(formData.get('full_name') || '').trim();
+  const phone = String(formData.get('phone') || '').trim();
+  const company_name = String(formData.get('company_name') || '').trim();
 
   if (!full_name) {
     throw new Error('Le nom complet est requis.');
   }
 
   const { error } = await supabase.auth.updateUser({
-    data: { full_name }
+    data: { full_name, phone, company_name }
   });
 
   if (error) {
