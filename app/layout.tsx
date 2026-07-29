@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Festara Team' }],
   manifest: '/manifest.json',
   icons: {
-    icon: '/logo.png',
+    icon: '/icon.webp',
   },
   openGraph: {
     type: 'website',
