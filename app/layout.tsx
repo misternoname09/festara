@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   keywords: ['invitation', 'mariage', 'sénégal', 'diaspora', 'rsvp', 'pass vip', 'takk', 'ngente'],
   authors: [{ name: 'Festara Team' }],
   manifest: '/manifest.json',
+  icons: {
+    icon: '/logo.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'fr_SN',

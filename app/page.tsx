@@ -44,7 +44,7 @@ export default function Home() {
 
         {/* Logo / Header */}
         <div className="absolute top-6 left-6 z-50">
-          <img src="/logo.webp" alt="Festara" className="h-10 w-auto" />
+          <img src="/logo.png" alt="Festara" className="h-10 w-auto" />
         </div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16 lg:gap-8">
@@ -353,7 +353,7 @@ export default function Home() {
       */}
       <footer className="bg-white border-t border-black/5 py-12 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <img src="/logo.webp" alt="Festara Logo" className="h-8 object-contain" />
+          <img src="/logo.png" alt="Festara Logo" className="h-8 object-contain" />
         </div>
         <p className="text-xs text-festara-ink/40 font-bold uppercase tracking-widest">
           Conçu pour l'élégance. © {new Date().getFullYear()}
