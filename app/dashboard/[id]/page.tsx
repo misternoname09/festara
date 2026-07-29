@@ -181,6 +181,20 @@ export default async function EditEvent(props: Props) {
         {/* Tab Content Area */}
         <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           
+          {isFreePlan && (
+            <div className="mb-8 p-6 bg-gradient-to-r from-festara-gold/10 to-festara-sand/50 rounded-2xl border border-festara-gold/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-festara-navy font-bold font-serif text-lg flex items-center gap-2">
+                  <span>💎</span> Débloquez toutes les fonctionnalités
+                </h3>
+                <p className="text-festara-navy/70 text-sm mt-1">Vous utilisez la version gratuite. Passez à un plan payant pour débloquer les <strong>invités illimités</strong> et le <strong>scan des QR codes</strong>.</p>
+              </div>
+              <Link href="?tab=overview#abonnement" className="shrink-0 px-6 py-3 bg-festara-navy text-white text-sm font-bold rounded-xl hover:bg-festara-gold transition-colors shadow-sm">
+                Voir les abonnements
+              </Link>
+            </div>
+          )}
+          
           {tab === 'overview' && (
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Main Overview Stats */}
@@ -284,7 +298,7 @@ export default async function EditEvent(props: Props) {
                   </a>
                 </div>
 
-                <div className="dashboard-card group">
+                <div id="abonnement" className="dashboard-card group scroll-mt-8">
                   <div className="absolute top-0 right-0 w-40 h-40 bg-festara-gold/5 rounded-full blur-2xl pointer-events-none"></div>
                   <div className="flex items-center gap-4 mb-6 relative z-10">
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-festara-sand to-festara-gold/20 flex items-center justify-center text-festara-gold shadow-inner border border-white text-xl">💎</div>
