@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import Image from 'next/image';
 
 function LoginForm() {
   const router = useRouter();
@@ -138,7 +139,7 @@ function LoginForm() {
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <img src="/logo.png" alt="Festara Logo" className="h-10 object-contain" />
+          <Image src="/logo.png" alt="Festara Logo" width={160} height={40} className="h-10 w-auto object-contain" priority />
         </div>
 
         {/* Hero Text */}

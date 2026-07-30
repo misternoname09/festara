@@ -6,10 +6,35 @@ const nextConfig = {
       { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
   },
+  compress: true,
   async headers() {
     return [
       {
+        // Cache des images statiques pendant 1 an
+        source: '/:all*(svg|jpg|jpeg|png|webp|avif|ico|gif)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        // Cache des polices pendant 1 an
+        source: '/:all*(woff|woff2|ttf|otf|eot)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        // Cache des fichiers JS/CSS pendant 1 an (versionné par le hash)
+        source: '/_next/static/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        // Headers de sécurité pour toutes les pages
         source: '/(.*)',
         headers: [
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
@@ -47,3 +72,4 @@ const withPWA = require('@ducanh2912/next-pwa').default({
 });
 
 module.exports = withPWA(nextConfig);
+

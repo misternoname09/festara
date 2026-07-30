@@ -31,7 +31,7 @@ export default function Home() {
         <div className="absolute top-0 left-0 w-full h-full bg-[#0A1226] z-0">
           {/* Image de fond Cinématique */}
           <div className="absolute inset-0 z-0">
-            <img src="/hero-bg.png" alt="Mariage de prestige" className="w-full h-full object-cover object-center opacity-60 mix-blend-screen" />
+            <Image src="/hero-bg.png" alt="Mariage de prestige" fill sizes="100vw" className="object-cover object-center opacity-60 mix-blend-screen" priority />
             <div className="absolute inset-0 bg-gradient-to-b from-[#0A1226]/40 via-[#0A1226]/80 to-[#0A1226]"></div>
           </div>
 
@@ -44,7 +44,7 @@ export default function Home() {
 
         {/* Logo / Header */}
         <div className="absolute top-6 left-6 z-50">
-          <img src="/logo.png" alt="Festara" className="h-10 w-auto" />
+          <Image src="/logo.png" alt="Festara" width={160} height={40} className="h-10 w-auto" priority />
         </div>
         
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16 lg:gap-8">
@@ -276,7 +276,7 @@ export default function Home() {
             <div className="md:col-span-2 bg-[#0A1226] border border-white/10 hover:border-festara-gold/50 rounded-[2.5rem] p-10 flex flex-col justify-center relative overflow-hidden group transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,154,69,0.15)] animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
                {/* Image 3D de fond */}
                <div className="absolute right-0 top-0 bottom-0 w-3/4 sm:w-1/2 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000 pointer-events-none origin-right">
-                 <img src="/bento-gold.png" alt="3D Gold Ribbon" className="w-full h-full object-cover object-center" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 50%)', maskImage: 'linear-gradient(to right, transparent 0%, black 50%)' }} />
+                 <Image src="/bento-gold.png" alt="3D Gold Ribbon" fill sizes="(max-width: 768px) 75vw, 50vw" className="object-cover object-center" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 50%)', maskImage: 'linear-gradient(to right, transparent 0%, black 50%)' }} />
                </div>
 
                {/* Hover Glow */}
@@ -353,7 +353,7 @@ export default function Home() {
       */}
       <footer className="bg-white border-t border-black/5 py-12 text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <img src="/logo.png" alt="Festara Logo" className="h-8 object-contain" />
+          <Image src="/logo.png" alt="Festara Logo" width={128} height={32} className="h-8 w-auto object-contain" />
         </div>
         <p className="text-xs text-festara-ink/40 font-bold uppercase tracking-widest">
           Conçu pour l'élégance. © {new Date().getFullYear()}
