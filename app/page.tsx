@@ -344,6 +344,91 @@ export default function Home() {
 
           </div>
         </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 
+        ========================================================================
+        PRICING SECTION (LIGHT MODE)
+        ========================================================================
+      */}
+      <section className="py-32 relative bg-festara-sand z-10" id="tarifs">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20 animate-fade-in-up">
+            <h2 className="text-4xl md:text-5xl font-bold font-serif mb-6 text-festara-navy">
+              Des tarifs simples et <span className="text-festara-gold italic">transparents.</span>
+            </h2>
+            <p className="text-festara-navy/70 font-medium text-lg max-w-2xl mx-auto">
+              Testez la plateforme gratuitement. Payez uniquement lorsque vous êtes prêt à envoyer vos invitations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {/* Essentiel */}
+            <div className="bg-white rounded-3xl p-10 border border-black/5 shadow-xl shadow-black/5 flex flex-col hover:-translate-y-2 transition-transform duration-500">
+              <h3 className="text-xl font-bold text-festara-navy mb-2">Plan Essentiel</h3>
+              <div className="text-4xl font-bold font-serif text-festara-navy mb-2">15 000 <span className="text-xl text-festara-gold">FCFA</span></div>
+              <p className="text-sm text-festara-navy/60 mb-8 font-medium">Par événement. Idéal pour les dîners et réceptions intimes.</p>
+              
+              <ul className="space-y-4 mb-10 flex-1">
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-gold">✓</span> Jusqu'à 200 invités</li>
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-gold">✓</span> Site web personnalisé</li>
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-gold">✓</span> Gestion des RSVPs</li>
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-gold">✓</span> Galerie photos collaborative</li>
+              </ul>
+              
+              <Link href="/login" className="w-full block text-center py-4 bg-festara-navy/5 hover:bg-festara-navy/10 text-festara-navy font-bold rounded-xl transition-colors">
+                Commencer
+              </Link>
+            </div>
+
+            {/* Premium */}
+            <div className="bg-[#0A1226] rounded-3xl p-10 border border-festara-gold/30 shadow-2xl shadow-festara-gold/10 flex flex-col hover:-translate-y-2 transition-transform duration-500 relative overflow-hidden transform md:-translate-y-4">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-festara-gold/20 rounded-full blur-2xl"></div>
+              
+              <div className="inline-flex self-start px-4 py-1 rounded-full bg-festara-gold text-[#0A1226] text-xs font-bold uppercase tracking-widest mb-6">
+                Le plus choisi
+              </div>
+              
+              <h3 className="text-xl font-bold text-white mb-2">Plan Premium</h3>
+              <div className="text-4xl font-bold font-serif text-white mb-2">25 000 <span className="text-xl text-festara-gold">FCFA</span></div>
+              <p className="text-sm text-white/60 mb-8 font-medium">L'expérience VIP ultime pour les grands mariages.</p>
+              
+              <ul className="space-y-4 mb-10 flex-1">
+                <li className="flex items-center gap-3 text-white/90 font-medium"><span className="text-festara-gold">✨</span> <strong>Invités illimités</strong></li>
+                <li className="flex items-center gap-3 text-white/90 font-medium"><span className="text-festara-gold">✨</span> <strong>Envois massifs WhatsApp</strong></li>
+                <li className="flex items-center gap-3 text-white/90 font-medium"><span className="text-festara-gold">✨</span> <strong>Génération de Pass QR Code</strong></li>
+                <li className="flex items-center gap-3 text-white/90 font-medium"><span className="text-festara-gold">✨</span> <strong>Application Scanner pour hôtesses</strong></li>
+                <li className="flex items-center gap-3 text-white/90 font-medium"><span className="text-festara-gold">✨</span> Statistiques en direct</li>
+              </ul>
+              
+              <Link href="/login" className="w-full block text-center py-4 bg-gradient-to-r from-festara-gold to-[#DFB769] hover:from-[#DFB769] hover:to-festara-gold text-[#0A1226] font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(197,154,69,0.3)]">
+                Créer mon événement
+              </Link>
+            </div>
+
+            {/* B2B Agence */}
+            <div className="bg-white rounded-3xl p-10 border border-black/5 shadow-xl shadow-black/5 flex flex-col hover:-translate-y-2 transition-transform duration-500">
+              <h3 className="text-xl font-bold text-festara-navy mb-2">Agence Pro</h3>
+              <div className="text-4xl font-bold font-serif text-festara-navy mb-2">100 000 <span className="text-xl text-festara-gold">FCFA</span></div>
+              <p className="text-sm text-festara-navy/60 mb-8 font-medium">Par an. Pour les Wedding Planners et organisateurs.</p>
+              
+              <ul className="space-y-4 mb-10 flex-1">
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-teal">✓</span> <strong>Événements illimités</strong></li>
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-teal">✓</span> Toutes les options Premium</li>
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-teal">✓</span> Marque blanche (Sans logo Festara)</li>
+                <li className="flex items-center gap-3 text-festara-navy/80 font-medium"><span className="text-festara-teal">✓</span> Gestion d'équipe (Hôtesses multiples)</li>
+              </ul>
+              
+              <Link href="/dashboard/agencies" className="w-full block text-center py-4 border-2 border-festara-navy hover:bg-festara-navy hover:text-white text-festara-navy font-bold rounded-xl transition-colors">
+                Contacter le support
+              </Link>
+            </div>
+            
+          </div>
+        </div>
       </section>
 
       {/* 
