@@ -108,16 +108,6 @@ export default async function EditEvent(props: Props) {
     .eq('event_id', ev.id);
   const collaborators = collaboratorsData || [];
 
-  // RESTRICTION DE SÉCURITÉ : Si l'utilisateur est uniquement un "scanner", 
-  // on lui interdit l'accès au tableau de bord complet et on le redirige vers le scanner.
-  const isOwner = ev.user_id === user.id;
-  const isAgencyMember = ev.organization_id ? userOrgs.some(org => org.id === ev.organization_id) : false;
-  const currentRole = collaborators.find(c => c.user_id === user.id)?.role;
-
-  if (!isOwner && !isAgencyMember && currentRole === 'scanner') {
-    redirect(`/scan/${ev.id}`);
-  }
-
   const { data: invitationsData } = await supabase
     .from('event_invitations')
     .select('*')
