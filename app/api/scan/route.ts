@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabase, createAdminClient, verifyEventAccess } from '@/lib/supabase/server';
 
+import { cookies } from 'next/headers';
+
 // POST /api/scan
-// Verifie un pass a l'entree. Reserve au proprietaire de l'evenement (auth).
+// Verifie un pass a l'entree. Reserve au proprietaire de l'evenement (auth) OU hôtesse (cookie).
 // Entree : { event_id, value }  ou value = pass_uuid (depuis QR) OU pass_code (6 car.)
 // Sortie : { status: 'valid'|'already'|'unknown', guest? , scanned_at? }
 export async function POST(req: Request) {
@@ -17,15 +19,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Paramètres manquants.' }, { status: 400 });
   }
 
-  // Controle d'acces via la nouvelle fonction B2B
-  try {
-    await verifyEventAccess(event_id);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 403 });
+  const admin = createAdminClient();
+  let isAuthorized = false;
+
+  // 1. Tenter l'autorisation via cookie magique (Hôtesse Sans Compte)
+  const cookieStore = await cookies();
+  const token = cookieStore.get('festara_scanner_token')?.value;
+  if (token) {
+    const { data: inv } = await admin
+      .from('event_invitations')
+      .select('event_id, role')
+      .eq('token', token)
+      .single();
+    if (inv && inv.role === 'scanner' && inv.event_id === event_id) {
+      isAuthorized = true;
+    }
   }
 
-  const admin = createAdminClient();
-
+  // 2. Si pas de cookie valide, tenter l'autorisation classique B2B (Compte Utilisateur)
+  if (!isAuthorized) {
+    try {
+      await verifyEventAccess(event_id);
+      isAuthorized = true;
+    } catch (err: any) {
+      return NextResponse.json({ error: 'Accès refusé. Non autorisé.' }, { status: 403 });
+    }
   // Extrait un code/uuid d'une valeur QR (peut contenir une URL .../pass/<uuid>)
   const raw = String(value).trim();
   const uuidMatch = raw.match(

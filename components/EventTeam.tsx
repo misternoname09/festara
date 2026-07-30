@@ -31,8 +31,9 @@ export default function EventTeam({
     }
   }
 
-  function copyLink(token: string) {
-    const url = `${window.location.origin}/invite/${token}`;
+  function copyLink(token: string, role: string) {
+    const basePath = role === 'scanner' ? '/s/' : '/invite/';
+    const url = `${window.location.origin}${basePath}${token}`;
     navigator.clipboard.writeText(url);
     setCopiedToken(token);
     setTimeout(() => setCopiedToken(null), 3000);
@@ -101,9 +102,11 @@ export default function EventTeam({
                     </button>
                   </div>
                   <div className="flex items-center justify-between gap-2 bg-white p-2 rounded-xl border border-black/5">
-                    <span className="text-xs text-[#0A1226]/40 truncate flex-1 pl-2">.../invite/{inv.token.substring(0, 8)}...</span>
+                    <span className="text-xs text-[#0A1226]/40 truncate flex-1 pl-2">
+                      ...{inv.role === 'scanner' ? '/s/' : '/invite/'}{inv.token.substring(0, 8)}...
+                    </span>
                     <button 
-                      onClick={() => copyLink(inv.token)}
+                      onClick={() => copyLink(inv.token, inv.role)}
                       className="px-4 py-2 bg-[#0A1226] text-white text-xs font-bold rounded-lg hover:bg-festara-gold transition-colors"
                     >
                       {copiedToken === inv.token ? 'Copié !' : 'Copier'}
