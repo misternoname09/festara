@@ -497,8 +497,8 @@ export default async function EditEvent(props: Props) {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10 relative z-10">
                   <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-festara-gold/20 to-festara-gold/5 flex items-center justify-center text-festara-gold text-3xl shadow-inner border border-festara-gold/20">💳</div>
                   <div>
-                    <h2 className="text-3xl font-bold font-serif mb-2">Facturation & Plan</h2>
-                    <p className="text-base text-gray-100 font-medium">Gérez votre abonnement et débloquez des fonctionnalités premium.</p>
+                    <h2 className="text-3xl font-bold font-serif mb-2 text-white">Facturation & Plan</h2>
+                    <p className="text-base text-gray-200 font-medium">Gérez votre abonnement et débloquez des fonctionnalités premium.</p>
                   </div>
                 </div>
                 
