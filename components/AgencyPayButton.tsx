@@ -39,9 +39,10 @@ export default function AgencyPayButton({ organizationId, currentPlan }: { organ
   return (
     <div className="space-y-4 bg-festara-sand/30 p-6 rounded-2xl border border-festara-gold/30">
       <div>
-        <h3 className="font-bold text-festara-navy text-xl">Devenir Agence Pro 👑</h3>
+        <h3 className="font-bold text-festara-navy text-xl">Devenir Agence Pro 🏢</h3>
         <p className="text-sm text-festara-navy/70 mt-1">
-          Débloquez les fonctionnalités Premium (invités illimités, personnalisation, scan par l'hôte) pour un pack de <strong>25 événements</strong>.
+          L'abonnement pensé pour les professionnels de l'événementiel. <br/>
+          <strong>Création d'événements illimitée</strong>, toutes les fonctionnalités Premium incluses (Invités illimités, WhatsApp, Scan VIP) et gestion d'équipe.
         </p>
       </div>
       
@@ -51,7 +52,7 @@ export default function AgencyPayButton({ organizationId, currentPlan }: { organ
           <p className="text-festara-gold font-bold text-2xl">
             {agencyPlan?.amount ? `${(agencyPlan.amount).toLocaleString('fr-FR')} FCFA` : '100 000 FCFA'}
           </p>
-          <p className="text-xs text-festara-ink/60">Paiement unique / Pack de 25 événements</p>
+          <p className="text-xs text-festara-ink/60">Abonnement Annuel</p>
         </div>
         
         <div className="w-full md:w-auto flex flex-col gap-2 min-w-[200px]">

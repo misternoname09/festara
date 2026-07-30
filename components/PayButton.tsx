@@ -3,8 +3,8 @@
 import { useState } from 'react';
 
 const PLANS = [
-  { key: 'essentiel', label: 'Essentiel', price: '15 000 FCFA', desc: '200 invités, 3 templates, Pass' },
-  { key: 'premium', label: 'Premium', price: '25 000 FCFA', desc: 'Invités illimités, scan hôte' },
+  { key: 'essentiel', label: 'Plan Essentiel', price: '15 000 FCFA', desc: 'Jusqu\'à 200 invités, RSVP, Galerie collaborative' },
+  { key: 'premium', label: 'Plan Premium', price: '25 000 FCFA', desc: 'Invités illimités, Relances WhatsApp, Scan VIP Hôtesse' },
 ];
 
 export default function PayButton({ eventId, currentPlan }: { eventId: string; currentPlan: string }) {

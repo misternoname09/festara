@@ -9,7 +9,7 @@ export default function WhatsAppDispatcher({ guests, eventSlug, eventId, plan }:
   const [isSendingBulk, setIsSendingBulk] = useState(false);
   const [bulkResult, setBulkResult] = useState<{sent: number, failed: number} | null>(null);
 
-  const isPro = plan === 'pro' || plan === 'premium';
+  const isPro = plan === 'pro' || plan === 'premium' || plan === 'agence';
   const isDryRun = process.env.NEXT_PUBLIC_WHATSAPP_DRY_RUN === 'true';
 
   const importedGuests = guestList.filter(g => g.phone);

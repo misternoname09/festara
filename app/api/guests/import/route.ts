@@ -21,16 +21,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Maximum 500 invités par import.' }, { status: 400 });
     }
 
-    // Vérifier que l'utilisateur est propriétaire de l'événement
+    // Vérifier que l'utilisateur est propriétaire de l'événement et récupérer le plan
     const { data: ev, error: evError } = await supabase
       .from('events')
-      .select('id, ceremonies')
+      .select('id, ceremonies, plan')
       .eq('id', event_id)
       .eq('user_id', user.id)
       .single();
 
     if (evError || !ev) {
       return NextResponse.json({ error: 'Accès refusé ou événement introuvable.' }, { status: 403 });
+    }
+
+    // Vérification de la limite du plan Essentiel (200 invités max)
+    if (ev.plan === 'essentiel') {
+      const { count } = await supabase
+        .from('guests')
+        .select('*', { count: 'exact', head: true })
+        .eq('event_id', event_id);
+
+      const currentCount = count || 0;
+      if (currentCount + guests.length > 200) {
+        return NextResponse.json({ 
+          error: `Le Plan Essentiel est limité à 200 invités. Vous en avez déjà ${currentCount}. Veuillez passer au Plan Premium.` 
+        }, { status: 403 });
+      }
     }
 
     // Tous les invités importés sont invités à toutes les cérémonies par défaut
