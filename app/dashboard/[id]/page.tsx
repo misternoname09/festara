@@ -11,6 +11,7 @@ import GuestImporter from '@/components/GuestImporter';
 import WhatsAppDispatcher from '@/components/WhatsAppDispatcher';
 import ScrollToTop from '@/components/ScrollToTop';
 import GuestTable from '@/components/GuestTable';
+import SaveButton from '@/components/SaveButton';
 
 import DashboardTabs from '@/components/DashboardTabs';
 import CircularGauge from '@/components/CircularGauge';
@@ -445,27 +446,7 @@ export default async function EditEvent(props: Props) {
                         )}
                       </div>
 
-                      <button className="relative group/btn overflow-hidden w-full sm:w-auto px-10 py-5 rounded-2xl font-bold uppercase tracking-widest text-xs transition-all hover:-translate-y-1 bg-[#0A1226] text-white hover:shadow-[0_15px_30px_rgba(10,18,38,0.2)] group-has-[:checked]/publish:bg-gradient-to-r group-has-[:checked]/publish:from-festara-gold group-has-[:checked]/publish:via-[#DFB769] group-has-[:checked]/publish:to-festara-gold group-has-[:checked]/publish:text-[#0A1226] group-has-[:checked]/publish:shadow-[0_15px_40px_rgba(197,154,69,0.4)] group-has-[:checked]/publish:scale-105 duration-300">
-                        {/* Shimmer effect */}
-                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-shimmer"></span>
-                        
-                        {/* Dynamic Button Content */}
-                        <span className="relative z-10 flex items-center justify-center gap-3">
-                          {ev.is_published ? (
-                            <>
-                              <span className="hidden group-has-[:checked]/publish:block">Enregistrer les modifications</span>
-                              <span className="group-has-[:checked]/publish:hidden">🛑 Retirer la publication</span>
-                            </>
-                          ) : (
-                            <>
-                              <span className="group-has-[:checked]/publish:hidden">Enregistrer les modifications</span>
-                              <span className="hidden group-has-[:checked]/publish:flex items-center gap-2 animate-pulse">
-                                <span className="text-xl">✨</span> Mettre en ligne l'Événement ! <span className="text-xl">✨</span>
-                              </span>
-                            </>
-                          )}
-                        </span>
-                      </button>
+                      <SaveButton />
                     </div>
                   </form>
                 </div>
