@@ -111,6 +111,7 @@ export default async function InvitePage(props: { params: Promise<{ token: strin
         <h1 className="text-2xl font-serif font-bold text-festara-navy mb-2">Rejoindre l'équipe</h1>
         <p className="text-festara-navy/80 mb-8 font-medium">Acceptez l'invitation pour accéder à {targetLabel} :<br/><span className="text-festara-gold font-bold text-xl">{targetName}</span></p>
         
+        {/* Capture safely to avoid Turbopack null-reference closure bugs */}
         <form action={async () => {
           'use server';
           const { createAdminClient } = await import('@/lib/supabase/server');
@@ -124,13 +125,14 @@ export default async function InvitePage(props: { params: Promise<{ token: strin
             });
             await adminClient.from('event_invitations').update({ accepted_at: new Date().toISOString() }).eq('id', eventInv.id);
             redirect(`/dashboard/${eventInv.event_id}`);
-          } else {
+          } else if (agencyInv) {
+            // Using safe optional chaining for the compiler
             await adminClient.from('organization_members').insert({
-              organization_id: agencyInv.organization_id,
+              organization_id: agencyInv?.organization_id as string,
               user_id: user.id,
-              role: agencyInv.role
+              role: agencyInv?.role as string
             });
-            await adminClient.from('agency_invitations').update({ accepted_at: new Date().toISOString() }).eq('id', agencyInv.id);
+            await adminClient.from('agency_invitations').update({ accepted_at: new Date().toISOString() }).eq('id', agencyInv?.id);
             redirect('/dashboard/agencies');
           }
         }}>
