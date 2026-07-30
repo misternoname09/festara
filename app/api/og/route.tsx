@@ -98,16 +98,16 @@ function generateOgImage(title: string, imageUrl: string, dateStr: string) {
             }}
           />
         ) : (
-          /* Fond décoratif premium quand pas de photo */
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', background: 'linear-gradient(145deg, #0A1226 0%, #121B2F 30%, #0B5959 60%, #0A1226 100%)' }}>
+          /* Fond décoratif premium quand pas de photo (Satori-safe) */
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', backgroundImage: 'linear-gradient(145deg, #0A1226 0%, #121B2F 30%, #0B5959 60%, #0A1226 100%)' }}>
             {/* Cercle doré en haut à droite */}
-            <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,154,69,0.3) 0%, transparent 70%)', display: 'flex' }}></div>
+            <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '200px', backgroundColor: '#C59A45', opacity: 0.15, display: 'flex' }}></div>
             {/* Cercle doré en bas à gauche */}
-            <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(197,154,69,0.2) 0%, transparent 70%)', display: 'flex' }}></div>
+            <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '350px', height: '350px', borderRadius: '175px', backgroundColor: '#C59A45', opacity: 0.1, display: 'flex' }}></div>
             {/* Ligne dorée décorative en haut */}
-            <div style={{ position: 'absolute', top: '30px', left: '80px', right: '80px', height: '2px', background: 'linear-gradient(90deg, transparent 0%, #C59A45 50%, transparent 100%)', display: 'flex' }}></div>
+            <div style={{ position: 'absolute', top: '30px', left: '80px', right: '80px', height: '2px', backgroundImage: 'linear-gradient(90deg, transparent 0%, #C59A45 50%, transparent 100%)', display: 'flex' }}></div>
             {/* Ligne dorée décorative en bas */}
-            <div style={{ position: 'absolute', bottom: '30px', left: '80px', right: '80px', height: '2px', background: 'linear-gradient(90deg, transparent 0%, #C59A45 50%, transparent 100%)', display: 'flex' }}></div>
+            <div style={{ position: 'absolute', bottom: '30px', left: '80px', right: '80px', height: '2px', backgroundImage: 'linear-gradient(90deg, transparent 0%, #C59A45 50%, transparent 100%)', display: 'flex' }}></div>
           </div>
         )}
 
@@ -122,14 +122,13 @@ function generateOgImage(title: string, imageUrl: string, dateStr: string) {
             padding: '50px 80px',
             borderRadius: '40px',
             border: '3px solid #C59A45',
-            zIndex: 10,
-            boxShadow: '0 20px 50px rgba(0,0,0,0.5), inset 0 0 80px rgba(197,154,69,0.05)',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
             maxWidth: '900px',
           }}
         >
-          {/* Icône anneaux de mariage */}
+          {/* Emojis ne sont parfois pas supportés selon le runtime, on utilise du texte brut stylisé */}
           {!hasImage && (
-            <span style={{ fontSize: 60, marginBottom: 10 }}>💍</span>
+            <div style={{ color: '#C59A45', fontSize: 60, marginBottom: 10, display: 'flex' }}>✧</div>
           )}
 
           <span
@@ -178,14 +177,11 @@ function generateOgImage(title: string, imageUrl: string, dateStr: string) {
             </span>
           )}
 
-          {/* Emojis décoratifs mariage si pas de photo */}
           {!hasImage && (
-            <div style={{ display: 'flex', gap: '15px', marginBottom: 15, fontSize: 28, opacity: 0.7 }}>
-              <span>✨</span>
-              <span>🤍</span>
-              <span>🕊️</span>
-              <span>🤍</span>
-              <span>✨</span>
+            <div style={{ display: 'flex', gap: '15px', marginBottom: 15, fontSize: 30, color: '#C59A45', opacity: 0.7 }}>
+              <span>✧</span>
+              <span>✧</span>
+              <span>✧</span>
             </div>
           )}
 
@@ -209,4 +205,3 @@ function generateOgImage(title: string, imageUrl: string, dateStr: string) {
     }
   );
 }
-
