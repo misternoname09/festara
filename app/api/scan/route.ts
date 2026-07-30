@@ -44,6 +44,8 @@ export async function POST(req: Request) {
     } catch (err: any) {
       return NextResponse.json({ error: 'Accès refusé. Non autorisé.' }, { status: 403 });
     }
+  }
+
   // Extrait un code/uuid d'une valeur QR (peut contenir une URL .../pass/<uuid>)
   const raw = String(value).trim();
   const uuidMatch = raw.match(
