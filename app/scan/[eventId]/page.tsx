@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { createServerSupabase } from '@/lib/supabase/server';
-import Scanner from '@/components/Scanner';
+import ScannerWrapper from '@/components/ScannerWrapper';
 import type { EventRow, EventStats } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -44,7 +44,7 @@ export default async function ScanPage(props: Props) {
     <main className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
       <div className="mx-auto w-full max-w-lg min-h-screen flex flex-col items-center justify-center relative z-10 px-0 sm:px-4 pb-12 sm:py-12">
         <div className="w-full h-full flex flex-col justify-center sm:bg-white/5 sm:border sm:border-white/10 sm:backdrop-blur-md sm:rounded-[2.5rem] sm:p-8">
-          <Scanner
+          <ScannerWrapper
             eventId={ev.id}
             eventTitle={ev.title}
             initialScanned={s?.guests_scanned ?? 0}
