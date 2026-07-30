@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient, verifyEventAccess } from '@/lib/supabase/server';
 import { getStripe, PLANS_EUR } from '@/lib/stripe';
+import { calculateDiscount } from '@/lib/promo';
 
-// POST /api/pay/stripe  { event_id, plan }
+// POST /api/pay/stripe  { event_id, plan, promoCode }
 // Cree une session Stripe Checkout (carte internationale, diaspora).
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  const { event_id, organization_id, plan } = body || {};
+  const { event_id, organization_id, plan, promoCode } = body || {};
   const planDef = PLANS_EUR[plan as string];
   
   if ((!event_id && !organization_id) || !planDef) {
@@ -43,21 +44,28 @@ export async function POST(req: Request) {
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
+  // Calcul du prix réduit si un code promo est fourni
+  const { finalAmount, appliedPromo } = calculateDiscount(planDef.amount, promoCode);
+
   const { data: pay } = await admin
     .from('payments')
     .insert({
       event_id: event_id || null,
       organization_id: organization_id || null,
       user_id: user.id,
-      amount: planDef.amount,
+      amount: finalAmount, // On enregistre le montant réellement payé
       currency: 'EUR',
       provider: 'stripe',
       status: 'pending',
+      // memo: on pourrait stocker le code promo ici s'il y avait une colonne 'promo_code'
     })
     .select('id')
     .single();
 
   const returnPath = event_id ? `/dashboard/${event_id}` : `/dashboard/agencies`;
+  const productName = appliedPromo 
+    ? `${planDef.label} — ${eventTitle} (Promo: -${appliedPromo.value}${appliedPromo.type === 'percent' ? '%' : '€'})`
+    : `${planDef.label} — ${eventTitle}`;
 
   try {
     const session = await getStripe().checkout.sessions.create({
@@ -66,15 +74,15 @@ export async function POST(req: Request) {
         {
           price_data: {
             currency: 'eur',
-            product_data: { name: `${planDef.label} — ${eventTitle}` },
-            unit_amount: planDef.amount,
+            product_data: { name: productName },
+            unit_amount: finalAmount,
           },
           quantity: 1,
         },
       ],
       success_url: `${site}${returnPath}?paid=1`,
       cancel_url: `${site}${returnPath}?canceled=1`,
-      metadata: { event_id: event_id || '', organization_id: organization_id || '', plan, payment_id: pay?.id ?? '' },
+      metadata: { event_id: event_id || '', organization_id: organization_id || '', plan, payment_id: pay?.id ?? '', promo: promoCode || '' },
     });
 
     if (pay?.id) {

@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient, verifyEventAccess } from '@/lib/supabase/server';
 import { createInvoice, PLANS } from '@/lib/naboopay';
+import { calculateDiscount } from '@/lib/promo';
 
-// POST /api/pay/naboopay  { event_id, plan }
+// POST /api/pay/naboopay  { event_id, plan, promoCode }
 // Cree une transaction NabooPay pour l'achat d'un plan et renvoie l'URL de paiement.
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  const { event_id, organization_id, plan } = body || {};
+  const { event_id, organization_id, plan, promoCode } = body || {};
   const planDef = PLANS[plan as string];
   
   if ((!event_id && !organization_id) || !planDef) {
@@ -41,6 +42,9 @@ export async function POST(req: Request) {
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
+  // Calcul du prix réduit si un code promo est fourni
+  const { finalAmount, appliedPromo } = calculateDiscount(planDef.amount, promoCode);
+
   // Enregistre un paiement en attente
   const { data: pay } = await admin
     .from('payments')
@@ -48,7 +52,7 @@ export async function POST(req: Request) {
       event_id: event_id || null,
       organization_id: organization_id || null,
       user_id: user.id,
-      amount: planDef.amount,
+      amount: finalAmount, // Montant réel à payer
       currency: 'XOF',
       provider: 'naboopay',
       status: 'pending',
@@ -57,15 +61,18 @@ export async function POST(req: Request) {
     .single();
 
   const returnPath = event_id ? `/dashboard/${event_id}` : `/dashboard/agencies`;
+  const description = appliedPromo
+    ? `${planDef.label} — ${eventTitle} (Promo: -${appliedPromo.value}${appliedPromo.type === 'percent' ? '%' : ' FCFA'})`
+    : `${planDef.label} — ${eventTitle}`;
   
   const invoice = await createInvoice({
-    amount: planDef.amount,
+    amount: finalAmount,
     itemName: planDef.label,
-    description: `${planDef.label} — ${eventTitle}`,
+    description: description,
     returnUrl: `${site}${returnPath}?paid=1`,
     cancelUrl: `${site}${returnPath}?canceled=1`,
     callbackUrl: `${site}/api/pay/naboopay/callback`,
-    customData: { event_id: event_id || '', organization_id: organization_id || '', plan, payment_id: pay?.id },
+    customData: { event_id: event_id || '', organization_id: organization_id || '', plan, payment_id: pay?.id, promo: promoCode || '' },
   });
 
   if (!invoice.ok || !invoice.url) {

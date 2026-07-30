@@ -10,6 +10,7 @@ const PLANS = [
 export default function PayButton({ eventId, currentPlan }: { eventId: string; currentPlan: string }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [promoCode, setPromoCode] = useState('');
 
   async function pay(plan: string, provider: 'naboopay' | 'stripe') {
     setError(null);
@@ -18,7 +19,7 @@ export default function PayButton({ eventId, currentPlan }: { eventId: string; c
       const res = await fetch(`/api/pay/${provider}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event_id: eventId, plan }),
+        body: JSON.stringify({ event_id: eventId, plan, promoCode: promoCode.trim() }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) throw new Error(data.error || 'Paiement indisponible.');
@@ -80,6 +81,18 @@ export default function PayButton({ eventId, currentPlan }: { eventId: string; c
           </div>
         ))}
       </div>
+      
+      <div className="pt-2">
+        <label className="block text-xs font-bold text-festara-navy/60 uppercase tracking-widest ml-1 mb-2">Code Promo (Optionnel)</label>
+        <input 
+          type="text" 
+          value={promoCode} 
+          onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+          placeholder="Ex: LANCEMENT20" 
+          className="w-full sm:w-1/2 rounded-xl px-4 py-2 text-sm border border-black/10 bg-white focus:bg-white focus:border-festara-gold/50 focus:ring-2 focus:ring-festara-gold/10 outline-none transition-all placeholder:text-[#0A1226]/30 font-bold text-festara-navy"
+        />
+      </div>
+
       {error && <p className="text-sm text-red-600">{error}</p>}
       <p className="text-xs text-festara-ink/40">
         Wave / Orange Money via NabooPay (FCFA) · Carte EUR via Stripe (diaspora).
